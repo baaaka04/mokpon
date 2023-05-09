@@ -8,12 +8,17 @@ struct AllTransactuionsView: View {
 
     var body: some View {
         ZStack {
-            TransactionListView(
-                transactions: transactions,
-                fetchTransactions: fetchTransactions,
-                isLoading: isLoading
-            )
-            .frame(height: 500)
+            Color.bg_main
+            VStack {
+                Text("All transactions")
+                    .font(.custom("DMSans-Regular", size: 20))
+                
+                TransactionListView(
+                    transactions: transactions,
+                    fetchTransactions: fetchTransactions,
+                    isLoading: isLoading
+                )
+            }
             .padding()
             .foregroundColor(.init(white: 0.87))
             .background(Color.bg_transactions)

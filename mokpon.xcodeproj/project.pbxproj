@@ -153,6 +153,7 @@
 		F7130FA72A03C42800972B10 /* TransactionsList */ = {
 			isa = PBXGroup;
 			children = (
+				F73DD5E42A0A78B8001BCDAC /* AllTransactuionsView.swift */,
 				F719DC13294F344600DE1B8E /* TransactionListView.swift */,
 				F708F68C295DCD0200E6E9FA /* TransactionView.swift */,
 			);
@@ -259,7 +260,6 @@
 			isa = PBXGroup;
 			children = (
 				F7EADA7A29C5C03600B177C9 /* HomeView.swift */,
-				F73DD5E42A0A78B8001BCDAC /* AllTransactuionsView.swift */,
 				F7130FA52A03C3BC00972B10 /* HomeModel.swift */,
 				F708F68E295DD09500E6E9FA /* HomeViewModel.swift */,
 				F7130FA82A03C45700972B10 /* Components */,

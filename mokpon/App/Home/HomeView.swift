@@ -3,6 +3,7 @@ import SwiftUI
 struct Home: View {
     
     @StateObject var vm = HomeViewModel()
+    @State var showAllTransactions : Bool = false
     
     var body: some View {
         
@@ -26,15 +27,19 @@ struct Home: View {
                             Text("My transactions")
                                 .font(.custom("DMSans-Regular", size: 20))
                             Spacer()
-                            NavigationLink(
-                                destination: AllTransactuionsView (
+                            
+                            Button("Show all") {
+                                showAllTransactions = true
+                            }
+                            .font(.custom("DMSans-Regular", size: 14))
+                            .popover(isPresented: $showAllTransactions) {
+                                AllTransactuionsView (
                                     transactions: vm.transactions,
                                     fetchTransactions: vm.fetchTransactions,
                                     isLoading: vm.isLoading
                                 )
                                 .navigationBarHidden(true)
-                                .transition(.slide)
-                                , label: {Text("Show all")})
+                            }
                         }
                         .padding(.top)
                         TransactionListView(

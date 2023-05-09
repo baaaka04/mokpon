@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 struct TransactionListView: View {
     
     let transactions : [Transaction]
@@ -19,12 +18,6 @@ struct TransactionListView: View {
             .sorted{$1.element.key < $0.element.key}
         
         VStack {
-//            HStack{
-//                Text("My transactions")
-//                    .font(.custom("DMSans-Regular", size: 20))
-//                Spacer()
-//            }
-            
             if transactions.count == 0 {
                 ProgressView()
             } else {
@@ -51,8 +44,6 @@ struct TransactionListView: View {
                 .listStyle(.plain)
             }
         }
-//        .foregroundColor(.init(white: 0.87))
-//        .background(Color.bg_transactions)
         .onAppear {
             //            fetch transactions only if it's the first appearance
             if transactions.count == 0 {
