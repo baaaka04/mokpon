@@ -1,0 +1,8 @@
+  {category: "питание", subCategory: "здоровая пища", type: "опер", date: .now, sum: -100},
+  {category: "питание", subCategory: "всячина", type: "опер", date: .now, sum: -450},
+  {category: "интернет и связь", subCategory: "домашний", type: "опер", date: .now, sum: -400},
+  {category: "развлечения", subCategory: "боулинг", type: "опер", date: .now, sum: -900},
+  {category: "прочее", subCategory: "макбук", type: "инвест", date: .now, sum: -69000},
+  {category: "ЖКХ", subCategory: "жкх", type: "опер", date: .now, sum: -2900},
+  {category: "доход", subCategory: "зарплата", type: "доход", date: .now, sum: 22900},
+  {category: "здоровье", subCategory: "стрижка", type: "опер", date: .now, sum: -1000}
