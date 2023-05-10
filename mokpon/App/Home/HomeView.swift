@@ -3,7 +3,6 @@ import SwiftUI
 struct Home: View {
     
     @StateObject var vm = HomeViewModel()
-    @State var showAllTransactions : Bool = false
     
     var body: some View {
         
@@ -29,16 +28,16 @@ struct Home: View {
                             Spacer()
                             
                             Button("Show all") {
-                                showAllTransactions = true
+                                vm.showAllTransactions = true
                             }
                             .font(.custom("DMSans-Regular", size: 14))
-                            .popover(isPresented: $showAllTransactions) {
+                            .popover(isPresented: $vm.showAllTransactions) {
                                 AllTransactuionsView (
                                     transactions: vm.transactions,
                                     fetchTransactions: vm.fetchTransactions,
-                                    isLoading: vm.isLoading
+                                    isLoading: vm.isLoading,
+                                    showView: $vm.showAllTransactions
                                 )
-                                .navigationBarHidden(true)
                             }
                         }
                         .padding(.top)
@@ -51,6 +50,7 @@ struct Home: View {
                     .padding(.horizontal)
                     .foregroundColor(.init(white: 0.87))
                     .background(Color.bg_transactions)
+                    Spacer()
                 }
                 .frame(minHeight: 1100)
             }

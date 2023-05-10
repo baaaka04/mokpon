@@ -5,6 +5,7 @@ class HomeViewModel : ObservableObject {
     
     @Published var transactions = [Transaction]()
     @Published var currencies = Rates(KGS: 85.1, RUB: 75.1)
+    @Published var showAllTransactions = false
     var isLoading : Bool = false
 
     

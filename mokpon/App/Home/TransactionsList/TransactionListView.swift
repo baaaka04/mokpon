@@ -19,7 +19,10 @@ struct TransactionListView: View {
         
         VStack {
             if transactions.count == 0 {
-                ProgressView()
+                VStack (alignment: .center) {
+                    ProgressView()
+                }
+                .frame(maxHeight: .infinity)
             } else {
                 List (transactionsInArray, id: \.element.key) { (index, transGrouped) in
                     Section {
