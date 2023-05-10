@@ -9,31 +9,35 @@ struct BarChartView: View {
     var getTotals : (_ chartDataList: ComparationList, _ comparation: Comparation) -> [Int]
     
     var body: some View {
-        Chart {
-            ForEach (comparation == .monthly ? chartData.monthly : chartData.yearly) {databar in
-                BarMark(
-                    x: .value("Month", databar.date),
-                    y: .value("Rub", databar.sum)
-                )
-                .foregroundStyle(by: .value("Category", databar.category))
-            }
-            .annotation(content: {
-                HStack {
-                    ForEach(getTotals(chartDataList, comparation).filter{$0 != 0}, id: \.self) { sum in
-                        Text("\(sum)")
-                            .frame(width: 150)
-                            .frame(maxWidth: .infinity)
-                    }
+        if chartData.monthly.count == 0 {
+            ProgressView().padding(100)
+        } else {
+            Chart {
+                ForEach (comparation == .monthly ? chartData.monthly : chartData.yearly) {databar in
+                    BarMark(
+                        x: .value("Month", databar.date),
+                        y: .value("Rub", databar.sum)
+                    )
+                    .foregroundStyle(by: .value("Category", databar.category))
                 }
-                .foregroundColor(.white)
-            })
-        }
-        .chartYAxis(.hidden)
-        .chartYAxis {
-            AxisMarks(position: .leading) { AxisValueLabel() }
-        }
-        .chartXAxis {
-            AxisMarks(position: .bottom) { AxisValueLabel().foregroundStyle(.white) }
+                .annotation(content: {
+                    HStack {
+                        ForEach(getTotals(chartDataList, comparation).filter{$0 != 0}, id: \.self) { sum in
+                            Text("\(sum)")
+                                .frame(width: 150)
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                    .foregroundColor(.white)
+                })
+            }
+            .chartYAxis(.hidden)
+            .chartYAxis {
+                AxisMarks(position: .leading) { AxisValueLabel() }
+            }
+            .chartXAxis {
+                AxisMarks(position: .bottom) { AxisValueLabel().foregroundStyle(.white) }
+            }
         }
     }
 }
