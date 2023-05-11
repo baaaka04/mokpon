@@ -31,6 +31,7 @@ struct Home: View {
                                 vm.showAllTransactions = true
                             }
                             .font(.custom("DMSans-Regular", size: 14))
+                            .foregroundColor(Color.accentColor)
                             .popover(isPresented: $vm.showAllTransactions) {
                                 AllTransactuionsView (
                                     transactions: vm.transactions,

@@ -53,6 +53,17 @@ struct ExpensesListView: View {
     var body: some View {
         
         VStack{
+            HStack {
+                switch self.chartType {
+                case .bar:
+                    Text("Differences")
+                case .pie:
+                    Text("Expenses")
+                }
+                Spacer()
+            }
+            .font(.custom("DMSans-Regular", size: 20))
+            .padding(20)
             ForEach(0..<self.listData.count, id: \.self) { i in
                 if expenses[i].number != "₽ 0" {
                     ExpenseView(expenseData: self.expenses[i])
@@ -60,7 +71,6 @@ struct ExpensesListView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 20)
         .padding(.bottom, 40)
         .background(Color.bg_transactions)
         .foregroundColor(.init(white: 0.87))
