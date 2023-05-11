@@ -13,7 +13,7 @@ struct TransactionView : View {
                 .background(.gray.opacity(0.4))
                 .clipShape(Circle())
             VStack (alignment: .leading) {
-                Text(String(trans.subCategory))
+                Text(String(trans.subCategory)).lineLimit(1)
                 Text(trans.date.formatted(.dateTime.day().month().year())).font(.caption)
             }
             Spacer()
@@ -37,8 +37,6 @@ struct TransactionView : View {
             )
         }
         .padding()
-//        .frame(width: 350, height: 80)
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("MainBackgroundColor"))
         .cornerRadius(20)
         .ignoresSafeArea()

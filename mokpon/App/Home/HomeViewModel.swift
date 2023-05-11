@@ -17,7 +17,7 @@ class HomeViewModel : ObservableObject {
 //     GET Request /transactions route
     func fetchTransactions () -> Void {
         
-        guard let url = URL(string: "http://212.152.40.222:50401/api/transactions") else { return }
+        guard let url = URL(string: "http://212.152.40.222:50401/api/transactions?limit=\(20)") else { return }
         
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard

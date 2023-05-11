@@ -43,7 +43,7 @@ struct Home: View {
                         }
                         .padding(.top)
                         TransactionListView(
-                            transactions: vm.transactions,
+                            transactions: Array(vm.transactions[0...4]),
                             fetchTransactions: vm.fetchTransactions,
                             isLoading: vm.isLoading
                         )
