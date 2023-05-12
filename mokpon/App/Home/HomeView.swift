@@ -56,7 +56,7 @@ struct Home: View {
                 .frame(minHeight: 1100)
             }
             .refreshable {
-                vm.fetchTransactions()
+                await vm.fetchTransactions()
                 await vm.fetchCurrency()
             }
             

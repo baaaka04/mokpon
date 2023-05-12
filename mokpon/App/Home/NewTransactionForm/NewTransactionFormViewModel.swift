@@ -17,20 +17,7 @@ class NewTransactionViewModel : ObservableObject {
     @Published var hotkeys : [[String]] = [[]]
     
     func fetchHotkeys() async -> Void {
-        let urlString = "http://212.152.40.222:50401/api/getFrequentTransactions"
-        guard let url = URL(string: urlString) else { return }
-        
-        // Sending GET request
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let resData = try JSONDecoder().decode([[String]].self, from: data)
-            self.hotkeys = resData
-        }
-        catch {
-            print("error")
-            return
-        }
-        return
+        self.hotkeys = await APIService.shared.fetchHotkeys()
     }
         
     func onPressHotkey (hotkey: [String]) -> Void {

@@ -28,40 +28,9 @@ class ChartsViewModel : ObservableObject {
         return [prevSum, curSum]
     }
 // POST-request to get charts' data
-    func fetchChartsData () -> Void {
-        guard let url = URL(string: "http://212.152.40.222:50401/api/chartDataSwiftUI") else { return }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = try? JSONEncoder().encode(DTScharts(month: String(chartDate.month), year: String(chartDate.year)))
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard error == nil,
-                  let resData = data
-            else {
-                print("error calling POST on /newRow/")
-                print(error!)
-                return
-            }
-                        
-            guard
-                let jsonDecoded : APIChartsResponse = try? JSONDecoder().decode(
-                    APIChartsResponse.self,
-                    from: resData
-                )
-            else {
-                print("Decoder error")
-                return
-            }
-            
-            DispatchQueue.main.async {
-                self.chartData = jsonDecoded.barChartData
-                self.chartDataList = jsonDecoded.barChartDatalist
-            }
-        }
-        .resume()
+    func fetchChartsData () async -> Void {
+        self.chartData = await APIService.shared.fetchChartsData(month: String(chartDate.month), year: String(chartDate.year)).barChartData
+        self.chartDataList = await APIService.shared.fetchChartsData(month: String(chartDate.month), year: String(chartDate.year)).barChartDatalist
     }
-    
+        
 }

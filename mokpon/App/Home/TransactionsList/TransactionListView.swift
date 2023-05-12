@@ -3,7 +3,7 @@ import SwiftUI
 struct TransactionListView: View {
     
     let transactions : [Transaction]
-    let fetchTransactions : () -> Void
+    let fetchTransactions : () async -> Void
     var isLoading : Bool
         
     var body: some View {
@@ -50,7 +50,9 @@ struct TransactionListView: View {
         .onAppear {
             //            fetch transactions only if it's the first appearance
             if transactions.count == 0 {
-                fetchTransactions()
+                Task {
+                    await fetchTransactions()
+                }
             }
         }
     }
@@ -63,6 +65,5 @@ struct TransactionListView_Previews: PreviewProvider {
             Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
             Transaction(category: "transport", subCategory: "taxi", type: .expense, date: Date(), sum: 150)
         ], fetchTransactions: HomeViewModel().fetchTransactions, isLoading: false)
-        .font(.custom("DMSans-Regular", size: 13))
     }
 }

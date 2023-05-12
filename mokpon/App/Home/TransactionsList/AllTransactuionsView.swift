@@ -3,7 +3,7 @@ import SwiftUI
 struct AllTransactuionsView: View {
     
     let transactions : [Transaction]
-    let fetchTransactions : () -> Void
+    let fetchTransactions : () async -> Void
     var isLoading : Bool
     @Binding var showView : Bool
     

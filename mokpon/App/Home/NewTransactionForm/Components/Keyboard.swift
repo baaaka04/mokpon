@@ -5,7 +5,7 @@ struct Keyboard: View {
     let onPressDigit: (_ number: Int) -> Void
     let onPressClear: () -> Void
     let onPressBackspace: () -> Void
-    let onSwipeUp: () -> Void
+    let onSwipeUp: () async -> Void
     
     let columns: [GridItem] = [
         GridItem(.flexible(), spacing: nil, alignment: nil),
@@ -35,7 +35,7 @@ struct Keyboard: View {
         .gesture(DragGesture(minimumDistance: 3.0, coordinateSpace: .local)
             .onEnded { value in
                 switch(value.translation.width, value.translation.height) {
-                case (-100...100, ...0):  onSwipeUp()
+                case (-100...100, ...0):  Task {await onSwipeUp()}
                 default:  print("no clue")
                 }
             }
