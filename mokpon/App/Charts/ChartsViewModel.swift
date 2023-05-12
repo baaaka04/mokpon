@@ -29,8 +29,11 @@ class ChartsViewModel : ObservableObject {
     }
 // POST-request to get charts' data
     func fetchChartsData () async -> Void {
-        self.chartData = await APIService.shared.fetchChartsData(month: String(chartDate.month), year: String(chartDate.year)).barChartData
-        self.chartDataList = await APIService.shared.fetchChartsData(month: String(chartDate.month), year: String(chartDate.year)).barChartDatalist
+        let fetchedData = await APIService.shared.fetchChartsData(month: String(chartDate.month), year: String(chartDate.year))
+        await MainActor.run {
+            self.chartData = fetchedData.barChartData
+            self.chartDataList = fetchedData.barChartDatalist
+        }
     }
         
 }

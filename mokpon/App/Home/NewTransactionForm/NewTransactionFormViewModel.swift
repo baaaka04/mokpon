@@ -17,7 +17,10 @@ class NewTransactionViewModel : ObservableObject {
     @Published var hotkeys : [[String]] = [[]]
     
     func fetchHotkeys() async -> Void {
-        self.hotkeys = await APIService.shared.fetchHotkeys()
+        let fetchedData = await APIService.shared.fetchHotkeys()
+        await MainActor.run {
+            self.hotkeys = fetchedData
+        }
     }
         
     func onPressHotkey (hotkey: [String]) -> Void {

@@ -16,17 +16,26 @@ class HomeViewModel : ObservableObject {
     }
 //     GET Request /transactions route
     func fetchTransactions () async -> Void {
-        await self.transactions = APIService.shared.fetchTransactions()
+        let fetchedData = await APIService.shared.fetchTransactions()
+        await MainActor.run {
+            self.transactions = fetchedData
+        }
         self.isLoading = false
     }
     
 //    POST Request /newRow route
     func sendNewTransaction (trans: Transaction) async -> Void {
-        self.transactions = await APIService.shared.sendNewTransaction(trans: trans)
+        let fetchedData = await APIService.shared.sendNewTransaction(trans: trans)
+        await MainActor.run {
+            self.transactions = fetchedData
+        }
     }
     
     func fetchCurrency () async -> Void {
-        self.currencies = await APIService.shared.fetchCurrency()
+        let fetchedData = await APIService.shared.fetchCurrency()
+        await MainActor.run {
+            self.currencies = fetchedData
+        }
     }
     
 }
