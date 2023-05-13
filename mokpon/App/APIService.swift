@@ -15,7 +15,7 @@ class APIService {
             return resData
         }
         catch {
-            print("error")
+            print("Fetching hotkeys error: \(error)")
             return [[]]
         }
     }
@@ -33,7 +33,7 @@ class APIService {
             return resData
         }
         catch {
-            print("error")
+            print("Fetching transactions error: \(error)")
             return [Transaction]()
         }
     }
@@ -68,14 +68,14 @@ class APIService {
             return resData
         }
         catch {
-            print(error)
+            print("Sending transaction error: \(error)")
             return [Transaction]()
         }
     }
     
     func fetchCurrency () async -> Rates {
         let urlString = "https://economia.awesomeapi.com.br/last/USD-RUB,USD-KGS"
-        guard let url = URL(string: urlString) else { return Rates(KGS: 0, RUB: 0) }
+        guard let url = URL(string: urlString) else { return Rates(KGS: 90, RUB: 120) }
         
         // Setting HTTP-Request Headers
         var request = URLRequest(url: url)
@@ -91,11 +91,11 @@ class APIService {
             let curKGS : String = try JSONDecoder().decode(DTOcur.self, from: data).USDKGS.bid
             let curRUB : String = try JSONDecoder().decode(DTOcur.self, from: data).USDRUB.bid
             
-            return Rates(KGS: Double(curKGS) ?? 0, RUB: Double(curRUB) ?? 0 )
+            return Rates(KGS: Double(curKGS) ?? 20.0, RUB: Double(curRUB) ?? 20.0 )
         }
         catch {
-            print("error: \(error)")
-            return Rates(KGS: 0, RUB: 0)
+            print("Fetching currnecies error: \(error)")
+            return Rates(KGS: 100, RUB: 80)
         }
     }
     
@@ -115,7 +115,7 @@ class APIService {
             return resData
         }
         catch {
-            print(error)
+            print("Fetching charts data error: \(error)")
             return APIChartsResponse(barChartDatalist: ComparationList(monthly: [BarChartDatalist](), yearly: [BarChartDatalist]()), barChartData: ComparationChart(monthly: [BarChartData](), yearly: [BarChartData]()))
         }
     }

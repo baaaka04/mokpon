@@ -5,7 +5,7 @@ struct TransactionListView: View {
     let transactions : [Transaction]
     let fetchTransactions : () async -> Void
     var isLoading : Bool
-        
+    
     var body: some View {
         //using Dictionary to group by date
         let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: transactions, by: { (element: Transaction) in
@@ -47,13 +47,9 @@ struct TransactionListView: View {
                 .listStyle(.plain)
             }
         }
-        .onAppear {
+        .task {
             //            fetch transactions only if it's the first appearance
-            if transactions.count == 0 {
-                Task {
-                    await fetchTransactions()
-                }
-            }
+            if transactions.count == 0 {await fetchTransactions()}
         }
     }
 }

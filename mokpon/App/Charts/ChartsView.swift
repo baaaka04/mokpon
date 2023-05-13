@@ -59,10 +59,8 @@ struct Charts: View {
                 .background(.gray.opacity(0.7))
                 .cornerRadius(10)
                 .padding(.horizontal, 20)
-                .onAppear {
-                    Task {
-                        await viewModel.fetchChartsData()
-                    }
+                .task {
+                    await viewModel.fetchChartsData()
                 }
                 
                 ExpensesListView(
