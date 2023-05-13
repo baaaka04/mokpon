@@ -5,8 +5,7 @@ class APIService {
     static let shared = APIService()
     
     func fetchHotkeys() async -> [[String]] {
-        let urlString = "http://212.152.40.222:50401/api/getFrequentTransactions"
-        guard let url = URL(string: urlString) else { return [[]] }
+        guard let url = URL(string: "http://212.152.40.222:50401/api/getFrequentTransactions") else { return [[]] }
         
         // Sending GET request
         do {
@@ -74,8 +73,7 @@ class APIService {
     }
     
     func fetchCurrency () async -> Rates {
-        let urlString = "https://economia.awesomeapi.com.br/last/USD-RUB,USD-KGS"
-        guard let url = URL(string: urlString) else { return Rates(KGS: 90, RUB: 120) }
+        guard let url = URL(string: "https://economia.awesomeapi.com.br/last/USD-RUB,USD-KGS") else { return Rates(KGS: 90, RUB: 120) }
         
         // Setting HTTP-Request Headers
         var request = URLRequest(url: url)
@@ -85,7 +83,6 @@ class APIService {
         // Sending GET request
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
-            print("Currencies data has been recieved!")
             //            print(String(data: data, encoding: .utf8))
             
             let curKGS : String = try JSONDecoder().decode(DTOcur.self, from: data).USDKGS.bid
