@@ -2,9 +2,9 @@ import SwiftUI
 
 struct Keyboard: View {
     
-    let onPressDigit: (_ number: Int) -> Void
-    let onPressClear: () -> Void
-    let onPressBackspace: () -> Void
+    let onPressDigit: (_ number: String) -> Void
+    let onPressClear: (_ btn: String) -> Void
+    let onPressBackspace: (_ btn: String) -> Void
     let onSwipeUp: () async -> Void
     
     let columns: [GridItem] = [
@@ -19,18 +19,13 @@ struct Keyboard: View {
         
         LazyVGrid (columns: columns) {
             ForEach(1..<10) { index in
-                
-                Button(
-                    action: { onPressDigit(index) },
-                    label: { Text(String(index)).frame(maxWidth: .infinity) }
-                )
+                CalculatorButton(onPress: onPressDigit, text: "\(index)")
             }
             .frame(height: 64)
             
-            Button(action: onPressClear) { Text("C") }.frame(height: 64)
-            Button(action: { onPressDigit(0) }) { Text(String(0)) }.frame(height: 64)
-            Button(action: onPressBackspace) { Image(systemName: "arrow.backward.to.line") }.frame(height: 64)
-            
+            CalculatorButton(onPress: onPressClear, text: "C").frame(height: 64)
+            CalculatorButton(onPress: onPressDigit, text: "0").frame(height: 64)
+            CalculatorButton(onPress: onPressBackspace, systemImage: "arrow.backward.to.line").frame(height: 64)
         }
         .gesture(DragGesture(minimumDistance: 3.0, coordinateSpace: .local)
             .onEnded { value in
@@ -47,8 +42,8 @@ struct Keyboard_Previews: PreviewProvider {
     static var previews: some View {
         Keyboard(
             onPressDigit: { thb in return},
-            onPressClear: { },
-            onPressBackspace: { },
+            onPressClear: {btn in return },
+            onPressBackspace: {btn in return },
             onSwipeUp: {}
         ).background(.black)
     }

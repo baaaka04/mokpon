@@ -36,19 +36,19 @@ class NewTransactionViewModel : ObservableObject {
         }
     }
     
-    func onPressDigit(number : Int) -> Void {
+    func onPressDigit(number : String) -> Void {
         self.needToErase ? self.sum = 0 : nil
-        self.sum = Int(String(self.sum)+String(number))! //написать функцию проверки длинны
+        self.sum = Int(String(self.sum)+number)! //написать функцию проверки длинны
         self.needToErase = false
     }
     
-    func onPressClear () -> Void {
+    func onPressClear (btn : String) -> Void {
         self.sum = 0
         self.memo = 0
         self.prevKey = ""
     }
     
-    func onPressBackspace () -> Void {
+    func onPressBackspace (btn : String) -> Void {
         let str = String(sum)
         self.sum = str.count > 1 ? Int(str.dropLast())! : 0
     }
