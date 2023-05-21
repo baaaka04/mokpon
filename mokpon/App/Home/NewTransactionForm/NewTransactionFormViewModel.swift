@@ -38,7 +38,9 @@ class NewTransactionViewModel : ObservableObject {
     
     func onPressDigit(number : String) -> Void {
         self.needToErase ? self.sum = 0 : nil
-        self.sum = Int(String(self.sum)+number)! //написать функцию проверки длинны
+        let prevNumber = self.sum
+        let newNumber = String(prevNumber) + number
+        self.sum = Int(newNumber) ?? prevNumber
         self.needToErase = false
     }
     
