@@ -17,20 +17,10 @@ class NewTransactionViewModel : ObservableObject {
     @Published var hotkeys : [[String]] = [[]]
     
     func fetchHotkeys() async -> Void {
-        let urlString = "http://212.152.40.222:50401/api/getFrequentTransactions"
-        guard let url = URL(string: urlString) else { return }
-        
-        // Sending GET request
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let resData = try JSONDecoder().decode([[String]].self, from: data)
-            self.hotkeys = resData
+        let fetchedData = await APIService.shared.fetchHotkeys()
+        await MainActor.run {
+            self.hotkeys = fetchedData
         }
-        catch {
-            print("error")
-            return
-        }
-        return
     }
         
     func onPressHotkey (hotkey: [String]) -> Void {
@@ -46,19 +36,21 @@ class NewTransactionViewModel : ObservableObject {
         }
     }
     
-    func onPressDigit(number : Int) -> Void {
+    func onPressDigit(number : String) -> Void {
         self.needToErase ? self.sum = 0 : nil
-        self.sum = Int(String(self.sum)+String(number))! //написать функцию проверки длинны
+        let prevNumber = self.sum
+        let newNumber = String(prevNumber) + number
+        self.sum = Int(newNumber) ?? prevNumber
         self.needToErase = false
     }
     
-    func onPressClear () -> Void {
+    func onPressClear (btn : String) -> Void {
         self.sum = 0
         self.memo = 0
         self.prevKey = ""
     }
     
-    func onPressBackspace () -> Void {
+    func onPressBackspace (btn : String) -> Void {
         let str = String(sum)
         self.sum = str.count > 1 ? Int(str.dropLast())! : 0
     }

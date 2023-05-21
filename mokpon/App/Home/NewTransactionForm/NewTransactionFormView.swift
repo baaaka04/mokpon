@@ -5,7 +5,7 @@ struct NewTransactionForm: View {
     
     @StateObject private var viewModel = NewTransactionViewModel()
 
-    var sendNewTransaction : (Transaction) -> Void
+    var sendNewTransaction : (Transaction) async -> Void
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -122,7 +122,7 @@ struct NewTransactionForm: View {
                     onPressClear: viewModel.onPressClear,
                     onPressBackspace: viewModel.onPressBackspace,
                     onSwipeUp: {
-                        sendNewTransaction(Transaction(category: viewModel.category ?? "", subCategory: viewModel.subCategory, type: viewModel.type, date: .now, sum: viewModel.sum))
+                        await sendNewTransaction(Transaction(category: viewModel.category ?? "", subCategory: viewModel.subCategory, type: viewModel.type, date: .now, sum: viewModel.sum))
                         presentationMode.wrappedValue.dismiss()
                     }
                 )

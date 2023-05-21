@@ -37,6 +37,7 @@
 		F75F90BA29C8A35400FAD621 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F90B929C8A35400FAD621 /* ChartsView.swift */; };
 		F75F90BC29CDE00A00FAD621 /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */; };
 		F78417C029DC4DE9002D1E24 /* ExpensesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78417BF29DC4DE9002D1E24 /* ExpensesListView.swift */; };
+		F78780502A0E6E4300244B91 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F787804F2A0E6E4300244B91 /* APIService.swift */; };
 		F789C06529BA12F7002FBBF7 /* HotkeysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F789C06429BA12F7002FBBF7 /* HotkeysView.swift */; };
 		F79018C129E93FC7001C231D /* ChartsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79018C029E93FC7001C231D /* ChartsViewModel.swift */; };
 		F79018C329E9416F001C231D /* ChartsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79018C229E9416F001C231D /* ChartsModel.swift */; };
@@ -45,6 +46,7 @@
 		F7EADA7929C5BDBD00B177C9 /* NavBarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EADA7829C5BDBD00B177C9 /* NavBarModel.swift */; };
 		F7EADA7B29C5C03600B177C9 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EADA7A29C5C03600B177C9 /* HomeView.swift */; };
 		F7EF4BAD2A014C680093DA82 /* NewTransactionFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EF4BAC2A014C680093DA82 /* NewTransactionFormViewModel.swift */; };
+		F7FE87A62A14987B005EF3D5 /* CalculatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FE87A52A14987B005EF3D5 /* CalculatorButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,11 +77,13 @@
 		F735AB30295494B9007DFBDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F73DD5E42A0A78B8001BCDAC /* AllTransactuionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTransactuionsView.swift; sourceTree = "<group>"; };
 		F74128C4298FEA98006D2A8B /* Currencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currencies.swift; sourceTree = "<group>"; };
+		F74E1BE82A110FC400CC7986 /* ButtonPressExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonPressExtension.swift; sourceTree = "<group>"; };
 		F754A44629D6F3E7004A61C8 /* PieSliceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieSliceView.swift; sourceTree = "<group>"; };
 		F754A44929D704D9004A61C8 /* PieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		F75F90B929C8A35400FAD621 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
 		F78417BF29DC4DE9002D1E24 /* ExpensesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesListView.swift; sourceTree = "<group>"; };
+		F787804F2A0E6E4300244B91 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		F789C06429BA12F7002FBBF7 /* HotkeysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeysView.swift; sourceTree = "<group>"; };
 		F79018C029E93FC7001C231D /* ChartsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsViewModel.swift; sourceTree = "<group>"; };
 		F79018C229E9416F001C231D /* ChartsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsModel.swift; sourceTree = "<group>"; };
@@ -88,6 +92,7 @@
 		F7EADA7829C5BDBD00B177C9 /* NavBarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarModel.swift; sourceTree = "<group>"; };
 		F7EADA7A29C5C03600B177C9 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F7EF4BAC2A014C680093DA82 /* NewTransactionFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTransactionFormViewModel.swift; sourceTree = "<group>"; };
+		F7FE87A52A14987B005EF3D5 /* CalculatorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +141,7 @@
 				F7130FA42A03875700972B10 /* Calculator */,
 				F708F6A229645E1B00E6E9FA /* Type+CategoryView.swift */,
 				F708F6A02964520100E6E9FA /* Keyboard.swift */,
+				F7FE87A52A14987B005EF3D5 /* CalculatorButton.swift */,
 				F789C06429BA12F7002FBBF7 /* HotkeysView.swift */,
 			);
 			path = Components;
@@ -183,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				F715D614295B3A1100B1177F /* ColorExtension.swift */,
+				F74E1BE82A110FC400CC7986 /* ButtonPressExtension.swift */,
 				F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */,
 			);
 			path = Extensions;
@@ -249,6 +256,7 @@
 			children = (
 				F719DC03294F0EA600DE1B8E /* mokponApp.swift */,
 				F719DC05294F0EA600DE1B8E /* ContentView.swift */,
+				F787804F2A0E6E4300244B91 /* APIService.swift */,
 				F7130FA92A03C5DE00972B10 /* NavBar */,
 				F7791CDA29E6DBA30089E1A6 /* Home */,
 				F7791CDF29E6DE350089E1A6 /* Charts */,
@@ -364,6 +372,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F75F90BA29C8A35400FAD621 /* ChartsView.swift in Sources */,
+				F78780502A0E6E4300244B91 /* APIService.swift in Sources */,
 				F708F68D295DCD0200E6E9FA /* TransactionView.swift in Sources */,
 				F7130FA62A03C3BC00972B10 /* HomeModel.swift in Sources */,
 				F73DD5E52A0A78B8001BCDAC /* AllTransactuionsView.swift in Sources */,
@@ -393,6 +402,7 @@
 				F78417C029DC4DE9002D1E24 /* ExpensesListView.swift in Sources */,
 				F719DC04294F0EA600DE1B8E /* mokponApp.swift in Sources */,
 				F7EF4BAD2A014C680093DA82 /* NewTransactionFormViewModel.swift in Sources */,
+				F7FE87A62A14987B005EF3D5 /* CalculatorButton.swift in Sources */,
 				F708F6A12964520100E6E9FA /* Keyboard.swift in Sources */,
 				F7130F9F2A02B34A00972B10 /* ExpenseModel.swift in Sources */,
 				F729732E29EC44090007D493 /* ChartsHeaderView.swift in Sources */,

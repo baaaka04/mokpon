@@ -34,10 +34,8 @@ struct HotkeysView: View {
                 }
             }
         }
-        .onAppear {
-            Task {
-                await fetchHotkeys()
-            }
+        .task {
+            await fetchHotkeys()
         }
     }
 }

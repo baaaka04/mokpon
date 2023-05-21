@@ -3,9 +3,9 @@ import SwiftUI
 struct TransactionListView: View {
     
     let transactions : [Transaction]
-    let fetchTransactions : () -> Void
+    let fetchTransactions : () async -> Void
     var isLoading : Bool
-        
+    
     var body: some View {
         //using Dictionary to group by date
         let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: transactions, by: { (element: Transaction) in
@@ -47,11 +47,9 @@ struct TransactionListView: View {
                 .listStyle(.plain)
             }
         }
-        .onAppear {
+        .task {
             //            fetch transactions only if it's the first appearance
-            if transactions.count == 0 {
-                fetchTransactions()
-            }
+            if transactions.count == 0 {await fetchTransactions()}
         }
     }
 }
@@ -63,6 +61,5 @@ struct TransactionListView_Previews: PreviewProvider {
             Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
             Transaction(category: "transport", subCategory: "taxi", type: .expense, date: Date(), sum: 150)
         ], fetchTransactions: HomeViewModel().fetchTransactions, isLoading: false)
-        .font(.custom("DMSans-Regular", size: 13))
     }
 }

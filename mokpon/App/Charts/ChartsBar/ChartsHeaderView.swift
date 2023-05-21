@@ -5,7 +5,7 @@ struct ChartsHeaderView: View {
     @Binding var chartDate : ChartsDate
     @Binding var compareData : Comparation
     var selectedChart : ChartSelected
-    var fetchData : () -> Void
+    var fetchData : () async -> Void
     
     var body: some View {
         HStack {
@@ -34,7 +34,9 @@ struct ChartsHeaderView: View {
                     
                     Button {
                         chartDate.decreaseMonth()
-                        fetchData()
+                        Task {
+                            await fetchData()
+                        }
                     } label: {
                         Image(systemName: "arrowtriangle.backward.fill")
                             .frame(maxWidth: .infinity)
@@ -46,7 +48,9 @@ struct ChartsHeaderView: View {
                     
                     Button {
                         chartDate.increaseMonth()
-                        fetchData()
+                        Task {
+                            await fetchData()
+                        }
                     } label: {
                         Image(systemName: "arrowtriangle.forward.fill")
                             .frame(maxWidth: .infinity)

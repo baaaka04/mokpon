@@ -43,7 +43,7 @@ struct Home: View {
                         }
                         .padding(.top)
                         TransactionListView(
-                            transactions: Array(vm.transactions[0...4]),
+                            transactions: vm.transactions.count < 5 ? vm.transactions : Array(vm.transactions[0...4]),
                             fetchTransactions: vm.fetchTransactions,
                             isLoading: vm.isLoading
                         )
@@ -56,8 +56,12 @@ struct Home: View {
                 .frame(minHeight: 1100)
             }
             .refreshable {
-                vm.fetchTransactions()
-                await vm.fetchCurrency()
+                Task {
+                    await vm.fetchTransactions()
+                }
+                Task {
+                    await vm.fetchCurrency()
+                }
             }
             
             

@@ -23,7 +23,7 @@ struct TransactionView : View {
                     Text("₽\(trans.sum)")
                         .onAppear {
                             //isLoading = true - добавить в функцию пагинации
-                            isLoading ? print("load data") : print("loading. pls wait")
+//                            isLoading ? print("load data") : print("loading. pls wait")
                             //isLoading = false - добавить в функцию пагинации
                         }
                 } else {

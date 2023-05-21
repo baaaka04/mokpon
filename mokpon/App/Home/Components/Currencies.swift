@@ -5,16 +5,14 @@ struct Currencies: View {
     var fetchCurrency : () async -> Void
     var usdrub : Double
     var usdkgs : Double
-        
+    
     var body: some View {
         HStack {
             Text("USD/RUB \(usdrub, specifier: "%.2f")  RUB/KGS \(usdkgs/usdrub, specifier: "%.2f")")
             Spacer()
         }
-        .onAppear {
-            Task {
-                await fetchCurrency()
-            }
+        .task {
+            await fetchCurrency()
         }
     }
 }
