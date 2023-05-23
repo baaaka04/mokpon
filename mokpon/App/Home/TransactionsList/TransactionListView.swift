@@ -36,10 +36,11 @@ struct TransactionListView: View {
                     } header : {
                         HStack{
                             Text(transGrouped.key.formatted(date: .abbreviated, time: .omitted))
-                                .font(.headline)
-                                .padding(.horizontal)
                             Spacer()
+                            Text("\(transGrouped.value.reduce(0, {acc, trans in acc + trans.sum})) ₽")
                         }
+                        .font(.headline)
+                        .padding(.horizontal)
                         .frame(height: 30)
                     }
                 }
