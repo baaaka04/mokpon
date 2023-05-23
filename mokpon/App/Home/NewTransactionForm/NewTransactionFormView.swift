@@ -71,9 +71,10 @@ struct NewTransactionForm: View {
                     HStack {
                         Text(viewModel.type != .income ? "-" : "")
                         Spacer()
-                        Text("₽ \(String(viewModel.sum))")
+                        Text("₽ \(viewModel.sum)")
                             .lineLimit(1)
                     }
+                    .minimumScaleFactor(0.3)
                     .padding(.vertical, 30)
                     .font(.custom("gothicb", size: 62))
 
