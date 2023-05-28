@@ -35,7 +35,9 @@ struct TransactionListView: View {
                         .onDelete(perform: {index in })
                     } header : {
                         HStack{
-                            Text(transGrouped.key.formatted(date: .abbreviated, time: .omitted))
+                            let date = transGrouped.key
+                            let dateCheck = Calendar.current
+                            Text(dateCheck.isDateInToday(date) ? "Today" : dateCheck.isDateInYesterday(date) ? "Yesterday" : date.formatted(date: .abbreviated, time: .omitted))
                             Spacer()
                             Text("\(transGrouped.value.reduce(0, {acc, trans in acc + trans.sum})) ₽")
                         }
