@@ -22,25 +22,22 @@ struct ContentView: View {
                             )
                         )
                         .frame(width: 700, height: 450)
-                        .position(x: 30, y: -90)
+                        .position(x: 30, y: -140)
                         .opacity(0.5)
                     
-                    Group {
-                        switch currentRoute {
-                        case .home:
-                            Home()
-                        case .charts:
-                            Charts()
-                        case .settings:
-                            VStack{
-                                Text("Settings")
-                                    .font(.title3.width(.expanded))
-                                    .foregroundColor(.white)
-                                Spacer()
-                            }                            
+                    switch currentRoute {
+                    case .home:
+                        Home()
+                    case .charts:
+                        Charts()
+                    case .settings:
+                        VStack{
+                            Text("Settings")
+                                .font(.title3.width(.expanded))
+                                .foregroundColor(.white)
+                            Spacer()
                         }
                     }
-                    .padding(.vertical, 30) //55 for dynamic island (30 for rest of screens).
                     VStack{
                         Spacer()
                         NavBarView(currentRoute: $currentRoute, size: geo.size)
@@ -48,7 +45,6 @@ struct ContentView: View {
                 }
                 
             }
-            .ignoresSafeArea()
             .background(Color.bg_main)
             .foregroundColor(.white)
         }
