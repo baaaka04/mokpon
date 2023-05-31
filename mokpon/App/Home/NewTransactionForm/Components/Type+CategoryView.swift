@@ -32,6 +32,7 @@ struct Type_CategoryView: View {
                     icon: {Image(systemName: "chevron.down")}
                 )
                 .font(.custom("DMSans-Regular", size: 10))
+                .padding(30)
                 .background(Image("Trapeze"))
             }
             .offset(y:35)
