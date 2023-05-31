@@ -12,7 +12,7 @@ struct ChartsHeaderView: View {
             VStack (alignment: .leading) {
                 Text("Expenses")
                     .font(.custom("DMSans-Regular", size: 20))
-                Text("\(DateFormatter().monthSymbols[chartDate.month-1].capitalized)'\(String(String(chartDate.year).dropFirst(2)))")
+                Text(getChartMonthName(year: chartDate.year, month: chartDate.month))
             }
             .foregroundColor(.white)
             

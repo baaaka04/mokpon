@@ -59,5 +59,7 @@ struct ChartsDate {
     }
 }
 
-
+func getChartMonthName (year: Int, month: Int) -> String {
+    return "\(DateFormatter().monthSymbols[month-1].capitalized)'\(String(String(year).dropFirst(2)))"
+}
 

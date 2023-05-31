@@ -14,8 +14,11 @@ struct BarChartView: View {
         } else {
             Chart {
                 ForEach (comparation == .monthly ? chartData.monthly : chartData.yearly) {databar in
+                    let year : Int = Int(databar.date.dropLast(3)) ?? 2023
+                    let month : Int = Int(databar.date.dropFirst(5)) ?? 12
+                    
                     BarMark(
-                        x: .value("Month", databar.date),
+                        x: .value("Month", getChartMonthName(year: year, month: month)),
                         y: .value("Rub", databar.sum)
                     )
                     .foregroundStyle(by: .value("Category", databar.category))
@@ -44,6 +47,12 @@ struct BarChartView: View {
 
 struct BarChartView_Previews: PreviewProvider {
     static var previews: some View {
-        BarChartView(comparation: .monthly, chartData: .init(monthly: [BarChartData](), yearly: [BarChartData]()), chartDataList: .init(monthly: [BarChartDatalist](), yearly: [BarChartDatalist]()), getTotals: {(a,b) in return [Int]()})
+        BarChartView(comparation: .monthly, chartData: .init(monthly: [
+            BarChartData(category: "test", sum: 22, date: "2022-04"),
+            BarChartData(category: "test2", sum: 223, date: "2022-04"),
+            BarChartData(category: "test", sum: 200, date: "2022-05"),
+            BarChartData(category: "test2", sum: 35, date: "2022-05")
+        ], yearly: [BarChartData]()), chartDataList: .init(monthly: [BarChartDatalist](), yearly: [BarChartDatalist]()), getTotals: {(a,b) in return [Int]()})
+        .background(.gray)
     }
 }
