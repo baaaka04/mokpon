@@ -77,7 +77,6 @@
 		F735AB30295494B9007DFBDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F73DD5E42A0A78B8001BCDAC /* AllTransactuionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTransactuionsView.swift; sourceTree = "<group>"; };
 		F74128C4298FEA98006D2A8B /* Currencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currencies.swift; sourceTree = "<group>"; };
-		F74E1BE82A110FC400CC7986 /* ButtonPressExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonPressExtension.swift; sourceTree = "<group>"; };
 		F754A44629D6F3E7004A61C8 /* PieSliceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieSliceView.swift; sourceTree = "<group>"; };
 		F754A44929D704D9004A61C8 /* PieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		F75F90B929C8A35400FAD621 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
@@ -189,7 +188,6 @@
 			isa = PBXGroup;
 			children = (
 				F715D614295B3A1100B1177F /* ColorExtension.swift */,
-				F74E1BE82A110FC400CC7986 /* ButtonPressExtension.swift */,
 				F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */,
 			);
 			path = Extensions;

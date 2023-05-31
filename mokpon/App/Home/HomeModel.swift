@@ -4,6 +4,9 @@ import SwiftUI
 enum ExpensesType {
     case income, expense, invest
 }
+enum Currency {
+    case RUB, KGS
+}
 
 struct Transaction : Hashable, Decodable {
     let id = UUID()

@@ -39,7 +39,17 @@ struct NewTransactionForm: View {
                     Text(viewModel.type != .income ? "-" : "")
                     Spacer()
                     HStack {
-                        Text("₽")
+                        switch viewModel.currency {
+                        case .KGS:
+                            Text("c").underline()
+                                .onTapGesture {
+                                    viewModel.currency = .RUB
+                                }
+                        case .RUB:
+                            Text("₽").onTapGesture {
+                                viewModel.currency = .KGS
+                            }
+                        }
                         Spacer()
                         Text("\(viewModel.sum)")
                             .lineLimit(1)

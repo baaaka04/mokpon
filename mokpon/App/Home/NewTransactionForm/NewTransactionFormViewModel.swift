@@ -6,6 +6,7 @@ class NewTransactionViewModel : ObservableObject {
     @Published var subCategory = ""
     @Published var category: String?
     @Published var type: ExpensesType = .expense
+    @Published var currency : Currency = .KGS
     
     //calculator
     @Published var memo : Int = 0
