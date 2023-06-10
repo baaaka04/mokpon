@@ -47,7 +47,7 @@ struct Charts: View {
                         let sortedPieData = viewModel.chartDataList.monthly.sorted { a, b in a.curSum > b.curSum }
                         PieChartView(
                             values: sortedPieData.map({ expense in Double(expense.curSum) }),
-                            colors: [.blue, .green, .orange, .red, .yellow, .cyan, .mint, .pink, .teal, .brown, .purple, .black],
+                            colors: Color.palette,
                             names: sortedPieData.map{ $0.category},
                             backgroundColor: .gray
                         )
@@ -68,7 +68,8 @@ struct Charts: View {
                     ? viewModel.chartDataList.monthly
                     : viewModel.chartDataList.yearly,
                     chartType: viewModel.selectedChart,
-                    chartDate: viewModel.chartDate
+                    chartDate: viewModel.chartDate,
+                    isClickable: viewModel.selectedChart == .pie ? true : false
                 )
                 
             }

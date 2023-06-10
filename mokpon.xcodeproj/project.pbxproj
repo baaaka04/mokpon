@@ -41,6 +41,9 @@
 		F789C06529BA12F7002FBBF7 /* HotkeysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F789C06429BA12F7002FBBF7 /* HotkeysView.swift */; };
 		F79018C129E93FC7001C231D /* ChartsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79018C029E93FC7001C231D /* ChartsViewModel.swift */; };
 		F79018C329E9416F001C231D /* ChartsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79018C229E9416F001C231D /* ChartsModel.swift */; };
+		F79971912A2B9B0F001FEED3 /* SubcategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79971902A2B9B0F001FEED3 /* SubcategoryView.swift */; };
+		F79971932A2C9FF2001FEED3 /* SubcategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79971922A2C9FF2001FEED3 /* SubcategoryViewModel.swift */; };
+		F79971952A2D052A001FEED3 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79971942A2D052A001FEED3 /* StringExtension.swift */; };
 		F7EADA7529C46DF200B177C9 /* CalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EADA7429C46DF200B177C9 /* CalculatorView.swift */; };
 		F7EADA7729C5BCA500B177C9 /* NavBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EADA7629C5BCA500B177C9 /* NavBarView.swift */; };
 		F7EADA7929C5BDBD00B177C9 /* NavBarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EADA7829C5BDBD00B177C9 /* NavBarModel.swift */; };
@@ -86,6 +89,9 @@
 		F789C06429BA12F7002FBBF7 /* HotkeysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeysView.swift; sourceTree = "<group>"; };
 		F79018C029E93FC7001C231D /* ChartsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsViewModel.swift; sourceTree = "<group>"; };
 		F79018C229E9416F001C231D /* ChartsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsModel.swift; sourceTree = "<group>"; };
+		F79971902A2B9B0F001FEED3 /* SubcategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubcategoryView.swift; sourceTree = "<group>"; };
+		F79971922A2C9FF2001FEED3 /* SubcategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubcategoryViewModel.swift; sourceTree = "<group>"; };
+		F79971942A2D052A001FEED3 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		F7EADA7429C46DF200B177C9 /* CalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorView.swift; sourceTree = "<group>"; };
 		F7EADA7629C5BCA500B177C9 /* NavBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarView.swift; sourceTree = "<group>"; };
 		F7EADA7829C5BDBD00B177C9 /* NavBarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarModel.swift; sourceTree = "<group>"; };
@@ -121,6 +127,8 @@
 			children = (
 				F78417BF29DC4DE9002D1E24 /* ExpensesListView.swift */,
 				F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */,
+				F79971902A2B9B0F001FEED3 /* SubcategoryView.swift */,
+				F79971922A2C9FF2001FEED3 /* SubcategoryViewModel.swift */,
 				F7130F9E2A02B34A00972B10 /* ExpenseModel.swift */,
 			);
 			path = ExpensesList;
@@ -188,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				F715D614295B3A1100B1177F /* ColorExtension.swift */,
+				F79971942A2D052A001FEED3 /* StringExtension.swift */,
 				F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */,
 			);
 			path = Extensions;
@@ -380,8 +389,10 @@
 				F754A44729D6F3E7004A61C8 /* PieSliceView.swift in Sources */,
 				F7130FA12A02B55E00972B10 /* BarChartView.swift in Sources */,
 				F7130F9B2A02A18900972B10 /* DictionaryExtension.swift in Sources */,
+				F79971952A2D052A001FEED3 /* StringExtension.swift in Sources */,
 				F754A44A29D704D9004A61C8 /* PieChartView.swift in Sources */,
 				F719DC06294F0EA600DE1B8E /* ContentView.swift in Sources */,
+				F79971932A2C9FF2001FEED3 /* SubcategoryViewModel.swift in Sources */,
 				F79018C129E93FC7001C231D /* ChartsViewModel.swift in Sources */,
 				F708F691295DDB5900E6E9FA /* AddButton.swift in Sources */,
 				F75F90BC29CDE00A00FAD621 /* ExpenseView.swift in Sources */,
@@ -397,6 +408,7 @@
 				F74128C5298FEA98006D2A8B /* Currencies.swift in Sources */,
 				F7130F992A0297D600972B10 /* PieChart.swift in Sources */,
 				F715D615295B3A1100B1177F /* ColorExtension.swift in Sources */,
+				F79971912A2B9B0F001FEED3 /* SubcategoryView.swift in Sources */,
 				F78417C029DC4DE9002D1E24 /* ExpensesListView.swift in Sources */,
 				F719DC04294F0EA600DE1B8E /* mokponApp.swift in Sources */,
 				F7EF4BAD2A014C680093DA82 /* NewTransactionFormViewModel.swift in Sources */,

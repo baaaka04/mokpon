@@ -48,11 +48,11 @@ struct BarChartView: View {
 struct BarChartView_Previews: PreviewProvider {
     static var previews: some View {
         BarChartView(comparation: .monthly, chartData: .init(monthly: [
-            BarChartData(category: "test", sum: 22, date: "2022-04"),
-            BarChartData(category: "test2", sum: 223, date: "2022-04"),
-            BarChartData(category: "test", sum: 200, date: "2022-05"),
-            BarChartData(category: "test2", sum: 35, date: "2022-05")
-        ], yearly: [BarChartData]()), chartDataList: .init(monthly: [BarChartDatalist](), yearly: [BarChartDatalist]()), getTotals: {(a,b) in return [Int]()})
+            ChartData(category: "test", sum: 22, date: "2022-04"),
+            ChartData(category: "test2", sum: 223, date: "2022-04"),
+            ChartData(category: "test", sum: 200, date: "2022-05"),
+            ChartData(category: "test2", sum: 35, date: "2022-05")
+        ], yearly: [ChartData]()), chartDataList: .init(monthly: [ChartDatalist](), yearly: [ChartDatalist]()), getTotals: {(a,b) in return [Int]()})
         .background(.gray)
     }
 }

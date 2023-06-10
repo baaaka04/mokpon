@@ -9,24 +9,24 @@ enum Comparation {
 }
 // API communication
 struct APIChartsResponse : Decodable{
-    let barChartDatalist : ComparationList
-    let barChartData : ComparationChart
+    let chartDatalist : ComparationList
+    let chartData : ComparationChart
 }
 struct ComparationChart : Decodable {
-    let monthly : [BarChartData]
-    let yearly : [BarChartData]
+    let monthly : [ChartData]
+    let yearly : [ChartData]
 }
 struct ComparationList : Decodable {
-    let monthly : [BarChartDatalist]
-    let yearly : [BarChartDatalist]
+    let monthly : [ChartDatalist]
+    let yearly : [ChartDatalist]
 }
-struct BarChartData : Decodable, Identifiable {
+struct ChartData : Decodable, Identifiable {
     let id = UUID()
     let category : String
     let sum : Int
     let date : String
 }
-struct BarChartDatalist : Decodable, Identifiable {
+struct ChartDatalist : Decodable, Identifiable {
     let id = UUID()
     let category : String
     let prevSum : Int

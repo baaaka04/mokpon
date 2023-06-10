@@ -2,8 +2,8 @@ import Foundation
 
 class ChartsViewModel : ObservableObject {
     
-    @Published var chartData = ComparationChart(monthly: [BarChartData](), yearly: [BarChartData]())
-    @Published var chartDataList = ComparationList(monthly: [BarChartDatalist](), yearly: [BarChartDatalist]())
+    @Published var chartData = ComparationChart(monthly: [ChartData](), yearly: [ChartData]())
+    @Published var chartDataList = ComparationList(monthly: [ChartDatalist](), yearly: [ChartDatalist]())
     
     @Published var selectedChart : ChartSelected = .bar
     @Published var compareData : Comparation = .monthly
@@ -31,8 +31,8 @@ class ChartsViewModel : ObservableObject {
     func fetchChartsData () async -> Void {
         let fetchedData = await APIService.shared.fetchChartsData(month: String(chartDate.month), year: String(chartDate.year))
         await MainActor.run {
-            self.chartData = fetchedData.barChartData
-            self.chartDataList = fetchedData.barChartDatalist
+            self.chartData = fetchedData.chartData
+            self.chartDataList = fetchedData.chartDatalist
         }
     }
         

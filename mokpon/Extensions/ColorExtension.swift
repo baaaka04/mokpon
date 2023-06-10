@@ -9,5 +9,7 @@ extension Color {
     static let addbutton_main = Color("MainAddButtonColor")
     static let addbutton_secondary = Color("SecondAddButtonColor")
     static let expense_type = Color("ExpenseTypeColor")
+    
+    static let palette : [Color] = [.blue, .green, .orange, .red, .yellow, .cyan, .mint, .pink, .teal, .brown, .purple, .black]
 }
 

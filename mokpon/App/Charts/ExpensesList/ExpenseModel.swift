@@ -6,3 +6,9 @@ struct ExpenseData {
     let subtitle : String
     let number : String
 }
+
+struct ExpenseDataPie {
+    let title : String
+    let subtitle : ChartsDate
+    let number : String
+}
