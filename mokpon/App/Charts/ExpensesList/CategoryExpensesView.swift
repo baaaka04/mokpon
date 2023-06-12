@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SubcategoryView: View {
+struct CategoryExpensesView: View {
     
     var viewData : [ChartDatalist]
     var date : ChartsDate
@@ -37,7 +37,7 @@ struct SubcategoryView: View {
 
 struct SubcategoryView_Previews: PreviewProvider {
     static var previews: some View {
-        SubcategoryView(viewData:
+        CategoryExpensesView(viewData:
             [
             .init(category: "здоровая пища", prevSum: 0, curSum: 140),
             .init(category: "всячина", prevSum: 0, curSum: 70),

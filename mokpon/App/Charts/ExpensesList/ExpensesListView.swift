@@ -12,7 +12,7 @@ struct ExpensesListView: View {
     
     var body: some View {
         
-        VStack{
+        VStack (spacing: 10) {
             HStack {
                 switch self.chartType {
                 case .bar:
@@ -28,11 +28,13 @@ struct ExpensesListView: View {
             case .bar:
                 ForEach(0..<self.listData.count, id: \.self) { i in
                     ExpenseView(expenseBarData: self.listData[i], isClickable: self.isClickable, expenseDate: self.chartDate)
+                        .padding(.horizontal)
                 }
             case .pie:
                 ForEach(0..<self.pieChartDatalist.count, id: \.self) { i in
                     if pieChartDatalist[i].curSum != 0 {
                         ExpenseView(expensePieData: pieChartDatalist[i], isClickable: self.isClickable, expenseDate: self.chartDate)
+                            .padding(.horizontal)
                     }
                 }
             }

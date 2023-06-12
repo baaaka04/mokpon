@@ -1,7 +1,7 @@
 import Foundation
 
 
-class SubcategoryViewModel : ObservableObject {
+class СategoryExpensesViewModel : ObservableObject {
     
     @Published var categoryExpenses : [ChartDatalist] = [
         .init(category: "здоровая пища", prevSum: 0, curSum: 140),

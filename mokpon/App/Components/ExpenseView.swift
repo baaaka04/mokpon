@@ -2,13 +2,17 @@ import SwiftUI
 
 struct ExpenseView : View {
     
-    var viewData : ExpenseData
-    var expense : ChartDatalist
-    var expenseDate : ChartsDate
+    @StateObject var viewModel = СategoryExpensesViewModel()
+    @State var showCategoryExpenses : Bool = false
     
-    @State var isSubcategoryShowed : Bool = false
-    @StateObject var viewModel = SubcategoryViewModel()
-    var isClickable : Bool
+    var viewData : ExpenseData // data to render
+    
+    var expense : ChartDatalist? // data to get
+    var expenseDate : ChartsDate // data to get
+    var isClickable : Bool // data to get
+    var isLast : Bool? // data to get
+    var isLoading : Bool? // data to get
+    
     
     init(expenseBarData: ChartDatalist, isClickable: Bool, expenseDate: ChartsDate) {
         self.expense = expenseBarData
@@ -21,6 +25,7 @@ struct ExpenseView : View {
         var percent : Int = 0
         if prevSum != 0 { percent = Int(((Double(curSum) / Double(prevSum)) - 1.0) * 100.0) }
         self.viewData = ExpenseData(
+            systemImageName: expenseBarData.category,
             title: expenseBarData.category,
             subtitle: "₽ \(diff.formatted())",
             number: String(percent) + "%"
@@ -33,16 +38,31 @@ struct ExpenseView : View {
         self.expenseDate = expenseDate
 
         self.viewData = ExpenseData(
+            systemImageName: expensePieData.category,
             title: expensePieData.category,
             subtitle: "\(DateFormatter().monthSymbols[expenseDate.month-1].capitalized) \(expenseDate.year)",
             number: "₽ \(expensePieData.curSum.formatted())"
         )
     }
     
+    init(transaction: Transaction, isLast: Bool, isLoading: Bool) {
+        self.expenseDate = .init(month: 1, year: 2000)
+        self.isClickable = false
+        self.isLast = isLast
+        self.isLoading = isLoading
+        
+        self.viewData = ExpenseData(
+            systemImageName: transaction.category,
+            title: transaction.subCategory,
+            subtitle: transaction.date.formatted(.dateTime.day().month().year()),
+            number: "₽ \(transaction.sum)"
+        )
+    }
+        
     var body: some View {
         
         HStack (alignment: .center) {
-            Image(systemName: categories[viewData.title] ?? "questionmark")
+            Image(systemName: categories[viewData.systemImageName] ?? "questionmark")
                 .frame(width: 50, height: 50)
                 .background(.gray.opacity(0.4))
                 .clipShape(Circle())
@@ -53,7 +73,16 @@ struct ExpenseView : View {
             Spacer()
             
             VStack{
-                Text(viewData.number)
+                if self.isLast ?? false {
+                    Text(viewData.number)
+                        .onAppear {
+                            //isLoading = true - добавить в функцию пагинации
+//                            isLoading ? print("load data") : print("loading. pls wait")
+                            //isLoading = false - добавить в функцию пагинации
+                        }
+                } else {
+                    Text(viewData.number)
+                }
             }
             .frame(width: 90, height: 44)
             .overlay(
@@ -62,11 +91,10 @@ struct ExpenseView : View {
             )
         }
         .padding()
-        .frame(width: 350, height: 80)
         .background(Color.bg_main)
         .cornerRadius(20)
-        .popover(isPresented: $isSubcategoryShowed) {
-            SubcategoryView(viewData: viewModel.categoryExpenses, date: expenseDate)
+        .popover(isPresented: $showCategoryExpenses) {
+            CategoryExpensesView(viewData: viewModel.categoryExpenses, date: expenseDate)
         }
         .onTapGesture {
             Task {
@@ -76,7 +104,7 @@ struct ExpenseView : View {
     }
     
     func openSubcategoryView () async -> Void {
-        isSubcategoryShowed = true
+        showCategoryExpenses = true
         await viewModel.getCategoryExpenses(category: viewData.title, monthYear: expenseDate)
         
     }

@@ -27,7 +27,7 @@ struct TransactionListView: View {
                 List (transactionsInArray, id: \.element.key) { (index, transGrouped) in
                     Section {
                         ForEach (transGrouped.value, id: \.self.id) { item in
-                            TransactionView(trans: item, isLast: index == transactionsInArray.count - 1, isLoading: isLoading)
+                            ExpenseView(transaction: item, isLast: index == transactionsInArray.count - 1, isLoading: isLoading)
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Rectangle().background(.clear).padding())
