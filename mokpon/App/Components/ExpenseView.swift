@@ -94,7 +94,7 @@ struct ExpenseView : View {
         .background(Color.bg_main)
         .cornerRadius(20)
         .popover(isPresented: $showCategoryExpenses) {
-            CategoryExpensesView(viewData: viewModel.categoryExpenses, date: expenseDate)
+            CategoryExpensesView(viewData: viewModel.categoryExpenses, date: expenseDate, title: viewData.title)
         }
         .onTapGesture {
             Task {

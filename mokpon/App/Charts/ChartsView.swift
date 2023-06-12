@@ -16,7 +16,6 @@ struct Charts: View {
         VStack{
             Text("Charts")
                 .font(.title3.width(.expanded))
-                .foregroundColor(.white)
             
             ChartsNavBarView(chartType: $viewModel.selectedChart)
             
@@ -81,6 +80,7 @@ struct Charts: View {
 struct Charts_Previews: PreviewProvider {
     static var previews: some View {
         Charts()
+            .foregroundColor(.white)
             .frame(maxHeight: .infinity)
             .background(Color.bg_main)
     }

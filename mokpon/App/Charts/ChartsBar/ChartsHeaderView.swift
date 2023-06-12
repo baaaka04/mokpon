@@ -14,7 +14,6 @@ struct ChartsHeaderView: View {
                     .font(.custom("DMSans-Regular", size: 20))
                 Text(getChartMonthName(year: chartDate.year, month: chartDate.month))
             }
-            .foregroundColor(.white)
             
             Spacer()
             VStack {

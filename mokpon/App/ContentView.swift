@@ -34,7 +34,6 @@ struct ContentView: View {
                         VStack{
                             Text("Settings")
                                 .font(.title3.width(.expanded))
-                                .foregroundColor(.white)
                             Spacer()
                         }
                     }
