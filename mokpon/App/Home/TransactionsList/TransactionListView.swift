@@ -5,6 +5,9 @@ struct TransactionListView: View {
     let transactions : [Transaction]
     let fetchTransactions : () async -> Void
     var isLoading : Bool
+    var setupSearching : (_ isSearching: Bool) -> Void
+    
+    @Environment(\.isSearching) private var isSearching
     
     var body: some View {
         //using Dictionary to group by date
@@ -21,6 +24,7 @@ struct TransactionListView: View {
             if transactions.count == 0 {
                 VStack (alignment: .center) {
                     ProgressView()
+                        .frame(maxWidth: .infinity)
                 }
                 .frame(maxHeight: .infinity)
             } else {
@@ -48,6 +52,10 @@ struct TransactionListView: View {
                 }
                 .environment(\.defaultMinListRowHeight, 100)
                 .listStyle(.plain)
+                //pass child's searching status to viewModel
+                .onChange(of: isSearching, perform: { newValue in
+                    setupSearching(newValue)
+                })
             }
         }
         .task {
@@ -63,6 +71,6 @@ struct TransactionListView_Previews: PreviewProvider {
             Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
             Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
             Transaction(category: "transport", subCategory: "taxi", type: .expense, date: Date(), sum: 150)
-        ], fetchTransactions: HomeViewModel().fetchTransactions, isLoading: false)
+        ], fetchTransactions: HomeViewModel().fetchTransactions, isLoading: false, setupSearching: {x in })
     }
 }

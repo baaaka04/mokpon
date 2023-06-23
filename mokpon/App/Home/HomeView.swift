@@ -34,10 +34,14 @@ struct Home: View {
                             .foregroundColor(Color.accentColor)
                             .popover(isPresented: $vm.showAllTransactions) {
                                 AllTransactuionsView (
-                                    transactions: vm.transactions,
+                                    transactions: vm.isSearching ? vm.filteredTransactions : vm.transactions,
                                     fetchTransactions: vm.fetchTransactions,
                                     isLoading: vm.isLoading,
-                                    showView: $vm.showAllTransactions
+                                    showView: $vm.showAllTransactions,
+                                    scopes: vm.allSearchScopes,
+                                    searchText: $vm.searchtext,
+                                    searchScope: $vm.searchScope,
+                                    setupSearching: vm.setupSearching
                                 )
                             }
                         }
@@ -45,7 +49,8 @@ struct Home: View {
                         TransactionListView(
                             transactions: vm.transactions.count < 5 ? vm.transactions : Array(vm.transactions[0...4]),
                             fetchTransactions: vm.fetchTransactions,
-                            isLoading: vm.isLoading
+                            isLoading: vm.isLoading,
+                            setupSearching: { isSearching in  }
                         )
                     }
                     .padding(.horizontal)

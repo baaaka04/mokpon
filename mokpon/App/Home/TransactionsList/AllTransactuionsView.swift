@@ -7,49 +7,67 @@ struct AllTransactuionsView: View {
     var isLoading : Bool
     @Binding var showView : Bool
     
-    let columns: [GridItem] = [
-        GridItem(.flexible(), spacing: nil, alignment: .leading),
-        GridItem(.flexible(), spacing: nil, alignment: .center),
-        GridItem(.flexible(), spacing: nil, alignment: .trailing),
-    ]
-
+    //searching
+    let scopes : [String]
+    @Binding var searchText : String
+    @Binding var searchScope : String
+    var setupSearching : (_ isSearching: Bool) -> Void
+    
+    
     var body: some View {
-        ZStack {
-            Color.bg_main
-            VStack {
-                LazyVGrid (columns: columns) {
-                    
-                    Button("Cancel") {
-                        showView = false
+        NavigationStack {
+            ZStack {
+                Color.bg_main
+                VStack {
+                    TransactionListView(
+                        transactions: transactions,
+                        fetchTransactions: fetchTransactions,
+                        isLoading: isLoading,
+                        setupSearching: setupSearching
+                    )
+                    .toolbar {
+                        ToolbarItem (placement: .cancellationAction) {
+                            Button("Close") {
+                                showView = false
+                            }.foregroundColor(Color.accentColor)
+                        }
+                        ToolbarItem (placement: .principal) {
+                            Text("All transactions")
+                        }
                     }
-                    .font(.custom("DMSans-Regular", size: 16))
-                    Text("All Transactions")
-                        .font(.custom("DMSans-Regular", size: 20))
-                        .frame(width: 160)
-                        .foregroundColor(.white)
-                    Image(systemName: "magnifyingglass")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbarBackground(Color(#colorLiteral(red: 0.1137254902, green: 0.1098039216, blue: 0.2235294118, alpha: 1)), for: .navigationBar)
+                    .toolbarBackground(.visible, for: .navigationBar)
+                    .searchable(text: $searchText, placement: .automatic)
+                    .searchScopes($searchScope, activation: .onSearchPresentation, {
+                        ForEach(scopes, id: \.self) { scope in
+                            Text(scope.capitalized)
+                        }
+                    })
                 }
-                .foregroundColor(Color.accentColor)
-                
-                TransactionListView(
-                    transactions: transactions,
-                    fetchTransactions: fetchTransactions,
-                    isLoading: isLoading
-                )
+                    .padding()
+                    .foregroundColor(.init(white: 0.87))
+                    .background(Color.bg_transactions)
             }
-            .padding()
-            .foregroundColor(.init(white: 0.87))
-            .background(Color.bg_transactions)
         }
     }
 }
 
 struct AllTransactuionsView_Previews: PreviewProvider {
     static var previews: some View {
-        AllTransactuionsView(transactions: [
-            Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
-            Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
-            Transaction(category: "transport", subCategory: "taxi", type: .expense, date: Date(), sum: 150)
-        ], fetchTransactions: HomeViewModel().fetchTransactions, isLoading: false, showView: .constant(true))
+        AllTransactuionsView(
+            transactions: [
+                Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
+                Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
+                Transaction(category: "transport", subCategory: "taxi", type: .expense, date: Date(), sum: 150)
+            ],
+            fetchTransactions: HomeViewModel().fetchTransactions,
+            isLoading: false,
+            showView: .constant(true),
+            scopes: ["All", "питание", "здоровье"],
+            searchText: .constant(""),
+            searchScope: .constant("All"),
+            setupSearching: { isSearching in  }
+        )
     }
 }
