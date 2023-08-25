@@ -3,6 +3,8 @@ import SwiftUI
 
 struct Type_CategoryView: View {
     
+    @EnvironmentObject var viewModel : DirectoriesManager
+    
     @Binding var selection: String?
     @Binding var type: ExpensesType
     
@@ -15,16 +17,14 @@ struct Type_CategoryView: View {
         ZStack{
 //Categories
             Menu {
-                ForEach(Array(categories.keys), id: \.self) { cat in
-                    Button {selection = cat}
-                label: {
-                    Label(title: {Text(cat)}, icon: {Image(systemName: categories[cat] ?? "questionmark")})}
+                ForEach(viewModel.categories) { cat in
+                    Button {
+                        selection = cat.name
+                        type = cat.type
+                    } label: {
+                        Label { Text(cat.name) } icon: { Image(systemName: cat.icon)  }
+                    }
                 }
-                //Extra button for investment type of expenses
-                Button {
-                    selection = "прочее"
-                    type = .invest
-                } label: {Label("инвест", systemImage: "i.circle")}
                 
             } label: {
                 Label(

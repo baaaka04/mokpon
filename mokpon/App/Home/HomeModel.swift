@@ -1,11 +1,8 @@
 import Foundation
 import SwiftUI
 
-enum ExpensesType {
+enum ExpensesType : String, Codable {
     case income, expense, invest
-}
-enum Currency {
-    case RUB, KGS
 }
 
 struct Transaction : Hashable, Decodable {
@@ -37,20 +34,6 @@ struct TransactionToJSON : Encodable{
     let date : String
     let sum : String
 }
-let categories : [String: String] = [
-    "питание": "cart",
-    "транспорт": "bus.fill",
-    "здоровье": "cross",
-    "ЖКХ": "house",
-    "одежда": "tshirt",
-    "развлечения": "party.popper",
-    "подарки": "gift",
-    "бытовуха": "stove",
-    "интернет и связь": "wifi",
-    "прочее": "questionmark",
-    "животные": "pawprint.fill",
-    "доход": "dollarsign"
-]
 
 // CurrencyModel ----------------
 struct Rates: Decodable, Encodable {

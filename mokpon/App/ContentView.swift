@@ -3,6 +3,8 @@ import SwiftUI
 struct ContentView: View {
     
     @State var currentRoute: Route = .home
+    @Binding var showSignInView: Bool
+    @StateObject var directiriesViewModel = DirectoriesManager()
     
     var body: some View {
         NavigationView {
@@ -31,11 +33,7 @@ struct ContentView: View {
                     case .charts:
                         Charts()
                     case .settings:
-                        VStack{
-                            Text("Settings")
-                                .font(.title3.width(.expanded))
-                            Spacer()
-                        }
+                        SettingsView(showSingInView: $showSignInView)
                     }
                     VStack{
                         Spacer()
@@ -47,12 +45,13 @@ struct ContentView: View {
             .background(Color.bg_main)
             .foregroundColor(.white)
         }
+        .environmentObject(directiriesViewModel)
     }
 }
 
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(showSignInView: .constant(true))
     }
 }

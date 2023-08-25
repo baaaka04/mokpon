@@ -4,13 +4,20 @@ import SwiftUI
 struct NewTransactionForm: View {
     
     @StateObject private var viewModel = NewTransactionViewModel()
+    @EnvironmentObject var directoriesViewModel : DirectoriesManager
     
     var sendNewTransaction : (Transaction) async -> Void
     
     @Environment(\.presentationMode) var presentationMode
     
+    func switchCurrency (currencies : [Currency], currentInd: Int) -> (Currency?, Int) {
+        if currencies.count == 0 {return (nil, 0)}
+        let newValue = currentInd + Int(1)
+        let newInd = newValue % currencies.count
+        return (currencies[newValue], newInd)
+    }
+            
     var body: some View {
-        
         VStack {
             
             HStack{
@@ -39,17 +46,13 @@ struct NewTransactionForm: View {
                     Text(viewModel.type != .income ? "-" : "")
                     Spacer()
                     HStack {
-                        switch viewModel.currency {
-                        case .KGS:
-                            Text("c").underline()
-                                .onTapGesture {
-                                    viewModel.currency = .RUB
-                                }
-                        case .RUB:
-                            Text("₽").onTapGesture {
-                                viewModel.currency = .KGS
+                        //Currency
+                        Text(viewModel.currency?.symbol ?? "n/a")
+                            .onTapGesture {
+                                let (currency, ind) = switchCurrency(currencies: directoriesViewModel.currencies, currentInd: viewModel.currentCurrencyInd)
+                                viewModel.currentCurrencyInd = ind
+                                viewModel.currency = currency
                             }
-                        }
                         Spacer()
                         Text("\(viewModel.sum)")
                             .lineLimit(1)
@@ -137,6 +140,9 @@ struct NewTransactionForm: View {
                 .opacity(0.3)
         )
         .background(Color.bg_main.ignoresSafeArea())
+        .onAppear {
+            viewModel.currency = directoriesViewModel.currencies[0]
+        }
     }
 }
 

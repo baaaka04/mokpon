@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ExpenseView : View {
     
+    @EnvironmentObject var directoriesManager : DirectoriesManager //all categories from db
     @StateObject var viewModel = СategoryExpensesViewModel()
     @State var showCategoryExpenses : Bool = false
     
@@ -13,7 +14,7 @@ struct ExpenseView : View {
     var isLast : Bool? // data to get
     var isLoading : Bool? // data to get
     
-    
+    //BarChart initializer
     init(expenseBarData: ChartDatalist, isClickable: Bool, expenseDate: ChartsDate) {
         self.expense = expenseBarData
         self.isClickable = isClickable
@@ -25,26 +26,26 @@ struct ExpenseView : View {
         var percent : Int = 0
         if prevSum != 0 { percent = Int(((Double(curSum) / Double(prevSum)) - 1.0) * 100.0) }
         self.viewData = ExpenseData(
-            systemImageName: expenseBarData.category,
+            category: expenseBarData.category,
             title: expenseBarData.category,
             subtitle: "₽ \(diff.formatted())",
             number: String(percent) + "%"
         )
     }
-    
+    //PieChart initializer
     init(expensePieData: ChartDatalist, isClickable: Bool, expenseDate: ChartsDate) {
         self.expense = expensePieData
         self.isClickable = isClickable
         self.expenseDate = expenseDate
 
         self.viewData = ExpenseData(
-            systemImageName: expensePieData.category,
+            category: expensePieData.category,
             title: expensePieData.category,
             subtitle: "\(DateFormatter().monthSymbols[expenseDate.month-1].capitalized) \(expenseDate.year)",
             number: "₽ \(expensePieData.curSum.formatted())"
         )
     }
-    
+    //Simple transaction view initializer
     init(transaction: Transaction, isLast: Bool, isLoading: Bool) {
         self.expenseDate = .init(month: 1, year: 2000)
         self.isClickable = false
@@ -52,17 +53,17 @@ struct ExpenseView : View {
         self.isLoading = isLoading
         
         self.viewData = ExpenseData(
-            systemImageName: transaction.category,
+            category: transaction.category,
             title: transaction.subCategory,
             subtitle: transaction.date.formatted(.dateTime.day().month().year()),
             number: "₽ \(transaction.sum)"
         )
     }
-        
+            
     var body: some View {
         
         HStack (alignment: .center) {
-            Image(systemName: categories[viewData.systemImageName] ?? "questionmark")
+            Image(systemName: directoriesManager.getCategory(byName: viewData.category)?.icon ?? "questionmark")
                 .frame(width: 50, height: 50)
                 .background(.gray.opacity(0.4))
                 .clipShape(Circle())
