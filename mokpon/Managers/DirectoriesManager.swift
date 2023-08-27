@@ -6,11 +6,13 @@ import FirebaseFirestoreSwift
 final class DirectoriesManager : ObservableObject {
         
     @Published var categories : [Category] = []
-    @Published var currencies : [Currency] = []
+    @Published var currencies : [Currency]? = nil
     
     init () {
         Task {
             self.categories = try await getAllCategories()
+        }
+        Task {
             self.currencies = try await getAllCurrencies()
         }
     }
@@ -23,9 +25,7 @@ final class DirectoriesManager : ObservableObject {
     }
     
     private func getAllCurrencies () async throws -> [Currency] {
-        let result = try await currenciesCollection.getDocuments(as: Currency.self)
-        print(result)
-        return result
+        try await currenciesCollection.getDocuments(as: Currency.self)
     }
     
     func getCategory (byName name: String) -> Category? {

@@ -3,7 +3,7 @@ import SwiftUI
 
 struct CalculatorView: View {
     
-    var onPressOperationButton : (_ key: String) -> Void
+    var onPressOperationButton : @MainActor(_ key: String) -> Void
     
     var body: some View {
         

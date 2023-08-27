@@ -2,7 +2,9 @@ import Foundation
 import SwiftUI
 
 enum ExpensesType : String, Codable {
-    case income, expense, invest
+    case income = "доход"
+    case expense = "опер"
+    case invest = "инвест"
 }
 
 struct Transaction : Hashable, Decodable {

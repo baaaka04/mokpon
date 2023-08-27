@@ -14,9 +14,9 @@ struct Home: View {
                     DebitCard()
                     
                     Currencies(
-                        fetchCurrency: vm.fetchCurrency,
-                        usdrub: vm.currencies.RUB,
-                        usdkgs: vm.currencies.KGS
+                        fetchCurrencyRates: vm.fetchCurrencyRates,
+                        usdrub: vm.currencyRates.RUB,
+                        usdkgs: vm.currencyRates.KGS
                     )
                     .padding(.horizontal, 40)
                     .padding(.vertical, 10)
@@ -65,7 +65,7 @@ struct Home: View {
                     await vm.fetchTransactions()
                 }
                 Task {
-                    await vm.fetchCurrency()
+                    await vm.fetchCurrencyRates()
                 }
             }
             

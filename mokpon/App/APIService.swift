@@ -4,7 +4,7 @@ class APIService {
     
     static let shared = APIService()
     
-    func fetchHotkeys() async -> [[String]] {
+    func fetchHotkeys() async throws -> [[String]] {
         guard let url = URL(string: "http://212.152.40.222:50401/api/getFrequentTransactions") else { return [[]] }
         
         // Sending GET request
@@ -72,7 +72,7 @@ class APIService {
         }
     }
     
-    func fetchCurrency () async -> Rates {
+    func fetchCurrencyRates () async -> Rates {
         guard let url = URL(string: "https://economia.awesomeapi.com.br/last/USD-RUB,USD-KGS") else { return Rates(KGS: 90, RUB: 120) }
         
         // Setting HTTP-Request Headers

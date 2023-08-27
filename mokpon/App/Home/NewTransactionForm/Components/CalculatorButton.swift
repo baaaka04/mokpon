@@ -10,20 +10,20 @@ struct CalculatorButton: View {
     var text : String = ""
     var action : String = "="
     var size : CGFloat = 70
-    let onPress : (_ btn : String) -> Void
+    let onPress : @MainActor(_ btn : String) -> Void
     let symbol : Symbol
     
-    init(onPress: @escaping (_: String) -> Void, text: String) {
+    init(onPress: @escaping @MainActor(_: String) -> Void, text: String) {
         self.onPress = onPress
         self.symbol = .text
         self.text = text
     }
-    init(onPress: @escaping (_: String) -> Void, systemImage: String) {
+    init(onPress: @escaping @MainActor(_: String) -> Void, systemImage: String) {
         self.onPress = onPress
         self.symbol = .image
         self.text = systemImage
     }
-    init(onPress: @escaping (_: String) -> Void, calcButtonName: OperationKey) {
+    init(onPress: @escaping @MainActor(_: String) -> Void, calcButtonName: OperationKey) {
         self.onPress = onPress
         self.symbol = .calcButton
         self.text = calcButtonName.iconName

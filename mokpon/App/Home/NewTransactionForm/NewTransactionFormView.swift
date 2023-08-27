@@ -3,7 +3,7 @@ import SwiftUI
 
 struct NewTransactionForm: View {
     
-    @StateObject private var viewModel = NewTransactionViewModel()
+    @ObservedObject var viewModel = NewTransactionViewModel()
     @EnvironmentObject var directoriesViewModel : DirectoriesManager
     
     var sendNewTransaction : (Transaction) async -> Void
@@ -14,7 +14,7 @@ struct NewTransactionForm: View {
         if currencies.count == 0 {return (nil, 0)}
         let newValue = currentInd + Int(1)
         let newInd = newValue % currencies.count
-        return (currencies[newValue], newInd)
+        return (currencies[newInd], newInd)
     }
             
     var body: some View {
@@ -46,12 +46,20 @@ struct NewTransactionForm: View {
                     Text(viewModel.type != .income ? "-" : "")
                     Spacer()
                     HStack {
-                        //Currency
+                        //CurrencyView
                         Text(viewModel.currency?.symbol ?? "n/a")
+                            .onAppear {
+                                let currencyInd = UserDefaults.standard.integer(forKey: "currencyIndex")
+                                viewModel.currency = directoriesViewModel.currencies?[currencyInd]
+                                viewModel.currentCurrencyInd = currencyInd
+                            }
                             .onTapGesture {
-                                let (currency, ind) = switchCurrency(currencies: directoriesViewModel.currencies, currentInd: viewModel.currentCurrencyInd)
-                                viewModel.currentCurrencyInd = ind
-                                viewModel.currency = currency
+                                if let currencies = directoriesViewModel.currencies {
+                                    let (newCurrency, newInd) = switchCurrency(currencies: currencies, currentInd: viewModel.currentCurrencyInd)
+                                    viewModel.currentCurrencyInd = newInd
+                                    viewModel.currency = newCurrency
+                                    UserDefaults.standard.set(newInd, forKey: "currencyIndex")
+                                }
                             }
                         Spacer()
                         Text("\(viewModel.sum)")
@@ -103,8 +111,11 @@ struct NewTransactionForm: View {
                 onPressClear: viewModel.onPressClear,
                 onPressBackspace: viewModel.onPressBackspace,
                 onSwipeUp: {
-                    await sendNewTransaction(Transaction(category: viewModel.category ?? "", subCategory: viewModel.subCategory, type: viewModel.type, date: .now, sum: viewModel.sum))
-                    presentationMode.wrappedValue.dismiss()
+                    Task {
+                        try await viewModel.sendNewTransactionFirebase()
+                        await sendNewTransaction(Transaction(category: viewModel.category?.name ?? "", subCategory: viewModel.subCategory, type: viewModel.type, date: .now, sum: viewModel.sum))
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 }
             )
             .font(.system(size: 32))
@@ -140,9 +151,6 @@ struct NewTransactionForm: View {
                 .opacity(0.3)
         )
         .background(Color.bg_main.ignoresSafeArea())
-        .onAppear {
-            viewModel.currency = directoriesViewModel.currencies[0]
-        }
     }
 }
 

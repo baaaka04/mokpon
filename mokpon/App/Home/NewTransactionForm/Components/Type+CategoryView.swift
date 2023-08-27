@@ -5,7 +5,7 @@ struct Type_CategoryView: View {
     
     @EnvironmentObject var viewModel : DirectoriesManager
     
-    @Binding var selection: String?
+    @Binding var selection: Category?
     @Binding var type: ExpensesType
     
     let columns: [GridItem] = [
@@ -19,7 +19,7 @@ struct Type_CategoryView: View {
             Menu {
                 ForEach(viewModel.categories) { cat in
                     Button {
-                        selection = cat.name
+                        selection = cat
                         type = cat.type
                     } label: {
                         Label { Text(cat.name) } icon: { Image(systemName: cat.icon)  }
@@ -28,7 +28,7 @@ struct Type_CategoryView: View {
                 
             } label: {
                 Label(
-                    title: {Text("\(selection ?? "Category")")},
+                    title: {Text("\(selection?.name ?? "Category")")},
                     icon: {Image(systemName: "chevron.down")}
                 )
                 .font(.custom("DMSans-Regular", size: 10))

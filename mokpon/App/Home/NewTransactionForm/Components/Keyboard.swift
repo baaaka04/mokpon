@@ -2,9 +2,9 @@ import SwiftUI
 
 struct Keyboard: View {
     
-    let onPressDigit: (_ number: String) -> Void
-    let onPressClear: (_ btn: String) -> Void
-    let onPressBackspace: (_ btn: String) -> Void
+    let onPressDigit: @MainActor(_ number: String) -> Void
+    let onPressClear: @MainActor(_ btn: String) -> Void
+    let onPressBackspace: @MainActor(_ btn: String) -> Void
     let onSwipeUp: () async -> Void
     
     let columns: [GridItem] = [

@@ -1,11 +1,12 @@
 import Foundation
 import Combine
 
+@MainActor
 final class HomeViewModel : ObservableObject {
     
     @Published var transactions : [Transaction] = []
     @Published var filteredTransactions : [Transaction] = []
-    @Published var currencies = Rates(KGS: 85.1, RUB: 75.1)
+    @Published var currencyRates = Rates(KGS: 85.1, RUB: 75.1)
     @Published var showAllTransactions = false
     var isLoading : Bool = false
     @Published var searchtext : String = ""
@@ -75,10 +76,10 @@ final class HomeViewModel : ObservableObject {
         }
     }
     
-    func fetchCurrency () async -> Void {
-        let fetchedData = await APIService.shared.fetchCurrency()
+    func fetchCurrencyRates () async -> Void {
+        let fetchedData = await APIService.shared.fetchCurrencyRates()
         await MainActor.run {
-            self.currencies = fetchedData
+            self.currencyRates = fetchedData
         }
     }
     

@@ -17,7 +17,8 @@ final class SettingsViewModel : ObservableObject {
         
         let authDataResult = try await AuthenticationManager.shared.createUser(email: email, password: password)
         let user = DBUser(auth: authDataResult)
-        try await UserManager.shared.createNewUser(user: user)    }
+        try await UserManager.shared.createNewUser(user: user)
+    }
     
     func signIn () async throws {
         guard !email.isEmpty, !password.isEmpty else {

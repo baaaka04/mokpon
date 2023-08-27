@@ -34,6 +34,7 @@
 		F754A44729D6F3E7004A61C8 /* PieSliceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F754A44629D6F3E7004A61C8 /* PieSliceView.swift */; };
 		F754A44A29D704D9004A61C8 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F754A44929D704D9004A61C8 /* PieChartView.swift */; };
 		F75F77502A98E35E00C658F1 /* FireStoreQueryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */; };
+		F75F77522A9A0B9100C658F1 /* TransactionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77512A9A0B9100C658F1 /* TransactionManager.swift */; };
 		F75F90BA29C8A35400FAD621 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F90B929C8A35400FAD621 /* ChartsView.swift */; };
 		F75F90BC29CDE00A00FAD621 /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */; };
 		F7696C782A8A6E61003239E0 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = F7696C772A8A6E61003239E0 /* GoogleSignIn */; };
@@ -102,6 +103,7 @@
 		F754A44629D6F3E7004A61C8 /* PieSliceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieSliceView.swift; sourceTree = "<group>"; };
 		F754A44929D704D9004A61C8 /* PieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreQueryExtension.swift; sourceTree = "<group>"; };
+		F75F77512A9A0B9100C658F1 /* TransactionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionManager.swift; sourceTree = "<group>"; };
 		F75F90B929C8A35400FAD621 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
 		F7696C7C2A8A7192003239E0 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
@@ -264,9 +266,9 @@
 			children = (
 				F7791CD929E6D3420089E1A6 /* App */,
 				F7696C7B2A8A7180003239E0 /* Utilities */,
+				F7696C872A8FA0CD003239E0 /* Managers */,
 				F735AB2F2954928C007DFBDA /* Fonts */,
 				F715D616295B3A1C00B1177F /* Extensions */,
-				F7696C872A8FA0CD003239E0 /* Managers */,
 				F735AB30295494B9007DFBDA /* Info.plist */,
 				F719DC07294F0EA700DE1B8E /* Assets.xcassets */,
 				F7E42C892A7A8E2E004E0BDE /* GoogleService-Info.plist */,
@@ -325,6 +327,7 @@
 				F7E42C982A7A9757004E0BDE /* AuthenticationManager.swift */,
 				F7696C892A8FA144003239E0 /* UserManager.swift */,
 				F7696C902A924D09003239E0 /* DirectoriesManager.swift */,
+				F75F77512A9A0B9100C658F1 /* TransactionManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -513,6 +516,7 @@
 				F729732C29EC40C50007D493 /* ChartsNavBarView.swift in Sources */,
 				F754A44729D6F3E7004A61C8 /* PieSliceView.swift in Sources */,
 				F7130FA12A02B55E00972B10 /* BarChartView.swift in Sources */,
+				F75F77522A9A0B9100C658F1 /* TransactionManager.swift in Sources */,
 				F7130F9B2A02A18900972B10 /* DictionaryExtension.swift in Sources */,
 				F75F77502A98E35E00C658F1 /* FireStoreQueryExtension.swift in Sources */,
 				F79971952A2D052A001FEED3 /* StringExtension.swift in Sources */,

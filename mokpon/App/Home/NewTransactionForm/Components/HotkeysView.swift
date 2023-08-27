@@ -2,7 +2,9 @@ import SwiftUI
 
 struct HotkeysView: View {
     
-    let onPressHotkey: (_ hotkey: [String]) -> Void
+    @EnvironmentObject var directiriesVM : DirectoriesManager
+    
+    let onPressHotkey: @MainActor(_ category: Category, _ subcategory: String) -> Void
     var hotkeys : [[String]]?
     var fetchHotkeys : () async -> Void
     
@@ -15,14 +17,13 @@ struct HotkeysView: View {
     
     var body: some View {
         Group {
-            if hotkeys?[0].count == 0 {
-                ProgressView("Loading...").tint(.white).frame(maxWidth: .infinity)
-            } else {
+            if let hotkeys, hotkeys[0].count != 0 {
                 LazyVGrid(columns: HTcolumns, alignment: .center, spacing: 5) {
-                    ForEach(hotkeys!, id: \.self) { item in
+                    ForEach(hotkeys, id: \.self) { item in
                         Button(
                             action: {
-                                onPressHotkey(item)
+                                if let category = directiriesVM.getCategory(byName: item[0]) {
+                                    onPressHotkey(category, item[1])}
                             },
                             label: { Text(item[1])
                                     .frame(maxWidth: 50, maxHeight: 27)
@@ -32,6 +33,8 @@ struct HotkeysView: View {
                         )
                     }
                 }
+            } else {
+                ProgressView("Loading...").tint(.white).frame(maxWidth: .infinity)
             }
         }
         .task {
@@ -42,7 +45,7 @@ struct HotkeysView: View {
 
 struct HotkeysView_Previews: PreviewProvider {
     static var previews: some View {
-        HotkeysView(onPressHotkey: {s in return}, hotkeys: [["питание","здоровая пища","опер"],["развлечения","прочее","опер"],["питание","всячина","опер"],["прочее","ат баши","опер"],["питание","кафе","опер"],["транспорт","такси","опер"],["транспорт","автобус","опер"],["ЖКХ","жкх","опер"]], fetchHotkeys: {})
+        HotkeysView(onPressHotkey: {s,y in return}, hotkeys: [["питание","здоровая пища","опер"],["развлечения","прочее","опер"],["питание","всячина","опер"],["прочее","ат баши","опер"],["питание","кафе","опер"],["транспорт","такси","опер"],["транспорт","автобус","опер"],["ЖКХ","жкх","опер"]], fetchHotkeys: {})
             .frame(maxHeight: .infinity)
             .background(.black)
     }

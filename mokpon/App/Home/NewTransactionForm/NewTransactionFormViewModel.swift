@@ -1,41 +1,45 @@
 import Foundation
+import SwiftUI
 
-
-class NewTransactionViewModel : ObservableObject {
+@MainActor
+final class NewTransactionViewModel : ObservableObject {
     @Published var sum : Int = 0
     @Published var subCategory = ""
-    @Published var category: String?
+    @Published var category: Category?
     @Published var type: ExpensesType = .expense
     @Published var currency : Currency? = nil
     @Published var currentCurrencyInd : Int = 0
+    @Published var hotkeys : [[String]]? = nil
     
     //calculator
     @Published var memo : Int = 0
     @Published var prevKey : String = "="
     @Published var isCalcVisible : Bool = false
     @Published var needToErase = false
-    //calculator
     
-    @Published var hotkeys : [[String]] = [[]]
+    // Firebase POST request
+    func sendNewTransactionFirebase () async throws {
+        let user = try AuthenticationManager.shared.getAuthenticatedUser()
+        try await TransactionManager.shared.createNewTransaction(
+            categoryId: category?.id ?? "n/a",
+            subcategory: subCategory,
+            type: type.rawValue,
+            date: Date(),
+            sum: sum,
+            currencyId: currency?.id ?? "n/a",
+            userId: user.uid
+        )
+    }
     
     func fetchHotkeys() async -> Void {
-        let fetchedData = await APIService.shared.fetchHotkeys()
-        await MainActor.run {
-            self.hotkeys = fetchedData
-        }
+        let fetchedData = try? await APIService.shared.fetchHotkeys()
+        self.hotkeys = fetchedData
     }
         
-    func onPressHotkey (hotkey: [String]) -> Void {
-        self.category = hotkey[0]
-        self.subCategory = hotkey[1]
-        switch hotkey[2] {
-        case "доход":
-            self.type = .income
-        case "инвест":
-            self.type = .invest
-        default:
-            self.type = .expense
-        }
+    func onPressHotkey (category: Category, subcategory: String) -> Void {
+        self.category = category
+        self.subCategory = subcategory
+        self.type = category.type
     }
     
     func onPressDigit(number : String) -> Void {
