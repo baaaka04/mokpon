@@ -2,7 +2,7 @@ import SwiftUI
 
 struct HotkeysView: View {
     
-    @EnvironmentObject var directiriesVM : DirectoriesManager
+    @EnvironmentObject var globalVM : GlobalViewModel
     
     let onPressHotkey: @MainActor(_ category: Category, _ subcategory: String) -> Void
     var hotkeys : [[String]]?
@@ -22,7 +22,7 @@ struct HotkeysView: View {
                     ForEach(hotkeys, id: \.self) { item in
                         Button(
                             action: {
-                                if let category = directiriesVM.getCategory(byName: item[0]) {
+                                if let category = DirectoriesManager.shared.getCategory( byName: item[0]) {
                                     onPressHotkey(category, item[1])}
                             },
                             label: { Text(item[1])

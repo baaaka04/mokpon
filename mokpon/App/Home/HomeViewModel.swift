@@ -4,7 +4,7 @@ import Combine
 @MainActor
 final class HomeViewModel : ObservableObject {
     
-    @Published var transactions : [Transaction] = []
+    @Published var transactions : [Transaction]? = nil
     @Published var filteredTransactions : [Transaction] = []
     @Published var currencyRates = Rates(KGS: 85.1, RUB: 75.1)
     @Published var showAllTransactions = false
@@ -34,21 +34,23 @@ final class HomeViewModel : ObservableObject {
     }
     
     private func filterTransactions (searchText: String, currentSearchScope: String) {
-        
+        guard let transactions else {return}
         var transactionsInScope = transactions
         switch currentSearchScope {
         case "All":
             break
         default:
-            transactionsInScope = transactions.filter({ $0.category.lowercased() == currentSearchScope.lowercased()
+            transactionsInScope = transactions.filter({ trans in
+                guard let category = trans.category else {return false}
+                return category.name.lowercased() == currentSearchScope.lowercased()
             })
         }
         
         let search = searchText.lowercased()
         filteredTransactions = transactionsInScope.filter({ transaction in
-            guard !searchText.isEmpty else { return true }
-            let categoryContainsSearch = transaction.category.lowercased().contains(search)
-            let subCategoryContainsSearch = transaction.subCategory.lowercased().contains(search)
+            guard !searchText.isEmpty, let category = transaction.category?.name else { return true }
+            let categoryContainsSearch = category.lowercased().contains(search)
+            let subCategoryContainsSearch = transaction.subcategory.lowercased().contains(search)
             return categoryContainsSearch || subCategoryContainsSearch
         })
     }
@@ -58,29 +60,23 @@ final class HomeViewModel : ObservableObject {
         // wait code
         isLoading = false
     }
-//     GET Request /transactions route
-    func fetchTransactions () async -> Void {
-        let fetchedData = await APIService.shared.fetchTransactions()
-        await MainActor.run {
-            self.transactions = fetchedData
-            allSearchScopes = ["All"] + Set(fetchedData.map({ $0.category })).map({ $0 })
-        }
-        self.isLoading = false
-    }
-    
-//    POST Request /newRow route
-    func sendNewTransaction (trans: Transaction) async -> Void {
-        let fetchedData = await APIService.shared.sendNewTransaction(trans: trans)
-        await MainActor.run {
-            self.transactions = fetchedData
+// GET Request from Firebase DB
+    func getLastTransactions() {
+        Task {
+            let FBTransactions = try await TransactionManager.shared.getLastNTransactions(limit: 20)
+            let fetchedTransactions = FBTransactions.map { trans in Transaction(DBTransaction: trans)}
+            self.transactions = fetchedTransactions
+            self.allSearchScopes = ["All"] + Set (fetchedTransactions.compactMap { $0.category?.name })
+            print("new transactions loaded!")
         }
     }
     
-    func fetchCurrencyRates () async -> Void {
-        let fetchedData = await APIService.shared.fetchCurrencyRates()
-        await MainActor.run {
+    func fetchCurrencyRates () -> Void {
+        Task {
+            let fetchedData = await APIService.shared.fetchCurrencyRates()
             self.currencyRates = fetchedData
         }
     }
     
 }
+

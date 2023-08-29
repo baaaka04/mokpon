@@ -2,11 +2,11 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-@MainActor
-final class DirectoriesManager : ObservableObject {
-        
-    @Published var categories : [Category] = []
-    @Published var currencies : [Currency]? = nil
+final class DirectoriesManager {
+    var categories : [Category]? = nil
+    var currencies : [Currency]? = nil
+
+    static let shared = DirectoriesManager()
     
     init () {
         Task {
@@ -16,21 +16,34 @@ final class DirectoriesManager : ObservableObject {
             self.currencies = try await getAllCurrencies()
         }
     }
-    
+        
     private let categoriesCollection = Firestore.firestore().collection("categories") //if there is no collection in db, it will be created
     private let currenciesCollection = Firestore.firestore().collection("currencies")
     
-    private func getAllCategories () async throws -> [Category] {
+    func getAllCategories () async throws -> [Category] {
         try await categoriesCollection.getDocuments(as: Category.self)
     }
     
-    private func getAllCurrencies () async throws -> [Currency] {
+    func getAllCurrencies () async throws -> [Currency] {
         try await currenciesCollection.getDocuments(as: Currency.self)
     }
     
-    func getCategory (byName name: String) -> Category? {
-        self.categories.first { $0.name == name }
+    func getCategory(byName name: String) -> Category? {
+        guard let categories else {return nil}
+        return categories.first { $0.name == name }
     }
+    
+    func getCategory (byID id: String) -> Category? {
+        guard let categories else {return nil}
+        return categories.first { $0.id == id }
+    }
+    
+    func getCurrency(byID id: String) -> Currency? {
+        guard let currencies else {return nil}
+        return currencies.first { $0.id == id }
+    }
+
+
 }
 
 struct Category : Codable, Identifiable {

@@ -7,7 +7,6 @@ struct mokponApp: App {
         
     var body: some Scene {
         WindowGroup {
-//            ContentView()
             RootView()
         }
     }

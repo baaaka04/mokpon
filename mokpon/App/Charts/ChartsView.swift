@@ -59,7 +59,7 @@ struct Charts: View {
                 .cornerRadius(10)
                 .padding(.horizontal, 20)
                 .task {
-                    await viewModel.fetchChartsData()
+//                    fetchChartsData async function
                 }
                 
                 ExpensesListView(

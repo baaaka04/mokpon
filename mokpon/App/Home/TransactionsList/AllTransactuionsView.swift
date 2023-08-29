@@ -2,8 +2,8 @@ import SwiftUI
 
 struct AllTransactuionsView: View {
     
-    let transactions : [Transaction]
-    let fetchTransactions : () async -> Void
+    let transactions : [Transaction]?
+    let fetchTransactions : @MainActor() -> ()
     var isLoading : Bool
     @Binding var showView : Bool
     
@@ -11,7 +11,7 @@ struct AllTransactuionsView: View {
     let scopes : [String]
     @Binding var searchText : String
     @Binding var searchScope : String
-    var setupSearching : (_ isSearching: Bool) -> Void
+    var setupSearching : @MainActor(_ isSearching: Bool) -> Void
     
     
     var body: some View {
@@ -56,12 +56,8 @@ struct AllTransactuionsView: View {
 struct AllTransactuionsView_Previews: PreviewProvider {
     static var previews: some View {
         AllTransactuionsView(
-            transactions: [
-                Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
-                Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
-                Transaction(category: "transport", subCategory: "taxi", type: .expense, date: Date(), sum: 150)
-            ],
-            fetchTransactions: HomeViewModel().fetchTransactions,
+            transactions: nil,
+            fetchTransactions: {},
             isLoading: false,
             showView: .constant(true),
             scopes: ["All", "питание", "здоровье"],

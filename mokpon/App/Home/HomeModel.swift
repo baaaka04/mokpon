@@ -7,35 +7,30 @@ enum ExpensesType : String, Codable {
     case invest = "инвест"
 }
 
-struct Transaction : Hashable, Decodable {
-    let id = UUID()
-    let category : String
-    let subCategory : String
-    let type : String
+struct Transaction {
+    let id : String
+    let category : Category?
+    let subcategory : String
     let date : Date
     let sum : Int
+    let currency : Currency?
+    let type : ExpensesType
     
-    init(category: String, subCategory: String, type: ExpensesType, date: Date, sum: Int) {
+    init(DBTransaction: DBTransaction) {
+        self.id = DBTransaction.id
+        self.subcategory = DBTransaction.subcategory
+        self.date = DBTransaction.date
+        self.sum = DBTransaction.sum
+        
+        let category = DirectoriesManager.shared.getCategory(byID: DBTransaction.categoryId)
+        let currency = DirectoriesManager.shared.getCurrency(byID: DBTransaction.currencyId)
+        
         self.category = category
-        self.subCategory = subCategory
-        
-        switch type {
-        case .expense: self.type = "опер"
-        case .income: self.type = "доход"
-        case .invest: self.type = "инвест"
-        }
-        
-        self.date = date
-        self.sum = sum
+        self.currency = currency
+        self.type = DBTransaction.type
     }
 }
-struct TransactionToJSON : Encodable{
-    let category : String
-    let subCategory : String
-    let opex : String
-    let date : String
-    let sum : String
-}
+
 
 // CurrencyModel ----------------
 struct Rates: Decodable, Encodable {

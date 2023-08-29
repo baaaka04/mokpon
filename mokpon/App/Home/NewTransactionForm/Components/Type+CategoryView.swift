@@ -3,7 +3,7 @@ import SwiftUI
 
 struct Type_CategoryView: View {
     
-    @EnvironmentObject var viewModel : DirectoriesManager
+    @EnvironmentObject var viewModel : GlobalViewModel
     
     @Binding var selection: Category?
     @Binding var type: ExpensesType
@@ -17,7 +17,7 @@ struct Type_CategoryView: View {
         ZStack{
 //Categories
             Menu {
-                ForEach(viewModel.categories) { cat in
+                ForEach(viewModel.categories ?? []) { cat in
                     Button {
                         selection = cat
                         type = cat.type

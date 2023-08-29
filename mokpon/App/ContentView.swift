@@ -4,7 +4,7 @@ struct ContentView: View {
     
     @State var currentRoute: Route = .home
     @Binding var showSignInView: Bool
-    @StateObject var directiriesViewModel = DirectoriesManager()
+    @StateObject var globalViewModel = GlobalViewModel()
     
     var body: some View {
         NavigationView {
@@ -45,7 +45,7 @@ struct ContentView: View {
             .background(Color.bg_main)
             .foregroundColor(.white)
         }
-        .environmentObject(directiriesViewModel)
+        .environmentObject(globalViewModel)
     }
 }
 

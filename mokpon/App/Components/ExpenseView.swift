@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ExpenseView : View {
     
-    @EnvironmentObject var directoriesManager : DirectoriesManager //all categories from db
+    @EnvironmentObject var globalViewModel : GlobalViewModel //all categories from db
     @StateObject var viewModel = СategoryExpensesViewModel()
     @State var showCategoryExpenses : Bool = false
     
@@ -26,7 +26,7 @@ struct ExpenseView : View {
         var percent : Int = 0
         if prevSum != 0 { percent = Int(((Double(curSum) / Double(prevSum)) - 1.0) * 100.0) }
         self.viewData = ExpenseData(
-            category: expenseBarData.category,
+            categoryIcon: expenseBarData.category,
             title: expenseBarData.category,
             subtitle: "₽ \(diff.formatted())",
             number: String(percent) + "%"
@@ -39,7 +39,7 @@ struct ExpenseView : View {
         self.expenseDate = expenseDate
 
         self.viewData = ExpenseData(
-            category: expensePieData.category,
+            categoryIcon: expensePieData.category,
             title: expensePieData.category,
             subtitle: "\(DateFormatter().monthSymbols[expenseDate.month-1].capitalized) \(expenseDate.year)",
             number: "₽ \(expensePieData.curSum.formatted())"
@@ -51,19 +51,19 @@ struct ExpenseView : View {
         self.isClickable = false
         self.isLast = isLast
         self.isLoading = isLoading
-        
+
         self.viewData = ExpenseData(
-            category: transaction.category,
-            title: transaction.subCategory,
+            categoryIcon: transaction.category?.icon,
+            title: transaction.subcategory,
             subtitle: transaction.date.formatted(.dateTime.day().month().year()),
-            number: "₽ \(transaction.sum)"
+            number: "\(transaction.sum)\(transaction.currency?.symbol ?? "")"
         )
     }
             
     var body: some View {
         
         HStack (alignment: .center) {
-            Image(systemName: directoriesManager.getCategory(byName: viewData.category)?.icon ?? "questionmark")
+            Image(systemName: viewData.categoryIcon ?? "questionmark")
                 .frame(width: 50, height: 50)
                 .background(.gray.opacity(0.4))
                 .clipShape(Circle())

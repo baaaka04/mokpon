@@ -2,41 +2,41 @@ import SwiftUI
 
 struct TransactionListView: View {
     
-    let transactions : [Transaction]
-    let fetchTransactions : () async -> Void
+    let transactions : [Transaction]?
+    let fetchTransactions : @MainActor() -> ()
     var isLoading : Bool
-    var setupSearching : (_ isSearching: Bool) -> Void
+    var setupSearching : @MainActor(_ isSearching: Bool) -> Void
+    var transactionLimit : Int? = nil
     
     @Environment(\.isSearching) private var isSearching
     
-    var body: some View {
-        //using Dictionary to group by date
-        let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: transactions, by: { (element: Transaction) in
-            return element.date
+    func transformTransactions (trans: [Transaction], limit: Int?) -> [EnumeratedSequence<Array<Dictionary<Date, [Transaction]>.Element>>.Element] {
+        var arr = trans
+        if let limit {arr = Array(trans[0..<limit])}
+        let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: arr, by: { (element: Transaction) in
+            return Calendar.current.startOfDay(for: element.date)
         })
         //we need an array to define the last group
         //enumerate - to be able using index
-        let transactionsInArray = Array(transactionsByDate.sorted(by: {(a, b) in return b.key < a.key }))
+        return Array(transactionsByDate.sorted(by: {(a, b) in return b.key < a.key }))
             .enumerated()
             .sorted{$1.element.key < $0.element.key}
+    }
+    
+    var body: some View {
         
         VStack {
-            if transactions.count == 0 {
-                VStack (alignment: .center) {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                }
-                .frame(maxHeight: .infinity)
-            } else {
-                List (transactionsInArray, id: \.element.key) { (index, transGrouped) in
+            if let transactions {
+                
+                List (transformTransactions(trans: transactions, limit: transactionLimit), id: \.element.key) { (index, transGrouped) in
                     Section {
                         ForEach (transGrouped.value, id: \.self.id) { item in
-                            ExpenseView(transaction: item, isLast: index == transactionsInArray.count - 1, isLoading: isLoading)
+                            ExpenseView(transaction: item, isLast: index == transactions.count - 1, isLoading: isLoading)
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Rectangle().background(.clear).padding())
                         }
-                        .onDelete(perform: {index in })
+                        //                        .onDelete(perform: {index in })
                     } header : {
                         HStack{
                             let date = transGrouped.key
@@ -56,21 +56,25 @@ struct TransactionListView: View {
                 .onChange(of: isSearching, perform: { newValue in
                     setupSearching(newValue)
                 })
+            } else {
+                VStack (alignment: .center) {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                }
+                .frame(maxHeight: .infinity)
             }
+            
         }
         .task {
-            //            fetch transactions only if it's the first appearance
-            if transactions.count == 0 {await fetchTransactions()}
+            fetchTransactions()
         }
     }
 }
 
 struct TransactionListView_Previews: PreviewProvider {
     static var previews: some View {
-        TransactionListView(transactions: [
-            Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
-            Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
-            Transaction(category: "transport", subCategory: "taxi", type: .expense, date: Date(), sum: 150)
-        ], fetchTransactions: HomeViewModel().fetchTransactions, isLoading: false, setupSearching: {x in })
+        TransactionListView(
+            transactions: [],
+            fetchTransactions: {}, isLoading: false, setupSearching: {x in }, transactionLimit: 6)
     }
 }

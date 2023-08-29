@@ -35,7 +35,7 @@ struct Home: View {
                             .popover(isPresented: $vm.showAllTransactions) {
                                 AllTransactuionsView (
                                     transactions: vm.isSearching ? vm.filteredTransactions : vm.transactions,
-                                    fetchTransactions: vm.fetchTransactions,
+                                    fetchTransactions: vm.getLastTransactions,
                                     isLoading: vm.isLoading,
                                     showView: $vm.showAllTransactions,
                                     scopes: vm.allSearchScopes,
@@ -47,10 +47,11 @@ struct Home: View {
                         }
                         .padding(.top)
                         TransactionListView(
-                            transactions: vm.transactions.count < 5 ? vm.transactions : Array(vm.transactions[0...4]),
-                            fetchTransactions: vm.fetchTransactions,
+                            transactions: vm.transactions,
+                            fetchTransactions: vm.getLastTransactions,
                             isLoading: vm.isLoading,
-                            setupSearching: { isSearching in  }
+                            setupSearching: { isSearching in  },
+                            transactionLimit: 5 //show only last 5 transactions
                         )
                     }
                     .padding(.horizontal)
@@ -61,12 +62,8 @@ struct Home: View {
                 .frame(minHeight: 1100)
             }
             .refreshable {
-                Task {
-                    await vm.fetchTransactions()
-                }
-                Task {
-                    await vm.fetchCurrencyRates()
-                }
+                vm.getLastTransactions()
+                vm.fetchCurrencyRates()
             }
             
             
@@ -77,7 +74,7 @@ struct Home: View {
                     Spacer()
                     NavigationLink(
                         destination:
-                            NewTransactionForm(sendNewTransaction: vm.sendNewTransaction)
+                            NewTransactionForm()
                             .navigationBarHidden(true),
                         label: {
                             AddButton()

@@ -4,10 +4,8 @@ import SwiftUI
 struct NewTransactionForm: View {
     
     @ObservedObject var viewModel = NewTransactionViewModel()
-    @EnvironmentObject var directoriesViewModel : DirectoriesManager
-    
-    var sendNewTransaction : (Transaction) async -> Void
-    
+    @EnvironmentObject var globalViewModel : GlobalViewModel
+        
     @Environment(\.presentationMode) var presentationMode
     
     func switchCurrency (currencies : [Currency], currentInd: Int) -> (Currency?, Int) {
@@ -46,15 +44,15 @@ struct NewTransactionForm: View {
                     Text(viewModel.type != .income ? "-" : "")
                     Spacer()
                     HStack {
-                        //CurrencyView
+                        //CurrencySwitcherView
                         Text(viewModel.currency?.symbol ?? "n/a")
                             .onAppear {
-                                let currencyInd = UserDefaults.standard.integer(forKey: "currencyIndex")
-                                viewModel.currency = directoriesViewModel.currencies?[currencyInd]
+                                let currencyInd = UserDefaults.standard.integer(forKey: "currencyIndex") //returns 0 if there's no value for the key
+                                viewModel.currency = globalViewModel.currencies?[currencyInd]
                                 viewModel.currentCurrencyInd = currencyInd
                             }
                             .onTapGesture {
-                                if let currencies = directoriesViewModel.currencies {
+                                if let currencies = globalViewModel.currencies {
                                     let (newCurrency, newInd) = switchCurrency(currencies: currencies, currentInd: viewModel.currentCurrencyInd)
                                     viewModel.currentCurrencyInd = newInd
                                     viewModel.currency = newCurrency
@@ -113,7 +111,7 @@ struct NewTransactionForm: View {
                 onSwipeUp: {
                     Task {
                         try await viewModel.sendNewTransactionFirebase()
-                        await sendNewTransaction(Transaction(category: viewModel.category?.name ?? "", subCategory: viewModel.subCategory, type: viewModel.type, date: .now, sum: viewModel.sum))
+                        await viewModel.sendNewTransaction()
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
@@ -156,6 +154,6 @@ struct NewTransactionForm: View {
 
 struct NewTransactionForm_Previews: PreviewProvider {
     static var previews: some View {
-        NewTransactionForm(sendNewTransaction: {(transaction) -> Void in return})
+        NewTransactionForm()
     }
 }

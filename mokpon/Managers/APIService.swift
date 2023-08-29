@@ -1,5 +1,13 @@
 import Foundation
 
+struct TransactionToJSON : Encodable{
+    let category : String
+    let subCategory : String
+    let opex : String
+    let date : String
+    let sum : String
+}
+
 class APIService {
     
     static let shared = APIService()
@@ -18,39 +26,21 @@ class APIService {
             return [[]]
         }
     }
-    //     GET Request /transactions route
-    func fetchTransactions () async -> [Transaction] {
-        guard let url = URL(string: "http://212.152.40.222:50401/api/transactions?limit=\(20)") else { return [Transaction]()}
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd"
-        
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(df)
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let resData = try decoder.decode([Transaction].self, from: data)
-            return resData
-        }
-        catch {
-            print("Fetching transactions error: \(error)")
-            return [Transaction]()
-        }
-    }
     //    POST Request /newRow route
-    func sendNewTransaction (trans: Transaction) async -> [Transaction] {
-        guard let url = URL(string: "http://212.152.40.222:50401/api/newRow") else { return [Transaction]()}
+    func sendNewTransaction (categoryName: String?, subcategoryName: String, type: ExpensesType, date: Date, sum: Int) async -> Void {
+        guard let url = URL(string: "http://212.152.40.222:50401/api/newRow") else { return }
         var urlRequest = URLRequest(url: url)
         
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd"
-        let dateToJSON = df.string(from: trans.date)
+        let dateToJSON = df.string(from: date)
         
         let transToJSON = TransactionToJSON(
-            category: trans.category,
-            subCategory: trans.subCategory,
-            opex: trans.type,
+            category: categoryName ?? "",
+            subCategory: subcategoryName,
+            opex: type.rawValue,
             date: dateToJSON,
-            sum: String(trans.sum)
+            sum: String(sum)
         )
         
         urlRequest.httpMethod = "POST"
@@ -62,13 +52,11 @@ class APIService {
         decoder.dateDecodingStrategy = .formatted(df)
         // Make the request
         do {
-            let (data, _) = try await URLSession.shared.data(for: urlRequest)
-            let resData = try decoder.decode([Transaction].self, from: data)
-            return resData
+            try await URLSession.shared.data(for: urlRequest)
         }
         catch {
             print("Sending transaction error: \(error)")
-            return [Transaction]()
+            return
         }
     }
     

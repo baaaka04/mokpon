@@ -23,12 +23,16 @@ final class NewTransactionViewModel : ObservableObject {
         try await TransactionManager.shared.createNewTransaction(
             categoryId: category?.id ?? "n/a",
             subcategory: subCategory,
-            type: type.rawValue,
+            type: type,
             date: Date(),
             sum: sum,
             currencyId: currency?.id ?? "n/a",
             userId: user.uid
         )
+    }
+    //    POST Request /newRow route
+    func sendNewTransaction () async -> Void {
+        await APIService.shared.sendNewTransaction(categoryName: category?.name, subcategoryName: subCategory, type: type, date: Date(), sum: sum)
     }
     
     func fetchHotkeys() async -> Void {
