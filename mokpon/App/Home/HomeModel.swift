@@ -33,7 +33,7 @@ struct Transaction {
 
 
 // CurrencyModel ----------------
-struct Rates: Decodable, Encodable {
+struct Rates: Codable {
     let KGS : Double
     let RUB : Double
 }

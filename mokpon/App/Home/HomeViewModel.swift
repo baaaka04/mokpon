@@ -6,7 +6,7 @@ final class HomeViewModel : ObservableObject {
     
     @Published var transactions : [Transaction]? = nil
     @Published var filteredTransactions : [Transaction] = []
-    @Published var currencyRates = Rates(KGS: 85.1, RUB: 75.1)
+    @Published var currencyRates : Rates? = nil
     @Published var showAllTransactions = false
     var isLoading : Bool = false
     @Published var searchtext : String = ""

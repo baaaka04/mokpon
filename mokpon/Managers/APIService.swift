@@ -60,8 +60,8 @@ class APIService {
         }
     }
     
-    func fetchCurrencyRates () async -> Rates {
-        guard let url = URL(string: "https://economia.awesomeapi.com.br/last/USD-RUB,USD-KGS") else { return Rates(KGS: 90, RUB: 120) }
+    func fetchCurrencyRates () async -> Rates? {
+        guard let url = URL(string: "https://economia.awesomeapi.com.br/last/USD-RUB,USD-KGS") else { return nil }
         
         // Setting HTTP-Request Headers
         var request = URLRequest(url: url)
@@ -76,11 +76,11 @@ class APIService {
             let curKGS : String = try JSONDecoder().decode(DTOcur.self, from: data).USDKGS.bid
             let curRUB : String = try JSONDecoder().decode(DTOcur.self, from: data).USDRUB.bid
             
-            return Rates(KGS: Double(curKGS) ?? 20.0, RUB: Double(curRUB) ?? 20.0 )
+            return Rates(KGS: Double(curKGS) ?? 0, RUB: Double(curRUB) ?? 0 )
         }
         catch {
             print("Fetching currnecies error: \(error)")
-            return Rates(KGS: 100, RUB: 80)
+            return nil
         }
     }
     
