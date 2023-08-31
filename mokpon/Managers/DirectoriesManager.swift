@@ -42,6 +42,11 @@ final class DirectoriesManager {
         guard let currencies else {return nil}
         return currencies.first { $0.id == id }
     }
+    
+    func getCurrency(byName name: String) -> Currency? {
+        guard let currencies else {return nil}
+        return currencies.first { $0.name == name }
+    }
 
 
 }
@@ -53,7 +58,7 @@ struct Category : Codable, Identifiable {
     let type : ExpensesType
 }
 
-struct Currency : Codable, Identifiable {
+struct Currency : Codable, Identifiable, Hashable {
     let id : String
     let name : String
     let symbol : String

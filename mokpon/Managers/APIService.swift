@@ -8,9 +8,11 @@ struct TransactionToJSON : Encodable{
     let sum : String
 }
 
-class APIService {
+final class APIService {
     
     static let shared = APIService()
+        
+    init () {}
     
     func fetchHotkeys() async throws -> [[String]] {
         guard let url = URL(string: "http://212.152.40.222:50401/api/getFrequentTransactions") else { return [[]] }

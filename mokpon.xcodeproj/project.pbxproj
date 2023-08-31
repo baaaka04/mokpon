@@ -328,9 +328,9 @@
 			children = (
 				F787804F2A0E6E4300244B91 /* APIService.swift */,
 				F7E42C982A7A9757004E0BDE /* AuthenticationManager.swift */,
-				F7696C892A8FA144003239E0 /* UserManager.swift */,
 				F7696C902A924D09003239E0 /* DirectoriesManager.swift */,
 				F75F77512A9A0B9100C658F1 /* TransactionManager.swift */,
+				F7696C892A8FA144003239E0 /* UserManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";

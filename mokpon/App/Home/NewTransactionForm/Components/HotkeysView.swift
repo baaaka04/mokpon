@@ -1,9 +1,7 @@
 import SwiftUI
 
 struct HotkeysView: View {
-    
-    @EnvironmentObject var globalVM : GlobalViewModel
-    
+        
     let onPressHotkey: @MainActor(_ category: Category, _ subcategory: String) -> Void
     var hotkeys : [[String]]?
     var fetchHotkeys : () async -> Void

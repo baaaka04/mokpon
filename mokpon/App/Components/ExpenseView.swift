@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ExpenseView : View {
     
-    @EnvironmentObject var globalViewModel : GlobalViewModel //all categories from db
     @StateObject var viewModel = СategoryExpensesViewModel()
     @State var showCategoryExpenses : Bool = false
     
@@ -51,7 +50,6 @@ struct ExpenseView : View {
         self.isClickable = false
         self.isLast = isLast
         self.isLoading = isLoading
-
         self.viewData = ExpenseData(
             categoryIcon: transaction.category?.icon,
             title: transaction.subcategory,

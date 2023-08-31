@@ -3,6 +3,8 @@ import SwiftUI
 struct SettingsView: View {
     
     @StateObject private var viewModel = SettingsViewModel()
+    @EnvironmentObject private var globalViewModel : GlobalViewModel
+    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
     @Binding var showSingInView : Bool
     @State private var showAlert : Bool = false
     
@@ -47,6 +49,23 @@ struct SettingsView: View {
                     )
                 }
                 
+                if let currencies = globalViewModel.currencies {
+                    Section {
+                        Picker(selection: $mainCurrency) {
+                            ForEach(currencies, id: \.self) { cur in
+                                Text(cur.name)
+                                    .tag(cur.name)
+                            }
+                        } label: {
+                            Text("Selected currency: ")
+                        }
+                        .onChange(of: mainCurrency) { mainCurrency = $0}
+
+                    } header: {
+                        Text("Main currency")
+                    }
+                }
+                
                 if viewModel.authProviders.contains(.email) {
                     emailSection
                 }
@@ -56,6 +75,7 @@ struct SettingsView: View {
                 }
             }
         }
+        .foregroundColor(.accentColor)
         .task {
             viewModel.loadAuthProviders()
             try? await viewModel.loadAuthUser()
@@ -66,6 +86,8 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView(showSingInView: .constant(true))
+            .environmentObject(GlobalViewModel())
+            .preferredColorScheme(.dark)
     }
 }
 

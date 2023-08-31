@@ -7,6 +7,7 @@ struct TransactionListView: View {
     var isLoading : Bool
     var setupSearching : @MainActor(_ isSearching: Bool) -> Void
     var transactionLimit : Int? = nil
+    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
     
     @Environment(\.isSearching) private var isSearching
     
@@ -21,6 +22,15 @@ struct TransactionListView: View {
         return Array(transactionsByDate.sorted(by: {(a, b) in return b.key < a.key }))
             .enumerated()
             .sorted{$1.element.key < $0.element.key}
+    }
+    
+    @MainActor
+    func convertCurrency (trans: Transaction) -> Int {
+        TransactionManager.shared.convertCurrency(value:trans.sum, from: trans.currency?.name, to: mainCurrency) ?? 0
+    }
+    
+    func getCurrencyByName (name: String) -> Currency? {
+        DirectoriesManager.shared.getCurrency(byName: name)
     }
     
     var body: some View {
@@ -43,7 +53,7 @@ struct TransactionListView: View {
                             let dateCheck = Calendar.current
                             Text(dateCheck.isDateInToday(date) ? "Today" : dateCheck.isDateInYesterday(date) ? "Yesterday" : date.formatted(date: .abbreviated, time: .omitted))
                             Spacer()
-                            Text("\(transGrouped.value.reduce(0, {acc, trans in acc + trans.sum})) ₽")
+                            Text("\(transGrouped.value.reduce(0, {acc, trans in acc + convertCurrency(trans: trans)}))\(getCurrencyByName(name:mainCurrency)?.symbol ?? "")")
                         }
                         .font(.headline)
                         .padding(.horizontal)
@@ -74,7 +84,7 @@ struct TransactionListView: View {
 struct TransactionListView_Previews: PreviewProvider {
     static var previews: some View {
         TransactionListView(
-            transactions: [],
+            transactions: nil,
             fetchTransactions: {}, isLoading: false, setupSearching: {x in }, transactionLimit: 6)
     }
 }

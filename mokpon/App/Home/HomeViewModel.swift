@@ -67,7 +67,7 @@ final class HomeViewModel : ObservableObject {
             let fetchedTransactions = FBTransactions.map { trans in Transaction(DBTransaction: trans)}
             self.transactions = fetchedTransactions
             self.allSearchScopes = ["All"] + Set (fetchedTransactions.compactMap { $0.category?.name })
-            print("new transactions loaded!")
+            print("\(Date()): new transactions has been loaded!")
         }
     }
     
