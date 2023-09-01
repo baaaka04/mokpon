@@ -1,6 +1,16 @@
 import Foundation
 import SwiftUI
 
+struct Hotkey {
+    let category : Category
+    let subcategory : String
+    
+    init(categoryId: String, subcategory: String) {
+        self.category = DirectoriesManager.shared.getCategory(byID: categoryId)
+        self.subcategory = subcategory
+    }
+}
+
 @MainActor
 final class NewTransactionViewModel : ObservableObject {
     @Published var sum : Int = 0
@@ -9,7 +19,7 @@ final class NewTransactionViewModel : ObservableObject {
     @Published var type: ExpensesType = .expense
     @Published var currency : Currency? = nil
     @Published var currentCurrencyInd : Int = 0
-    @Published var hotkeys : [[String]]? = nil
+    @Published var hotkeys : [Hotkey]? = nil
     
     //calculator
     @Published var memo : Int = 0
@@ -34,10 +44,13 @@ final class NewTransactionViewModel : ObservableObject {
     func sendNewTransaction () async -> Void {
         await APIService.shared.sendNewTransaction(categoryName: category?.name, subcategoryName: subCategory, type: type, date: Date(), sum: sum)
     }
-    
-    func fetchHotkeys() async -> Void {
-        let fetchedData = try? await APIService.shared.fetchHotkeys()
-        self.hotkeys = fetchedData
+    // GET Request from Firebase DB for hotkeys
+    func getHotkeys() {
+        Task {
+            let DBHotkeys = try await TransactionManager.shared.getHotkeys()
+            self.hotkeys = DBHotkeys.prefix(8)
+                .map {Hotkey(categoryId: $0.categoryId, subcategory: $0.subcategory)}
+        }
     }
         
     func onPressHotkey (category: Category, subcategory: String) -> Void {

@@ -5,6 +5,7 @@ struct NewTransactionForm: View {
     
     @ObservedObject var viewModel = NewTransactionViewModel()
     @EnvironmentObject var globalViewModel : GlobalViewModel
+    @AppStorage("currencyIndex") private var currencyIndex : Int = 0
         
     @Environment(\.presentationMode) var presentationMode
     
@@ -47,16 +48,15 @@ struct NewTransactionForm: View {
                         //CurrencySwitcherView
                         Text(viewModel.currency?.symbol ?? "n/a")
                             .onAppear {
-                                let currencyInd = UserDefaults.standard.integer(forKey: "currencyIndex") //returns 0 if there's no value for the key
-                                viewModel.currency = globalViewModel.currencies?[currencyInd]
-                                viewModel.currentCurrencyInd = currencyInd
+                                viewModel.currency = globalViewModel.currencies?[currencyIndex]
+                                viewModel.currentCurrencyInd = currencyIndex
                             }
                             .onTapGesture {
                                 if let currencies = globalViewModel.currencies {
                                     let (newCurrency, newInd) = switchCurrency(currencies: currencies, currentInd: viewModel.currentCurrencyInd)
                                     viewModel.currentCurrencyInd = newInd
                                     viewModel.currency = newCurrency
-                                    UserDefaults.standard.set(newInd, forKey: "currencyIndex")
+                                    currencyIndex = newInd
                                 }
                             }
                         Spacer()
@@ -67,6 +67,14 @@ struct NewTransactionForm: View {
                 .minimumScaleFactor(0.3)
                 .padding(.vertical, 30)
                 .font(.custom("gothicb", size: 62))
+                .contentShape(Rectangle())
+                .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                    .onEnded { value in
+                        if value.translation.width > 0 {
+                            viewModel.onPressBackspace(btn: "")
+                        }
+                    }
+                )
                 Spacer(minLength: 0)
                 // Using ZStack to color the placeholder
                 ZStack(alignment: .leading) {
@@ -94,7 +102,7 @@ struct NewTransactionForm: View {
                         HotkeysView(
                             onPressHotkey: viewModel.onPressHotkey,
                             hotkeys: viewModel.hotkeys,
-                            fetchHotkeys: viewModel.fetchHotkeys
+                            fetchHotkeys: viewModel.getHotkeys
                         )
                     }
                 }

@@ -17,6 +17,7 @@ struct SettingsView: View {
                     Task {
                         do {
                             try viewModel.signOut()
+                            mainCurrency = "USD"
                             showSingInView = true
                         } catch {
                             print(error)
@@ -59,7 +60,6 @@ struct SettingsView: View {
                         } label: {
                             Text("Selected currency: ")
                         }
-                        .onChange(of: mainCurrency) { mainCurrency = $0}
 
                     } header: {
                         Text("Main currency")

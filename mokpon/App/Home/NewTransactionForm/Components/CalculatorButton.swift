@@ -13,16 +13,19 @@ struct CalculatorButton: View {
     let onPress : @MainActor(_ btn : String) -> Void
     let symbol : Symbol
     
+    //initializer for a keyboard's button
     init(onPress: @escaping @MainActor(_: String) -> Void, text: String) {
         self.onPress = onPress
         self.symbol = .text
         self.text = text
     }
+    //initializer for a keyboard's button
     init(onPress: @escaping @MainActor(_: String) -> Void, systemImage: String) {
         self.onPress = onPress
         self.symbol = .image
         self.text = systemImage
     }
+    //initializer for a button to calculate
     init(onPress: @escaping @MainActor(_: String) -> Void, calcButtonName: OperationKey) {
         self.onPress = onPress
         self.symbol = .calcButton

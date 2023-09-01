@@ -41,8 +41,15 @@ final class TransactionManager {
     func getLastNTransactions(limit: Int ) async throws -> [DBTransaction] {
         try await transactionCollection
             .order(by: DBTransaction.CodingKeys.date.rawValue, descending: true)
-            .limit(toLast: limit)
+            .limit(to: limit)
             .getDocuments(as: DBTransaction.self)
+    }
+    
+    func getHotkeys() async throws -> [DBHotkey] {
+        let FBTransactions = try await getLastNTransactions(limit: 200)
+           return Dictionary(grouping: FBTransactions, by: {DBHotkey(categoryId: $0.categoryId, subcategory: $0.subcategory, count: 0)})
+                .map { (key, arr) in DBHotkey(categoryId: key.categoryId, subcategory: key.subcategory, count: arr.count) }
+                .sorted { $0.count > $1.count }
     }
     
     func convertCurrency (value: Int, from: String?, to: String?) -> Int? {
@@ -63,6 +70,11 @@ final class TransactionManager {
         return Int( Double(value) * (rateInd[from+to] ?? 0) )
     }
 
+}
+struct DBHotkey : Hashable {
+    let categoryId: String
+    let subcategory: String
+    let count: Int
 }
 
 struct DBTransaction : Decodable {
