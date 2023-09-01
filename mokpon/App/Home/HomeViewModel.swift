@@ -71,6 +71,12 @@ final class HomeViewModel : ObservableObject {
         }
     }
     
+    func deleteTransaction(transactionId: String) {
+        Task {
+            try await TransactionManager.shared.deleteTransaction(transactionId: transactionId)
+        }
+    }
+    
     func fetchCurrencyRates () -> Void {
         Task {
             let fetchedData = await APIService.shared.fetchCurrencyRates()

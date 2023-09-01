@@ -4,6 +4,7 @@ struct AllTransactuionsView: View {
     
     let transactions : [Transaction]?
     let fetchTransactions : @MainActor() -> ()
+    let deleteTransaction : @MainActor(_ transactionId: String) -> ()
     var isLoading : Bool
     @Binding var showView : Bool
     
@@ -22,6 +23,7 @@ struct AllTransactuionsView: View {
                     TransactionListView(
                         transactions: transactions,
                         fetchTransactions: fetchTransactions,
+                        deleteTransaction: deleteTransaction,
                         isLoading: isLoading,
                         setupSearching: setupSearching
                     )
@@ -58,6 +60,7 @@ struct AllTransactuionsView_Previews: PreviewProvider {
         AllTransactuionsView(
             transactions: nil,
             fetchTransactions: {},
+            deleteTransaction: {a in },
             isLoading: false,
             showView: .constant(true),
             scopes: ["All", "питание", "здоровье"],

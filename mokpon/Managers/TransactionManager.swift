@@ -40,9 +40,14 @@ final class TransactionManager {
     
     func getLastNTransactions(limit: Int ) async throws -> [DBTransaction] {
         try await transactionCollection
+            .whereField(DBTransaction.CodingKeys.deleted.rawValue, isEqualTo: false)
             .order(by: DBTransaction.CodingKeys.date.rawValue, descending: true)
             .limit(to: limit)
             .getDocuments(as: DBTransaction.self)
+    }
+    
+    func deleteTransaction (transactionId: String) async throws {
+        try await transactionCollection.document(transactionId).updateData(["deleted":true])
     }
     
     func getHotkeys() async throws -> [DBHotkey] {

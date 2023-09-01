@@ -4,6 +4,7 @@ struct TransactionListView: View {
     
     let transactions : [Transaction]?
     let fetchTransactions : @MainActor() -> ()
+    let deleteTransaction : @MainActor(_ transactionId: String) -> ()
     var isLoading : Bool
     var setupSearching : @MainActor(_ isSearching: Bool) -> Void
     var transactionLimit : Int? = nil
@@ -46,7 +47,12 @@ struct TransactionListView: View {
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Rectangle().background(.clear).padding())
                         }
-                        //                        .onDelete(perform: {index in })
+                        .onDelete { indexSet in
+                            for i in indexSet.makeIterator() {
+                                let theItem = transGrouped.value[i]
+                                deleteTransaction(theItem.id)
+                            }
+                        }
                     } header : {
                         HStack{
                             let date = transGrouped.key
@@ -85,6 +91,6 @@ struct TransactionListView_Previews: PreviewProvider {
     static var previews: some View {
         TransactionListView(
             transactions: nil,
-            fetchTransactions: {}, isLoading: false, setupSearching: {x in }, transactionLimit: 6)
+            fetchTransactions: {}, deleteTransaction: {a in }, isLoading: false, setupSearching: {x in }, transactionLimit: 6)
     }
 }

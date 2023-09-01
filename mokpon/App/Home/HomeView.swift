@@ -36,6 +36,7 @@ struct Home: View {
                                 AllTransactuionsView (
                                     transactions: vm.isSearching ? vm.filteredTransactions : vm.transactions,
                                     fetchTransactions: vm.getLastTransactions,
+                                    deleteTransaction: vm.deleteTransaction,
                                     isLoading: vm.isLoading,
                                     showView: $vm.showAllTransactions,
                                     scopes: vm.allSearchScopes,
@@ -49,6 +50,7 @@ struct Home: View {
                         TransactionListView(
                             transactions: vm.transactions,
                             fetchTransactions: vm.getLastTransactions,
+                            deleteTransaction : vm.deleteTransaction,
                             isLoading: vm.isLoading,
                             setupSearching: { isSearching in  },
                             transactionLimit: 5 //show only last 5 transactions
