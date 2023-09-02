@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import FirebaseFirestore
 
 @MainActor
 final class HomeViewModel : ObservableObject {
@@ -8,12 +9,12 @@ final class HomeViewModel : ObservableObject {
     @Published var filteredTransactions : [Transaction] = []
     @Published var currencyRates : Rates? = nil
     @Published var showAllTransactions = false
-    var isLoading : Bool = false
     @Published var searchtext : String = ""
     @Published var searchScope : String = "All"
     @Published var allSearchScopes : [String] = []
     private var cancellable = Set<AnyCancellable>()
     var isSearching : Bool = false
+    private var lastDocument : DocumentSnapshot? = nil
     
     init() {
         addSubscribers()
@@ -31,6 +32,31 @@ final class HomeViewModel : ObservableObject {
                 self?.filterTransactions(searchText: searchText, currentSearchScope: searchScope)
             }
             .store(in: &cancellable)
+    }
+    
+    // GET Request from Firebase DB
+    func getTransactions () {
+        Task {
+            let (newTransactions, lastDocument) = try await TransactionManager.shared.getLastNTransactions(limit: 10, lastDocument: self.lastDocument)
+            if var trans = self.transactions {
+                // append for pagination
+                trans.append(contentsOf: newTransactions.map { Transaction(DBTransaction: $0) })
+                self.allSearchScopes = ["All"] + Set (trans.compactMap { $0.category?.name })
+                self.transactions = trans
+            } else {
+                self.transactions = newTransactions.map{ Transaction(DBTransaction: $0)}
+            }
+            if let lastDocument {
+                self.lastDocument = lastDocument
+            }
+            print("\(Date()): new transactions has been loaded!")
+        }
+    }
+    
+    func deleteTransaction(transactionId: String) {
+        Task {
+            try await TransactionManager.shared.deleteTransaction(transactionId: transactionId)
+        }
     }
     
     private func filterTransactions (searchText: String, currentSearchScope: String) {
@@ -53,28 +79,6 @@ final class HomeViewModel : ObservableObject {
             let subCategoryContainsSearch = transaction.subcategory.lowercased().contains(search)
             return categoryContainsSearch || subCategoryContainsSearch
         })
-    }
-    
-    func loadMore () async -> Void {
-        isLoading = true
-        // wait code
-        isLoading = false
-    }
-// GET Request from Firebase DB
-    func getLastTransactions() {
-        Task {
-            let FBTransactions = try await TransactionManager.shared.getLastNTransactions(limit: 20)
-            let fetchedTransactions = FBTransactions.map { trans in Transaction(DBTransaction: trans)}
-            self.transactions = fetchedTransactions
-            self.allSearchScopes = ["All"] + Set (fetchedTransactions.compactMap { $0.category?.name })
-            print("\(Date()): new transactions has been loaded!")
-        }
-    }
-    
-    func deleteTransaction(transactionId: String) {
-        Task {
-            try await TransactionManager.shared.deleteTransaction(transactionId: transactionId)
-        }
     }
     
     func fetchCurrencyRates () -> Void {

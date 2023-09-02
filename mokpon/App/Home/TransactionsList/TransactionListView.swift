@@ -5,7 +5,6 @@ struct TransactionListView: View {
     let transactions : [Transaction]?
     let fetchTransactions : @MainActor() -> ()
     let deleteTransaction : @MainActor(_ transactionId: String) -> ()
-    var isLoading : Bool
     var setupSearching : @MainActor(_ isSearching: Bool) -> Void
     var transactionLimit : Int? = nil
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
@@ -14,7 +13,7 @@ struct TransactionListView: View {
     
     func transformTransactions (trans: [Transaction], limit: Int?) -> [EnumeratedSequence<Array<Dictionary<Date, [Transaction]>.Element>>.Element] {
         var arr = trans
-        if let limit {arr = Array(trans[0..<limit])}
+        if let limit, trans.count > limit {arr = Array(trans[0..<limit])}
         let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: arr, by: { (element: Transaction) in
             return Calendar.current.startOfDay(for: element.date)
         })
@@ -42,10 +41,17 @@ struct TransactionListView: View {
                 List (transformTransactions(trans: transactions, limit: transactionLimit), id: \.element.key) { (index, transGrouped) in
                     Section {
                         ForEach (transGrouped.value, id: \.self.id) { item in
-                            ExpenseView(transaction: item, isLast: index == transactions.count - 1, isLoading: isLoading)
+                            ExpenseView(transaction: item)
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Rectangle().background(.clear).padding())
+                            if item == transactions.last {
+                                ProgressView()
+                                    .frame(maxWidth: .infinity)
+                                    .onAppear {
+                                        fetchTransactions()
+                                    }
+                            }
                         }
                         .onDelete { indexSet in
                             for i in indexSet.makeIterator() {
@@ -91,6 +97,6 @@ struct TransactionListView_Previews: PreviewProvider {
     static var previews: some View {
         TransactionListView(
             transactions: nil,
-            fetchTransactions: {}, deleteTransaction: {a in }, isLoading: false, setupSearching: {x in }, transactionLimit: 6)
+            fetchTransactions: {}, deleteTransaction: {a in }, setupSearching: {x in }, transactionLimit: 6)
     }
 }

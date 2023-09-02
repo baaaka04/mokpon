@@ -10,8 +10,6 @@ struct ExpenseView : View {
     var expense : ChartDatalist? // data to get
     var expenseDate : ChartsDate // data to get
     var isClickable : Bool // data to get
-    var isLast : Bool? // data to get
-    var isLoading : Bool? // data to get
     
     //BarChart initializer
     init(expenseBarData: ChartDatalist, isClickable: Bool, expenseDate: ChartsDate) {
@@ -36,7 +34,7 @@ struct ExpenseView : View {
         self.expense = expensePieData
         self.isClickable = isClickable
         self.expenseDate = expenseDate
-
+        
         self.viewData = ExpenseData(
             categoryIcon: expensePieData.category,
             title: expensePieData.category,
@@ -45,11 +43,9 @@ struct ExpenseView : View {
         )
     }
     //Simple transaction view initializer
-    init(transaction: Transaction, isLast: Bool, isLoading: Bool) {
+    init(transaction: Transaction) {
         self.expenseDate = .init(month: 1, year: 2000)
         self.isClickable = false
-        self.isLast = isLast
-        self.isLoading = isLoading
         self.viewData = ExpenseData(
             categoryIcon: transaction.category?.icon,
             title: transaction.subcategory,
@@ -57,7 +53,7 @@ struct ExpenseView : View {
             number: "\(transaction.sum)\(transaction.currency?.symbol ?? "")"
         )
     }
-            
+    
     var body: some View {
         
         HStack (alignment: .center) {
@@ -71,23 +67,12 @@ struct ExpenseView : View {
             }
             Spacer()
             
-            VStack{
-                if self.isLast ?? false {
-                    Text(viewData.number)
-                        .onAppear {
-                            //isLoading = true - добавить в функцию пагинации
-//                            isLoading ? print("load data") : print("loading. pls wait")
-                            //isLoading = false - добавить в функцию пагинации
-                        }
-                } else {
-                    Text(viewData.number)
-                }
-            }
-            .frame(width: 90, height: 44)
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color(white: 0.2), lineWidth: 1)
-            )
+            Text(viewData.number)
+                .frame(width: 90, height: 44)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color(white: 0.2), lineWidth: 1)
+                )
         }
         .padding()
         .background(Color.bg_main)

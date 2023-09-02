@@ -7,7 +7,7 @@ enum ExpensesType : String, Codable {
     case invest = "инвест"
 }
 
-struct Transaction {
+struct Transaction : Equatable {
     let id : String
     let category : Category?
     let subcategory : String
@@ -28,6 +28,10 @@ struct Transaction {
         self.category = category
         self.currency = currency
         self.type = DBTransaction.type
+    }
+    
+    static func ==(lhs: Transaction, rhs: Transaction) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 
