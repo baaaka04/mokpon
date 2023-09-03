@@ -2,6 +2,8 @@ import SwiftUI
 
 struct DebitCard: View {
     
+    var amounts : [Amount]? = nil
+    
     var body: some View {
         ZStack {
             VStack{
@@ -11,8 +13,20 @@ struct DebitCard: View {
                     Image("Chip")
                     Image("Wireless")
                     Spacer()
-                    Text("₽23 504")
-                        .font(.title)
+                    VStack {
+                        if let amounts {
+                            ForEach(amounts, id: \.curId) { amount in
+                                let currency = DirectoriesManager.shared.getCurrency(byID: amount.curId)
+                                HStack {
+                                    Text("\(currency?.symbol ?? "?")")
+                                    Spacer(minLength: 0)
+                                    Text("\(amount.sum)")
+                                }
+                                .font(.title)
+                                .padding(.leading, 30)
+                            }
+                        } else { ProgressView() }
+                    }
                 }
                 .padding()
                 HStack (alignment: .bottom){
@@ -52,7 +66,11 @@ struct DebitCard: View {
 
 struct DebitCard_Previews: PreviewProvider {
     static var previews: some View {
-        DebitCard()
+        DebitCard(amounts: [
+            .init(curId: "cur-01", sum: 200),
+            .init(curId: "cur-02", sum: 2400),
+            .init(curId: "cur-03", sum: 132400)
+        ])
             .foregroundColor(.white)
             .font(.custom("DMSans-Regular", size: 18))
     }

@@ -9,11 +9,11 @@ enum ExpensesType : String, Codable {
 
 struct Transaction : Equatable {
     let id : String
-    let category : Category?
+    let category : Category? // TODO: get rid of optional
     let subcategory : String
     let date : Date
     let sum : Int
-    let currency : Currency?
+    let currency : Currency? // TODO: get rid of optional
     let type : ExpensesType
     
     init(DBTransaction: DBTransaction) {

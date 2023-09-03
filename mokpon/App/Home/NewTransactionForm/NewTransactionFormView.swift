@@ -120,6 +120,7 @@ struct NewTransactionForm: View {
                     Task {
                         try await viewModel.sendNewTransactionFirebase()
                         await viewModel.sendNewTransaction()
+                        try await viewModel.updateUserAmounts()
                         presentationMode.wrappedValue.dismiss()
                     }
                 }

@@ -11,7 +11,12 @@ struct Home: View {
             ScrollView {
                 VStack{
                     
-                    DebitCard()
+                    DebitCard(amounts: vm.amounts)
+                        .onAppear {
+                            Task {
+                                try await vm.getUserAmounts()
+                            }
+                        }
                     
                     Currencies(
                         fetchCurrencyRates: vm.fetchCurrencyRates,
@@ -35,8 +40,9 @@ struct Home: View {
                             .popover(isPresented: $vm.showAllTransactions) {
                                 AllTransactuionsView (
                                     transactions: vm.isSearching ? vm.filteredTransactions : vm.transactions,
-                                    fetchTransactions: vm.getTransactions,
+                                    getTransactions: vm.getTransactions,
                                     deleteTransaction: vm.deleteTransaction,
+                                    updateUserAmounts: vm.updateUserAmount,
                                     showView: $vm.showAllTransactions,
                                     scopes: vm.allSearchScopes,
                                     searchText: $vm.searchtext,
@@ -48,8 +54,9 @@ struct Home: View {
                         .padding(.top)
                         TransactionListView(
                             transactions: vm.transactions,
-                            fetchTransactions: vm.getTransactions,
+                            getTransactions: vm.getLastTransactions,
                             deleteTransaction : vm.deleteTransaction,
+                            updateUserAmounts: vm.updateUserAmount,
                             setupSearching: { isSearching in  },
                             transactionLimit: 5 //show only last 5 transactions
                         )
@@ -62,8 +69,11 @@ struct Home: View {
                 .frame(minHeight: 1100)
             }
             .refreshable {
-                vm.getTransactions()
+                vm.getLastTransactions()
                 vm.fetchCurrencyRates()
+                Task {
+                    try await vm.getUserAmounts()
+                }
             }
             
             

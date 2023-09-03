@@ -2,9 +2,10 @@ import SwiftUI
 
 struct AllTransactuionsView: View {
     
-    let transactions : [Transaction]?
-    let fetchTransactions : @MainActor() -> ()
+    let transactions : [Transaction]
+    let getTransactions : @MainActor() -> ()
     let deleteTransaction : @MainActor(_ transactionId: String) -> ()
+    let updateUserAmounts : (_ curId: String, _ sumDiff : Int) async throws -> ()
     @Binding var showView : Bool
     
     //searching
@@ -21,8 +22,9 @@ struct AllTransactuionsView: View {
                 VStack {
                     TransactionListView(
                         transactions: transactions,
-                        fetchTransactions: fetchTransactions,
+                        getTransactions: getTransactions,
                         deleteTransaction: deleteTransaction,
+                        updateUserAmounts: updateUserAmounts,
                         setupSearching: setupSearching
                     )
                     .toolbar {
@@ -56,9 +58,10 @@ struct AllTransactuionsView: View {
 struct AllTransactuionsView_Previews: PreviewProvider {
     static var previews: some View {
         AllTransactuionsView(
-            transactions: nil,
-            fetchTransactions: {},
+            transactions: [],
+            getTransactions: {},
             deleteTransaction: {a in },
+            updateUserAmounts: { curId, sumDiff in  },
             showView: .constant(true),
             scopes: ["All", "питание", "здоровье"],
             searchText: .constant(""),

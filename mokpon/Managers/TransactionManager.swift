@@ -29,7 +29,7 @@ final class TransactionManager {
             "subcategory" : subcategory.lowercased(),
             "type" : type.rawValue,
             "date" : date,
-            "sum" : type == .income ? sum: negativeSum,
+            "sum" : type == .income ? sum : negativeSum,
             "currency_id" : currencyId,
             "deleted" : false,
             "user_id" : userId
@@ -75,7 +75,6 @@ final class TransactionManager {
         
         return Int( Double(value) * (rateInd[from+to] ?? 0) )
     }
-
 }
 struct DBHotkey : Hashable {
     let categoryId: String

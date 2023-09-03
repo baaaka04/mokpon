@@ -30,16 +30,24 @@ final class NewTransactionViewModel : ObservableObject {
     // Firebase POST request
     func sendNewTransactionFirebase () async throws {
         let user = try AuthenticationManager.shared.getAuthenticatedUser()
+        guard let currencyId = currency?.id else {return}
         try await TransactionManager.shared.createNewTransaction(
             categoryId: category?.id ?? "n/a",
             subcategory: subCategory,
             type: type,
             date: Date(),
             sum: sum,
-            currencyId: currency?.id ?? "n/a",
+            currencyId: currencyId,
             userId: user.uid
         )
     }
+    
+    func updateUserAmounts () async throws {
+        let user = try AuthenticationManager.shared.getAuthenticatedUser()
+        guard let currency else {return}
+        try await AmountManager.shared.updateUserAmounts(userId: user.uid, curId: currency.id, sumDiff: type == .income ? sum : -sum)
+    }
+    
     //    POST Request /newRow route
     func sendNewTransaction () async -> Void {
         await APIService.shared.sendNewTransaction(categoryName: category?.name, subcategoryName: subCategory, type: type, date: Date(), sum: sum)

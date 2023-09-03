@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ExpenseView : View {
     
-    @StateObject var viewModel = СategoryExpensesViewModel()
+    @StateObject var viewModel = СategoryExpensesViewModel() // TODO: delete
     @State var showCategoryExpenses : Bool = false
     
     var viewData : ExpenseData // data to render

@@ -2,9 +2,10 @@ import SwiftUI
 
 struct TransactionListView: View {
     
-    let transactions : [Transaction]?
-    let fetchTransactions : @MainActor() -> ()
+    let transactions : [Transaction]
+    let getTransactions : @MainActor() -> ()
     let deleteTransaction : @MainActor(_ transactionId: String) -> ()
+    let updateUserAmounts : (_ curId: String, _ sumDiff : Int) async throws -> ()
     var setupSearching : @MainActor(_ isSearching: Bool) -> Void
     var transactionLimit : Int? = nil
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
@@ -36,7 +37,7 @@ struct TransactionListView: View {
     var body: some View {
         
         VStack {
-            if let transactions {
+            if transactions.count != 0 {
                 
                 List (transformTransactions(trans: transactions, limit: transactionLimit), id: \.element.key) { (index, transGrouped) in
                     Section {
@@ -49,14 +50,20 @@ struct TransactionListView: View {
                                 ProgressView()
                                     .frame(maxWidth: .infinity)
                                     .onAppear {
-                                        fetchTransactions()
+                                        getTransactions()
                                     }
                             }
                         }
                         .onDelete { indexSet in
                             for i in indexSet.makeIterator() {
                                 let theItem = transGrouped.value[i]
-                                deleteTransaction(theItem.id)
+                                Task {
+                                    guard let currencyId = theItem.currency?.id else {return}
+                                    deleteTransaction(theItem.id)
+                                    let sumDiff = theItem.type == .income ? theItem.sum : -theItem.sum
+                                    try await updateUserAmounts(currencyId, sumDiff)
+                                    getTransactions()
+                                }
                             }
                         }
                     } header : {
@@ -88,7 +95,7 @@ struct TransactionListView: View {
             
         }
         .task {
-            fetchTransactions()
+            getTransactions()
         }
     }
 }
@@ -96,7 +103,12 @@ struct TransactionListView: View {
 struct TransactionListView_Previews: PreviewProvider {
     static var previews: some View {
         TransactionListView(
-            transactions: nil,
-            fetchTransactions: {}, deleteTransaction: {a in }, setupSearching: {x in }, transactionLimit: 6)
+            transactions: [],
+            getTransactions: {},
+            deleteTransaction: {a in },
+            updateUserAmounts: { curId, sumDiff in  },
+            setupSearching: {x in },
+            transactionLimit: 6
+        )
     }
 }
