@@ -16,11 +16,10 @@ struct DebitCard: View {
                     VStack {
                         if let amounts {
                             ForEach(amounts, id: \.curId) { amount in
-                                let currency = DirectoriesManager.shared.getCurrency(byID: amount.curId)
                                 HStack {
-                                    Text("\(currency?.symbol ?? "?")")
+                                let currency = DirectoriesManager.shared.getCurrency(byID: amount.curId)
                                     Spacer(minLength: 0)
-                                    Text("\(amount.sum)")
+                                    Text("\(currency?.symbol ?? "?") \(amount.sum)")
                                 }
                                 .font(.title)
                                 .padding(.leading, 30)
@@ -67,7 +66,7 @@ struct DebitCard: View {
 struct DebitCard_Previews: PreviewProvider {
     static var previews: some View {
         DebitCard(amounts: [
-            .init(curId: "cur-01", sum: 200),
+            .init(curId: "cur-01", sum: 400),
             .init(curId: "cur-02", sum: 2400),
             .init(curId: "cur-03", sum: 132400)
         ])

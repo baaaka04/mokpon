@@ -43,8 +43,13 @@ final class HomeViewModel : ObservableObject {
                 self.lastDocument = lastDocument
             }
             // append for pagination
-            self.transactions.append(contentsOf: newTransactions.map { Transaction(DBTransaction: $0) })
-            self.allSearchScopes = ["All"] + Set (self.transactions.compactMap { $0.category?.name })
+            self.transactions.append(contentsOf: newTransactions.compactMap {
+                if let category = DirectoriesManager.shared.getCategory(byID: $0.categoryId),
+                   let currency = DirectoriesManager.shared.getCurrency(byID: $0.currencyId) {
+                    return Transaction(DBTransaction: $0, category: category , currency: currency)
+                } else { return nil } // if couldn't find a category/currency, then skip
+            })
+            self.allSearchScopes = ["All"] + Set (self.transactions.map { $0.category.name })
             print("\(Date()): New transactions has been loaded!")
         }
     }
@@ -52,8 +57,13 @@ final class HomeViewModel : ObservableObject {
     func getLastTransactions () {
         Task {
             let (newTransactions, lastDocument) = try await TransactionManager.shared.getLastNTransactions(limit: 10)
-            self.transactions = newTransactions.map { Transaction(DBTransaction: $0) }
-            self.allSearchScopes = ["All"] + Set (self.transactions.compactMap { $0.category?.name })
+            self.transactions.append(contentsOf: newTransactions.compactMap {
+                if let category = DirectoriesManager.shared.getCategory(byID: $0.categoryId),
+                   let currency = DirectoriesManager.shared.getCurrency(byID: $0.currencyId) {
+                    return Transaction(DBTransaction: $0, category: category , currency: currency)
+                } else { return nil } // if couldn't find a category/currency, then skip
+            })
+            self.allSearchScopes = ["All"] + Set (self.transactions.map { $0.category.name })
             self.lastDocument = lastDocument
             print("\(Date()): Last transactions has been loaded!")
         }
@@ -73,15 +83,14 @@ final class HomeViewModel : ObservableObject {
             break
         default:
             transactionsInScope = transactions.filter({ trans in
-                guard let category = trans.category else {return false}
-                return category.name.lowercased() == currentSearchScope.lowercased()
+                trans.category.name.lowercased() == currentSearchScope.lowercased()
             })
         }
         
         let search = searchText.lowercased()
         filteredTransactions = transactionsInScope.filter({ transaction in
-            guard !searchText.isEmpty, let category = transaction.category?.name else { return true }
-            let categoryContainsSearch = category.lowercased().contains(search)
+            guard !searchText.isEmpty else { return true }
+            let categoryContainsSearch = transaction.category.name.lowercased().contains(search)
             let subCategoryContainsSearch = transaction.subcategory.lowercased().contains(search)
             return categoryContainsSearch || subCategoryContainsSearch
         })

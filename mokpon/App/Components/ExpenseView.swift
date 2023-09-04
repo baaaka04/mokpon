@@ -47,10 +47,10 @@ struct ExpenseView : View {
         self.expenseDate = .init(month: 1, year: 2000)
         self.isClickable = false
         self.viewData = ExpenseData(
-            categoryIcon: transaction.category?.icon,
+            categoryIcon: transaction.category.icon,
             title: transaction.subcategory,
             subtitle: transaction.date.formatted(.dateTime.day().month().year()),
-            number: "\(transaction.sum)\(transaction.currency?.symbol ?? "")"
+            number: "\(transaction.sum)\(transaction.currency.symbol)"
         )
     }
     

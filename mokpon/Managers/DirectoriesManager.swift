@@ -33,9 +33,9 @@ final class DirectoriesManager {
         return categories.first { $0.name == name }
     }
     
-    func getCategory (byID id: String) -> Category {
-        guard let categories else {return Category(id: "cat-00", name: "none", icon: "questionmark", type: .expense)}
-        return categories.first { $0.id == id } ?? Category(id: "cat-00", name: "none", icon: "questionmark", type: .expense)
+    func getCategory (byID id: String) -> Category? {
+        guard let categories else {return nil}
+        return categories.first { $0.id == id }
     }
     
     func getCurrency(byID id: String) -> Currency? {

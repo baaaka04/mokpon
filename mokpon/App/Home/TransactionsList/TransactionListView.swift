@@ -27,7 +27,7 @@ struct TransactionListView: View {
     
     @MainActor
     func convertCurrency (trans: Transaction) -> Int {
-        TransactionManager.shared.convertCurrency(value:trans.sum, from: trans.currency?.name, to: mainCurrency) ?? 0
+        TransactionManager.shared.convertCurrency(value:trans.sum, from: trans.currency.name, to: mainCurrency) ?? 0
     }
     
     func getCurrencyByName (name: String) -> Currency? {
@@ -58,10 +58,9 @@ struct TransactionListView: View {
                             for i in indexSet.makeIterator() {
                                 let theItem = transGrouped.value[i]
                                 Task {
-                                    guard let currencyId = theItem.currency?.id else {return}
                                     deleteTransaction(theItem.id)
                                     let sumDiff = theItem.type == .income ? theItem.sum : -theItem.sum
-                                    try await updateUserAmounts(currencyId, sumDiff)
+                                    try await updateUserAmounts(theItem.currency.id, sumDiff)
                                     getTransactions()
                                 }
                             }

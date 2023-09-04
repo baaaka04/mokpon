@@ -9,25 +9,22 @@ enum ExpensesType : String, Codable {
 
 struct Transaction : Equatable {
     let id : String
-    let category : Category? // TODO: get rid of optional
+    let category : Category
     let subcategory : String
     let date : Date
     let sum : Int
-    let currency : Currency? // TODO: get rid of optional
+    let currency : Currency
     let type : ExpensesType
     
-    init(DBTransaction: DBTransaction) {
+    init(DBTransaction: DBTransaction, category: Category, currency: Currency) {
         self.id = DBTransaction.id
         self.subcategory = DBTransaction.subcategory
         self.date = DBTransaction.date
         self.sum = DBTransaction.sum
-        
-        let category = DirectoriesManager.shared.getCategory(byID: DBTransaction.categoryId)
-        let currency = DirectoriesManager.shared.getCurrency(byID: DBTransaction.currencyId)
+        self.type = DBTransaction.type
         
         self.category = category
         self.currency = currency
-        self.type = DBTransaction.type
     }
     
     static func ==(lhs: Transaction, rhs: Transaction) -> Bool {

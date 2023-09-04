@@ -4,11 +4,6 @@ import SwiftUI
 struct Hotkey {
     let category : Category
     let subcategory : String
-    
-    init(categoryId: String, subcategory: String) {
-        self.category = DirectoriesManager.shared.getCategory(byID: categoryId)
-        self.subcategory = subcategory
-    }
 }
 
 @MainActor
@@ -56,8 +51,13 @@ final class NewTransactionViewModel : ObservableObject {
     func getHotkeys() {
         Task {
             let DBHotkeys = try await TransactionManager.shared.getHotkeys()
-            self.hotkeys = DBHotkeys.prefix(8)
-                .map {Hotkey(categoryId: $0.categoryId, subcategory: $0.subcategory)}
+            self.hotkeys = DBHotkeys
+                .prefix(8)
+                .compactMap {
+                    if let category = DirectoriesManager.shared.getCategory(byID: $0.categoryId) {
+                        return Hotkey(category: category, subcategory: $0.subcategory)
+                    } else { return nil } //if couldn't find a category, then skip
+                }
         }
     }
         
