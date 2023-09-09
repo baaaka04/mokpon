@@ -1,10 +1,3 @@
-//
-//  Utilities.swift
-//  mokpon
-//
-//  Created by Artem Berezin on 14/8/23.
-//
-
 import Foundation
 import UIKit
 

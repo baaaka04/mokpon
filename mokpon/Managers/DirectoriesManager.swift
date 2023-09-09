@@ -51,15 +51,4 @@ final class DirectoriesManager {
 
 }
 
-struct Category : Codable, Identifiable {
-    let id : String
-    let name : String
-    let icon : String
-    let type : ExpensesType
-}
 
-struct Currency : Codable, Identifiable, Hashable {
-    let id : String
-    let name : String
-    let symbol : String
-}

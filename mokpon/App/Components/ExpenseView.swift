@@ -2,62 +2,53 @@ import SwiftUI
 
 struct ExpenseView : View {
     
-    @StateObject var viewModel = СategoryExpensesViewModel() // TODO: delete
     @State var showCategoryExpenses : Bool = false
     
     var viewData : ExpenseData // data to render
-    
-    var expense : ChartDatalist? // data to get
-    var expenseDate : ChartsDate // data to get
-    var isClickable : Bool // data to get
+    var selectedPeriod : ChartsDate
+    var isClickable : Bool
     
     //BarChart initializer
-    init(expenseBarData: ChartDatalist, isClickable: Bool, expenseDate: ChartsDate) {
-        self.expense = expenseBarData
-        self.isClickable = isClickable
-        self.expenseDate = expenseDate
+    init(expenseBarData: ChartData) {
+        self.selectedPeriod = ChartsDate(month: 1, year: 2020)
+        self.isClickable = false
         
-        let curSum = expenseBarData.curSum
-        let prevSum = expenseBarData.prevSum
-        let diff = curSum - prevSum
-        var percent : Int = 0
-        if prevSum != 0 { percent = Int(((Double(curSum) / Double(prevSum)) - 1.0) * 100.0) }
+        let number = expenseBarData.sum
+        let percent = expenseBarData.percentDiff ?? 0
         self.viewData = ExpenseData(
-            categoryIcon: expenseBarData.category,
-            title: expenseBarData.category,
-            subtitle: "₽ \(diff.formatted())",
-            number: String(percent) + "%"
+            title: expenseBarData.category.name,
+            subtitle: "Difference: \(percent > 0 ? "+" : "")\(percent)%",
+            number: "\(number >= 0 ? "+" : "")\(number.formatted())\(expenseBarData.currency.symbol)",
+            category: expenseBarData.category
         )
     }
     //PieChart initializer
-    init(expensePieData: ChartDatalist, isClickable: Bool, expenseDate: ChartsDate) {
-        self.expense = expensePieData
+    init(expensePieData: ChartData, selectedPeriod: ChartsDate, isClickable: Bool) {
         self.isClickable = isClickable
-        self.expenseDate = expenseDate
-        
+        self.selectedPeriod = selectedPeriod
         self.viewData = ExpenseData(
-            categoryIcon: expensePieData.category,
-            title: expensePieData.category,
-            subtitle: "\(DateFormatter().monthSymbols[expenseDate.month-1].capitalized) \(expenseDate.year)",
-            number: "₽ \(expensePieData.curSum.formatted())"
+            title: expensePieData.category.name,
+            subtitle: "\(DateFormatter().monthSymbols[selectedPeriod.month-1].capitalized) \(selectedPeriod.year)",
+            number: "\(expensePieData.sum.formatted())\(expensePieData.currency.symbol)",
+            category: expensePieData.category
         )
     }
     //Simple transaction view initializer
     init(transaction: Transaction) {
-        self.expenseDate = .init(month: 1, year: 2000)
+        self.selectedPeriod = ChartsDate(month: 1, year: 2020)
         self.isClickable = false
         self.viewData = ExpenseData(
-            categoryIcon: transaction.category.icon,
             title: transaction.subcategory,
             subtitle: transaction.date.formatted(.dateTime.day().month().year()),
-            number: "\(transaction.sum)\(transaction.currency.symbol)"
+            number: "\(transaction.sum)\(transaction.currency.symbol)",
+            category: transaction.category
         )
     }
     
     var body: some View {
         
         HStack (alignment: .center) {
-            Image(systemName: viewData.categoryIcon ?? "questionmark")
+            Image(systemName: viewData.category.icon)
                 .frame(width: 50, height: 50)
                 .background(.gray.opacity(0.4))
                 .clipShape(Circle())
@@ -78,25 +69,17 @@ struct ExpenseView : View {
         .background(Color.bg_main)
         .cornerRadius(20)
         .popover(isPresented: $showCategoryExpenses) {
-            CategoryExpensesView(viewData: viewModel.categoryExpenses, date: expenseDate, title: viewData.title)
+            CategoryExpensesView(date: selectedPeriod, category: viewData.category)
         }
         .onTapGesture {
-            Task {
-                isClickable ? await openSubcategoryView() : nil
-            }
+            isClickable ? showCategoryExpenses.toggle() : nil
         }
-    }
-    
-    func openSubcategoryView () async -> Void {
-        showCategoryExpenses = true
-        await viewModel.getCategoryExpenses(category: viewData.title, monthYear: expenseDate)
-        
     }
 }
 
 struct ExpenseView_Previews: PreviewProvider {
     static var previews: some View {
-        ExpenseView(expensePieData: ChartDatalist(category: "питание", prevSum: 0, curSum: 123), isClickable: true, expenseDate: ChartsDate(month: 6, year: 2023))
+        ExpenseView(expensePieData: ChartData(category: Category(id: "cat-01", name: "food", icon: "cart", type: .expense), currency: Currency(id: "", name: "", symbol: ""), sum: -123, month: 8, year: 2023), selectedPeriod: ChartsDate(month: 9, year: 2023), isClickable: false)
             .font(.custom("DMSans-Regular", size: 13))
             .foregroundColor(.white)
     }

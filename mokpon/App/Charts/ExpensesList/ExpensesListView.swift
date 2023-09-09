@@ -1,39 +1,46 @@
 import SwiftUI
 
 struct ExpensesListView: View {
-    var listData : [ChartDatalist]
-    var chartType : ChartSelected
-    var chartDate : ChartsDate
+    var expenses : [ChartData]
+    var selectedType : ChartType
+    var selectedPeriod : ChartsDate
     var isClickable : Bool
     
-    var pieChartDatalist: [ChartDatalist] {
-        return self.listData.sorted { $0.curSum > $1.curSum }
+    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
+    
+    private func getBarchartData (chartData: [ChartData]) -> [ChartData] {
+        guard let currency = DirectoriesManager.shared.getCurrency(byName: mainCurrency) else {return []}
+        let groupedByCategory : [Category : [ChartData]] = Dictionary(grouping: chartData) { $0.category }
+        let differenceByCategory = groupedByCategory.map { (key: Category, value: [ChartData]) in
+            let currentSum = value.first { $0.month == selectedPeriod.month && $0.year == selectedPeriod.year }?.sum ?? 0
+            let previousSum = value.first { $0.month != selectedPeriod.month || $0.year != selectedPeriod.year }?.sum ?? 0
+            let difference = currentSum-previousSum
+            var percent = 0
+            if previousSum != 0 { percent = Int(((Double(currentSum) / Double(previousSum)) - 1.0) * 100.0) }
+            return ChartData(category: key, currency: currency, sum: difference, month: selectedPeriod.month, year: selectedPeriod.year, percentDiff: percent)
+        }
+        return differenceByCategory.sorted { $0.sum > $1.sum }
     }
     
     var body: some View {
         
         VStack (spacing: 10) {
             HStack {
-                switch self.chartType {
-                case .bar:
-                    Text("Differences")
-                case .pie:
-                    Text("Expenses")
-                }
+                Text(self.selectedType == .bar ? "Differences" : "Expenses")
                 Spacer()
             }
             .font(.custom("DMSans-Regular", size: 20))
             .padding(20)
-            switch chartType {
+            switch selectedType {
             case .bar:
-                ForEach(0..<self.listData.count, id: \.self) { i in
-                    ExpenseView(expenseBarData: self.listData[i], isClickable: self.isClickable, expenseDate: self.chartDate)
+                ForEach(getBarchartData(chartData: expenses)) { chartData in
+                    ExpenseView(expenseBarData: chartData)
                         .padding(.horizontal)
                 }
             case .pie:
-                ForEach(0..<self.pieChartDatalist.count, id: \.self) { i in
-                    if pieChartDatalist[i].curSum != 0 {
-                        ExpenseView(expensePieData: pieChartDatalist[i], isClickable: self.isClickable, expenseDate: self.chartDate)
+                ForEach(expenses) { chartData in
+                    if chartData.sum != 0 {
+                        ExpenseView(expensePieData: chartData, selectedPeriod: selectedPeriod, isClickable: isClickable)
                             .padding(.horizontal)
                     }
                 }
@@ -50,13 +57,10 @@ struct ExpensesListView: View {
 struct ExpensesListView_Previews: PreviewProvider {
     static var previews: some View {
         ExpensesListView(
-            listData: [
-                ChartDatalist(category: "питание", prevSum: 32, curSum: 1200),
-                ChartDatalist(category: "pets", prevSum: 23, curSum: 11),
-            ],
-            chartType: .pie,
-            chartDate: ChartsDate(month: 6, year: 2023),
-            isClickable: true
+            expenses: [ ],
+            selectedType: .pie,
+            selectedPeriod: ChartsDate(month: 6, year: 2023),
+            isClickable: false
         )
         
     }

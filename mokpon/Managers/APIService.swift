@@ -1,6 +1,6 @@
 import Foundation
 
-struct TransactionToJSON : Encodable{
+struct TransactionToJSON : Encodable {
     let category : String
     let subCategory : String
     let opex : String
@@ -14,20 +14,6 @@ final class APIService {
         
     init () {}
     
-    func fetchHotkeys() async throws -> [[String]] {
-        guard let url = URL(string: "http://212.152.40.222:50401/api/getFrequentTransactions") else { return [[]] }
-        
-        // Sending GET request
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let resData = try JSONDecoder().decode([[String]].self, from: data)
-            return resData
-        }
-        catch {
-            print("Fetching hotkeys error: \(error)")
-            return [[]]
-        }
-    }
     //    POST Request /newRow route
     func sendNewTransaction (categoryName: String?, subcategoryName: String, type: ExpensesType, date: Date, sum: Int) async -> Void {
         guard let url = URL(string: "http://212.152.40.222:50401/api/newRow") else { return }
@@ -86,42 +72,5 @@ final class APIService {
         }
     }
     
-    // POST-request to get charts' data
-    func fetchChartsData (month: String, year: String) async -> APIChartsResponse {
-        guard let url = URL(string: "http://212.152.40.222:50401/api/chartDataSwiftUI") else { return APIChartsResponse(chartDatalist: ComparationList(monthly: [ChartDatalist](), yearly: [ChartDatalist]()), chartData: ComparationChart(monthly: [ChartData](), yearly: [ChartData]()))}
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = try? JSONEncoder().encode(DTScharts(month: month, year: year))
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            let resData = try JSONDecoder().decode(APIChartsResponse.self, from: data)
-            return resData
-        }
-        catch {
-            print("Fetching charts data error: \(error)")
-            return APIChartsResponse(chartDatalist: ComparationList(monthly: [ChartDatalist](), yearly: [ChartDatalist]()), chartData: ComparationChart(monthly: [ChartData](), yearly: [ChartData]()))
-        }
-    }
-    //GET-request subcategory expenses
-    func fetchCategoryExpenses (category: String, date: ChartsDate) async -> [ChartDatalist] {
-    
-        let urlString = "http://212.152.40.222:50401/api/category_expenses?category=\(category)&month=\(date.month)&year=\(date.year)"
-        guard let url = URL(string: urlString.encodeUrl)
-        else { return [ChartDatalist]() }
-
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let resData = try JSONDecoder().decode([ChartDatalist].self, from: data)
-            return resData
-        }
-        catch {
-            print("Fetching transactions error: \(error)")
-            return [ChartDatalist]()
-        }
-    }
     
 }

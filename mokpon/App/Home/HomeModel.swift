@@ -1,12 +1,6 @@
 import Foundation
 import SwiftUI
 
-enum ExpensesType : String, Codable {
-    case income = "доход"
-    case expense = "опер"
-    case invest = "инвест"
-}
-
 struct Transaction : Equatable {
     let id : String
     let category : Category
@@ -31,7 +25,27 @@ struct Transaction : Equatable {
         return lhs.id == rhs.id
     }
 }
+enum ExpensesType : String, Codable {
+    case income = "доход"
+    case expense = "опер"
+    case invest = "инвест"
+}
+struct Category : Codable, Identifiable, Hashable {
+    let id : String
+    let name : String
+    let icon : String
+    let type : ExpensesType
+}
 
+struct Currency : Codable, Identifiable, Hashable {
+    let id : String
+    let name : String
+    let symbol : String
+}
+struct Hotkey {
+    let category : Category
+    let subcategory : String
+}
 
 // CurrencyModel ----------------
 struct Rates: Codable {

@@ -17,9 +17,6 @@ final class TransactionManager {
     }
 
     private let transactionCollection = Firestore.firestore().collection("transactions") //if there's no collection in db, it will be created
-    private func transactionDocument(transactionId: String) -> DocumentReference {
-        transactionCollection.document(transactionId)
-    }
     
     //use a dictionary instead of a struct because we need Document ID generated on Firebase
     func createNewTransaction(categoryId: String, subcategory: String, type: ExpensesType, date: Date, sum: Int, currencyId: String, userId: String) async throws {
@@ -88,8 +85,8 @@ struct DBTransaction : Decodable {
     let subcategory : String
     let type : ExpensesType
     let date : Date
-    let sum : Int
-    let currencyId : String
+    var sum : Int
+    var currencyId : String
     let deleted : Bool
     let userId : String
     

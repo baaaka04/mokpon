@@ -1,39 +1,72 @@
 import Foundation
 
-class ChartsViewModel : ObservableObject {
+@MainActor
+final class ChartsViewModel : ObservableObject {
     
-    @Published var chartData = ComparationChart(monthly: [ChartData](), yearly: [ChartData]())
-    @Published var chartDataList = ComparationList(monthly: [ChartDatalist](), yearly: [ChartDatalist]())
-    
-    @Published var selectedChart : ChartSelected = .bar
+    @Published var selectedChart : ChartType = .bar
     @Published var compareData : Comparation = .monthly
+    
+    @Published var pieChartData : [ChartData] = []
+    @Published var barChartData : [ChartData] = []
     
     var chartDate : ChartsDate = ChartsDate(
         month: Calendar.current.component(.month, from: Date()),
         year: Calendar.current.component(.year, from: Date())
     )
-// calculate totals for barcharts
-    func getTotals (chartDataList: ComparationList, comparation: Comparation) -> [Int] {
-        var curSum = 0
-        var prevSum = 0
         
-        switch comparation {
-        case .monthly:
-            curSum = chartDataList.monthly.reduce(0, {$0 + $1.curSum})
-            prevSum = chartDataList.monthly.reduce(0, {$0 + $1.prevSum})
-        case .yearly:
-            curSum = chartDataList.yearly.reduce(0, {$0 + $1.curSum})
-            prevSum = chartDataList.yearly.reduce(0, {$0 + $1.prevSum})
+    private func convertTransactionsCurrency (transactions: [DBTransaction], newCurrency: Currency) -> [DBTransaction] {
+        let transInMainCurrency = transactions.compactMap { trs -> DBTransaction? in
+            var newTrs = trs
+            guard let oldCurrency = DirectoriesManager.shared.getCurrency(byID: trs.currencyId) else {return nil}
+            newTrs.sum = TransactionManager.shared.convertCurrency(value: trs.sum, from: oldCurrency.name, to: newCurrency.name) ?? 0
+            newTrs.currencyId = newCurrency.id
+            return newTrs
         }
-        return [prevSum, curSum]
+        return transInMainCurrency
     }
-// POST-request to get charts' data
-    func fetchChartsData () async -> Void {
-        let fetchedData = await APIService.shared.fetchChartsData(month: String(chartDate.month), year: String(chartDate.year))
-        await MainActor.run {
-            self.chartData = fetchedData.chartData
-            self.chartDataList = fetchedData.chartDatalist
+    
+    private func getMonthData (mainCurrency: String, year: Int, month: Int) async throws -> [ChartData] {
+        guard let newCurrency = DirectoriesManager.shared.getCurrency(byName: mainCurrency) else {return []}
+        let transactions : [DBTransaction] = try await ChartsManager.shared.getTransactions(year: year, month: month)
+        //convert expenses in main currency
+        let transInMainCurrency = convertTransactionsCurrency(transactions: transactions, newCurrency: newCurrency)
+        //groupBy category
+        let transGroupedByCategory = Dictionary(grouping: transInMainCurrency) { $0.categoryId }
+        
+        let chartsData = transGroupedByCategory.compactMap {
+            (categoryId: String, transactionsForCategory: [DBTransaction]) -> ChartData? in
+            
+            guard let category = DirectoriesManager.shared.getCategory(byID: categoryId) else { return nil }
+            let sum = transactionsForCategory.reduce(0) { $0 - $1.sum }
+            
+            return ChartData(category: category, currency: newCurrency, sum: sum, month: month, year: year)
+        }
+        return chartsData
+            .filter{ dataRow in dataRow.category.type != .income }
+            .sorted { $0.sum > $1.sum }
+    }
+    
+    func getPieChartData (mainCurrency: String) {
+        Task {
+            self.pieChartData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.year, month: chartDate.month)
+        }
+    }
+    
+    func getBarChartData (mainCurrency: String) {
+        Task {
+            let currentMonthData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.year, month: chartDate.month)
+            
+            switch compareData {
+            case .monthly:
+                let previousMonthData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.year, month: chartDate.prevMonth)
+                self.barChartData = previousMonthData + currentMonthData
+            case .yearly:
+                let previousYearData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.prevYear, month: chartDate.month)
+                self.barChartData = previousYearData + currentMonthData
+            }
         }
     }
         
 }
+
+

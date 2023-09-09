@@ -1,10 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct Hotkey {
-    let category : Category
-    let subcategory : String
-}
+
 
 @MainActor
 final class NewTransactionViewModel : ObservableObject {
@@ -16,7 +13,7 @@ final class NewTransactionViewModel : ObservableObject {
     @Published var currentCurrencyInd : Int = 0
     @Published var hotkeys : [Hotkey]? = nil
     
-    //calculator
+    //CALCULATOR
     @Published var memo : Int = 0
     @Published var prevKey : String = "="
     @Published var isCalcVisible : Bool = false
@@ -66,7 +63,10 @@ final class NewTransactionViewModel : ObservableObject {
         self.subCategory = subcategory
         self.type = category.type
     }
-    
+}
+
+//Calculator buttons
+extension NewTransactionViewModel {
     func onPressDigit(number : String) -> Void {
         self.needToErase ? self.sum = 0 : nil
         let prevNumber = self.sum
@@ -113,7 +113,5 @@ final class NewTransactionViewModel : ObservableObject {
         }
         self.prevKey = key // set last action as current for calculations
         self.needToErase = true //clear input for a new number after pushing OperationButton
-        
     }
-        
 }

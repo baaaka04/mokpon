@@ -16,7 +16,6 @@
 		F709306E2956160C0071BF75 /* DebitCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F709306D2956160C0071BF75 /* DebitCard.swift */; };
 		F7130F992A0297D600972B10 /* PieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130F982A0297D600972B10 /* PieChart.swift */; };
 		F7130F9B2A02A18900972B10 /* DictionaryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */; };
-		F7130F9F2A02B34A00972B10 /* ExpenseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130F9E2A02B34A00972B10 /* ExpenseModel.swift */; };
 		F7130FA12A02B55E00972B10 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130FA02A02B55E00972B10 /* BarChartView.swift */; };
 		F7130FA62A03C3BC00972B10 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130FA52A03C3BC00972B10 /* HomeModel.swift */; };
 		F715D615295B3A1100B1177F /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F715D614295B3A1100B1177F /* ColorExtension.swift */; };
@@ -37,6 +36,8 @@
 		F75F77522A9A0B9100C658F1 /* TransactionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77512A9A0B9100C658F1 /* TransactionManager.swift */; };
 		F75F77542A9E3D9200C658F1 /* GlobalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77532A9E3D9200C658F1 /* GlobalViewModel.swift */; };
 		F75F77582AA4828500C658F1 /* AmountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77572AA4828500C658F1 /* AmountManager.swift */; };
+		F75F775A2AA61D3900C658F1 /* ChartsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77592AA61D3900C658F1 /* ChartsManager.swift */; };
+		F75F775C2AA721CE00C658F1 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F775B2AA721CE00C658F1 /* DateExtension.swift */; };
 		F75F90BA29C8A35400FAD621 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F90B929C8A35400FAD621 /* ChartsView.swift */; };
 		F75F90BC29CDE00A00FAD621 /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */; };
 		F7696C782A8A6E61003239E0 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = F7696C772A8A6E61003239E0 /* GoogleSignIn */; };
@@ -85,7 +86,6 @@
 		F709306D2956160C0071BF75 /* DebitCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebitCard.swift; sourceTree = "<group>"; };
 		F7130F982A0297D600972B10 /* PieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChart.swift; sourceTree = "<group>"; };
 		F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryExtension.swift; sourceTree = "<group>"; };
-		F7130F9E2A02B34A00972B10 /* ExpenseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseModel.swift; sourceTree = "<group>"; };
 		F7130FA02A02B55E00972B10 /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
 		F7130FA52A03C3BC00972B10 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
 		F715D614295B3A1100B1177F /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
@@ -108,6 +108,8 @@
 		F75F77512A9A0B9100C658F1 /* TransactionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionManager.swift; sourceTree = "<group>"; };
 		F75F77532A9E3D9200C658F1 /* GlobalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalViewModel.swift; sourceTree = "<group>"; };
 		F75F77572AA4828500C658F1 /* AmountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountManager.swift; sourceTree = "<group>"; };
+		F75F77592AA61D3900C658F1 /* ChartsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsManager.swift; sourceTree = "<group>"; };
+		F75F775B2AA721CE00C658F1 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		F75F90B929C8A35400FAD621 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
 		F7696C7C2A8A7192003239E0 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
@@ -172,7 +174,6 @@
 			isa = PBXGroup;
 			children = (
 				F78417BF29DC4DE9002D1E24 /* ExpensesListView.swift */,
-				F7130F9E2A02B34A00972B10 /* ExpenseModel.swift */,
 				F79971902A2B9B0F001FEED3 /* CategoryExpensesView.swift */,
 				F79971922A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift */,
 			);
@@ -241,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				F715D614295B3A1100B1177F /* ColorExtension.swift */,
+				F75F775B2AA721CE00C658F1 /* DateExtension.swift */,
 				F79971942A2D052A001FEED3 /* StringExtension.swift */,
 				F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */,
 				F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */,
@@ -334,6 +336,7 @@
 				F75F77512A9A0B9100C658F1 /* TransactionManager.swift */,
 				F7696C892A8FA144003239E0 /* UserManager.swift */,
 				F75F77572AA4828500C658F1 /* AmountManager.swift */,
+				F75F77592AA61D3900C658F1 /* ChartsManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -511,6 +514,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F75F90BA29C8A35400FAD621 /* ChartsView.swift in Sources */,
+				F75F775C2AA721CE00C658F1 /* DateExtension.swift in Sources */,
 				F78780502A0E6E4300244B91 /* APIService.swift in Sources */,
 				F7696C7D2A8A7192003239E0 /* Utilities.swift in Sources */,
 				F7130FA62A03C3BC00972B10 /* HomeModel.swift in Sources */,
@@ -532,6 +536,7 @@
 				F719DC06294F0EA600DE1B8E /* ContentView.swift in Sources */,
 				F75F77542A9E3D9200C658F1 /* GlobalViewModel.swift in Sources */,
 				F79971932A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift in Sources */,
+				F75F775A2AA61D3900C658F1 /* ChartsManager.swift in Sources */,
 				F79018C129E93FC7001C231D /* ChartsViewModel.swift in Sources */,
 				F708F691295DDB5900E6E9FA /* AddButton.swift in Sources */,
 				F75F90BC29CDE00A00FAD621 /* ExpenseView.swift in Sources */,
@@ -559,7 +564,6 @@
 				F7FE87A62A14987B005EF3D5 /* CalculatorButton.swift in Sources */,
 				F7696C7F2A8A790D003239E0 /* SignInGoogleHelper.swift in Sources */,
 				F708F6A12964520100E6E9FA /* Keyboard.swift in Sources */,
-				F7130F9F2A02B34A00972B10 /* ExpenseModel.swift in Sources */,
 				F729732E29EC44090007D493 /* ChartsHeaderView.swift in Sources */,
 				F708F69329607D0200E6E9FA /* NewTransactionFormView.swift in Sources */,
 				F7696C8A2A8FA144003239E0 /* UserManager.swift in Sources */,

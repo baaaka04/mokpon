@@ -76,7 +76,6 @@ final class HomeViewModel : ObservableObject {
     }
     
     private func filterTransactions (searchText: String, currentSearchScope: String) {
-//        guard let transactions else {return}
         var transactionsInScope = transactions
         switch currentSearchScope {
         case "All":

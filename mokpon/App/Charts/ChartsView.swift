@@ -4,6 +4,7 @@ import Charts
 struct Charts: View {
     
     @StateObject private var viewModel = ChartsViewModel()
+    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
     
     init() {
         UISegmentedControl.appearance().selectedSegmentTintColor = .white
@@ -26,31 +27,20 @@ struct Charts: View {
                         chartDate: $viewModel.chartDate,
                         compareData: $viewModel.compareData,
                         selectedChart: viewModel.selectedChart,
-                        fetchData: viewModel.fetchChartsData
+                        fetchData: {
+                            viewModel.getPieChartData(mainCurrency: mainCurrency)
+                            viewModel.getBarChartData(mainCurrency: mainCurrency)
+                        }
                     )
                     
                     Spacer()
                     
                     switch viewModel.selectedChart {
                     case .bar:
-                        
-                        BarChartView(
-                            comparation: viewModel.compareData,
-                            chartData: viewModel.chartData,
-                            chartDataList: viewModel.chartDataList,
-                            getTotals: viewModel.getTotals
-                        )
-                        
+                        BarChartView(barChartData: viewModel.barChartData)
                     case .pie:
-                        
-                        let sortedPieData = viewModel.chartDataList.monthly.sorted { a, b in a.curSum > b.curSum }
-                        PieChartView(
-                            values: sortedPieData.map({ expense in Double(expense.curSum) }),
-                            colors: Color.palette,
-                            names: sortedPieData.map{ $0.category},
-                            backgroundColor: .gray
-                        )
-                        .frame(width: 230, height: 230)
+                        PieChartView(chartData: viewModel.pieChartData)
+                            .frame(width: 230, height: 230)
                     }
                 }
                 .frame(height: 350)
@@ -59,16 +49,15 @@ struct Charts: View {
                 .cornerRadius(10)
                 .padding(.horizontal, 20)
                 .task {
-//                    fetchChartsData async function
+                    viewModel.getPieChartData(mainCurrency: mainCurrency)
+                    viewModel.getBarChartData(mainCurrency: mainCurrency)
                 }
                 
                 ExpensesListView(
-                    listData : viewModel.compareData == .monthly
-                    ? viewModel.chartDataList.monthly
-                    : viewModel.chartDataList.yearly,
-                    chartType: viewModel.selectedChart,
-                    chartDate: viewModel.chartDate,
-                    isClickable: viewModel.selectedChart == .pie ? true : false
+                    expenses : viewModel.selectedChart == .bar ? viewModel.barChartData : viewModel.pieChartData,
+                    selectedType: viewModel.selectedChart,
+                    selectedPeriod: viewModel.chartDate,
+                    isClickable: viewModel.selectedChart == .pie
                 )
                 
             }
