@@ -42,7 +42,7 @@ final class ChartsViewModel : ObservableObject {
             return ChartData(category: category, currency: newCurrency, sum: sum, month: month, year: year)
         }
         return chartsData
-            .filter{ dataRow in dataRow.category.type != .income }
+            .filter{ dataRow in dataRow.category.type != .income && dataRow.category.type != .exchange }
             .sorted { $0.sum > $1.sum }
     }
     
