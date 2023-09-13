@@ -20,13 +20,12 @@ final class TransactionManager {
     
     //use a dictionary instead of a struct because we need Document ID generated on Firebase
     func createNewTransaction(categoryId: String, subcategory: String, type: ExpensesType, date: Date, sum: Int, currencyId: String, userId: String) async throws {
-        let negativeSum : Int = -sum
         let documentRef = try await transactionCollection.addDocument(data: [
             "category_id" : categoryId,
             "subcategory" : subcategory.lowercased(),
             "type" : type.rawValue,
             "date" : date,
-            "sum" : type == .income ? sum : negativeSum,
+            "sum" : sum,
             "currency_id" : currencyId,
             "deleted" : false,
             "user_id" : userId

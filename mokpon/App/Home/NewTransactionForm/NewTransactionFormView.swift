@@ -1,24 +1,24 @@
 import SwiftUI
 
+enum NumberPadType {
+    case exchange, original
+}
 
 struct NewTransactionForm: View {
     
-    @ObservedObject var viewModel = NewTransactionViewModel()
+    @ObservedObject var viewModel = NewTransactionViewModel(isExchange: false)
+    @ObservedObject var viewModelExchange = NewTransactionViewModel(isExchange: true)
     @EnvironmentObject var globalViewModel : GlobalViewModel
     @AppStorage("currencyIndex") private var currencyIndex : Int = 0
-        
+    
+    @State private var isExchange : Bool = false
+    @State private var selectedNumberPad : NumberPadType = .original
+    @State private var selectedTabIndex = 1
+    
     @Environment(\.presentationMode) var presentationMode
     
-    func switchCurrency (currencies : [Currency], currentInd: Int) -> (Currency?, Int) {
-        if currencies.count == 0 {return (nil, 0)}
-        let newValue = currentInd + Int(1)
-        let newInd = newValue % currencies.count
-        return (currencies[newInd], newInd)
-    }
-            
     var body: some View {
         VStack {
-            
             HStack{
                 Button {
                     presentationMode.wrappedValue.dismiss()
@@ -26,8 +26,10 @@ struct NewTransactionForm: View {
                     Label(title: {Text("")}, icon: {Image(systemName: "xmark")})
                 }
                 Spacer()
-                Button {viewModel.isCalcVisible = !viewModel.isCalcVisible} label: {
-                    Label(title: {Text("Calculate")}, icon: {Image(systemName: "sum")})
+                Button {
+                    onPressExchange()
+                } label: {
+                    Label(title: {Text("Exchange")}, icon: {Image(systemName: "arrow.triangle.2.circlepath")})
                 }
             }
             .font(.custom("DMSans-Regular", size: 14))
@@ -41,91 +43,58 @@ struct NewTransactionForm: View {
             VStack {
                 Spacer(minLength: 0)
                 //  Sum & Desciption
-                HStack {
-                    Text(viewModel.type != .income ? "-" : "")
-                    Spacer()
-                    HStack {
-                        //CurrencySwitcherView
-                        Text(viewModel.currency?.symbol ?? "n/a")
-                            .onAppear {
-                                viewModel.currency = globalViewModel.currencies?[currencyIndex]
-                                viewModel.currentCurrencyInd = currencyIndex
-                            }
-                            .onTapGesture {
-                                if let currencies = globalViewModel.currencies {
-                                    let (newCurrency, newInd) = switchCurrency(currencies: currencies, currentInd: viewModel.currentCurrencyInd)
-                                    viewModel.currentCurrencyInd = newInd
-                                    viewModel.currency = newCurrency
-                                    currencyIndex = newInd
-                                }
-                            }
-                        Spacer()
-                        Text("\(viewModel.sum)")
-                            .lineLimit(1)
+                NumberPad(sum: viewModel.sum, type: viewModel.type, currency: viewModel.currency, switchCurrency: {switchCurrency(isExchange: false)}, onSwipeRight: {viewModel.onPressBackspace(btn: "")}, isExchange: viewModel.isExchange)
+                    .onAppear {
+                        viewModel.currency = globalViewModel.currencies?[currencyIndex]
+                        viewModel.currentCurrencyInd = currencyIndex
                     }
+                    .foregroundColor( selectedNumberPad == .original && isExchange ? Color.accentColor : nil )
+                    .onTapGesture { selectedNumberPad = .original }
+                
+                if isExchange {
+                    NumberPad(sum: viewModelExchange.sum, type: viewModelExchange.type, currency: viewModelExchange.currency, switchCurrency: {switchCurrency(isExchange: true)}, onSwipeRight: {viewModelExchange.onPressBackspace(btn: "")}, isExchange: true)
+                        .foregroundColor( selectedNumberPad == .exchange ? Color.accentColor : nil )
+                        .onTapGesture { selectedNumberPad = .exchange }
                 }
-                .minimumScaleFactor(0.3)
-                .padding(.vertical, 30)
-                .font(.custom("gothicb", size: 62))
-                .contentShape(Rectangle())
-                .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                    .onEnded { value in
-                        if value.translation.width > 0 {
-                            viewModel.onPressBackspace(btn: "")
-                        }
-                    }
-                )
+
                 Spacer(minLength: 0)
-                // Using ZStack to color the placeholder
-                ZStack(alignment: .leading) {
-                    if viewModel.subCategory.isEmpty {
-                        Text("Add Description")
-                            .foregroundColor(.white.opacity(0.5))
-                            .padding(.horizontal, 10)
-                    }
-                    TextField("", text: $viewModel.subCategory )
-                        .onChange(of: viewModel.subCategory) { _ in
-                            let newText = String(viewModel.subCategory.prefix(35))
-                            viewModel.subCategory = newText
+                
+                if !isExchange { //TODO: create a separated component
+                    SubcategoryInput(subcategory: $viewModel.subCategory)
+                        .frame(height: 30)
+                    
+                    VStack {
+                        TabView (selection: $selectedTabIndex) {
+                            CalculatorView(onPressOperationButton: viewModel.calcualte)
+                                .tag(0)
+                            HotkeysView(
+                                onPressHotkey: viewModel.onPressHotkey,
+                                hotkeys: viewModel.hotkeys,
+                                fetchHotkeys: viewModel.getHotkeys
+                            )
+                            .tag(1)
                         }
-                        .padding(4)
-                        .overlay(Rectangle()
-                            .frame(width: nil, height: 1, alignment: .bottom)
-                            .foregroundColor(.yellow), alignment: .bottom)
-                        .accentColor(.yellow)
-                }
-                .frame(height: 30)
-                VStack {
-                    if viewModel.isCalcVisible {
-                        CalculatorView(onPressOperationButton: viewModel.calcualte)
-                    } else {
-                        HotkeysView(
-                            onPressHotkey: viewModel.onPressHotkey,
-                            hotkeys: viewModel.hotkeys,
-                            fetchHotkeys: viewModel.getHotkeys
+                        .tabViewStyle(.page(indexDisplayMode: .never))
+                        .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .local)
+                            .onEnded { value in
+                                if value.translation.width > 0 { switchTabToHotkeys() }
+                                if value.translation.width < 0 { switchTabToCalculator () }
+                            }
                         )
                     }
+                    .frame(height: 60)
+                    .padding(.bottom, 10)
+                    .overlay(Rectangle().frame(width: nil, height: 1, alignment: .bottom).foregroundColor(.yellow), alignment: .bottom)
                 }
-                .frame(height: 60)
-                .padding(.bottom, 10)
-                .overlay(Rectangle().frame(width: nil, height: 1, alignment: .bottom).foregroundColor(.yellow), alignment: .bottom)
             }
             .padding(.horizontal)
             
-            Keyboard(
-                onPressDigit: viewModel.onPressDigit,
-                onPressClear: viewModel.onPressClear,
-                onPressBackspace: viewModel.onPressBackspace,
-                onSwipeUp: {
-                    Task {
-                        try await viewModel.sendNewTransactionFirebase()
-                        await viewModel.sendNewTransaction()
-                        try await viewModel.updateUserAmounts()
-                        presentationMode.wrappedValue.dismiss()
-                    }
+            Group {
+                switch selectedNumberPad {
+                case .exchange: Keyboard(viewModel: viewModelExchange, onSwipeUp: sendTransaction)
+                case .original: Keyboard(viewModel: viewModel, onSwipeUp: sendTransaction)
                 }
-            )
-            .font(.system(size: 32))
+            }.font(.system(size: 32))
         }
         .foregroundColor(.white)
         .background(Rectangle()
@@ -163,6 +132,50 @@ struct NewTransactionForm: View {
 
 struct NewTransactionForm_Previews: PreviewProvider {
     static var previews: some View {
-        NewTransactionForm()
+        RootView()
+        //        NewTransactionForm()
+    }
+}
+
+extension NewTransactionForm {
+    
+    func sendTransaction () {
+        Task {
+            try await viewModel.sendNewTransactionFirebase()
+            await viewModel.sendNewTransaction()
+            try await viewModel.updateUserAmounts()
+            
+            if isExchange {
+                try await viewModelExchange.sendNewTransactionFirebase()
+                await viewModelExchange.sendNewTransaction()
+                try await viewModelExchange.updateUserAmounts()
+            }
+        }
+    }
+    private func switchCurrency (isExchange: Bool) {
+        if isExchange {
+            viewModelExchange.switchCurrency(currencies: globalViewModel.currencies)
+        } else {
+            currencyIndex = viewModel.switchCurrency(currencies: globalViewModel.currencies)
+        }
+    }
+    private func switchTabToCalculator () {
+        if selectedTabIndex == 0 { withAnimation{ selectedTabIndex = 1 } }
+    }
+    private func switchTabToHotkeys () {
+        if selectedTabIndex == 1 { withAnimation{ selectedTabIndex = 0 } }
+    }
+    private func onPressExchange () {
+        isExchange.toggle()
+        viewModelExchange.currency = viewModel.currency
+        viewModelExchange.currentCurrencyInd = currencyIndex
+        viewModel.type = .exchange
+        viewModelExchange.type = .exchange
+        viewModel.category = globalViewModel.categories?.first { $0.type == .exchange }
+        viewModelExchange.category = globalViewModel.categories?.first { $0.type == .exchange }
+        viewModel.subCategory = "обмен"
+        viewModelExchange.subCategory = "обмен"
+        
+        if selectedNumberPad == .exchange {selectedNumberPad = .original}
     }
 }

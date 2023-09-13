@@ -29,6 +29,7 @@ enum ExpensesType : String, Codable {
     case income = "доход"
     case expense = "опер"
     case invest = "инвест"
+    case exchange
 }
 struct Category : Codable, Identifiable, Hashable {
     let id : String

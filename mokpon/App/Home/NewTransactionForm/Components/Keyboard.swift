@@ -5,7 +5,14 @@ struct Keyboard: View {
     let onPressDigit: @MainActor(_ number: String) -> Void
     let onPressClear: @MainActor(_ btn: String) -> Void
     let onPressBackspace: @MainActor(_ btn: String) -> Void
-    let onSwipeUp: () async -> Void
+    let onSwipeUp: () -> Void
+    
+    init(viewModel : NewTransactionViewModel, onSwipeUp: @escaping() -> Void) {
+        self.onPressDigit = viewModel.onPressDigit
+        self.onPressClear = viewModel.onPressClear
+        self.onPressBackspace = viewModel.onPressBackspace
+        self.onSwipeUp = onSwipeUp
+    }
     
     let columns: [GridItem] = [
         GridItem(.flexible(), spacing: nil, alignment: nil),
@@ -30,7 +37,9 @@ struct Keyboard: View {
         .gesture(DragGesture(minimumDistance: 3.0, coordinateSpace: .local)
             .onEnded { value in
                 switch(value.translation.width, value.translation.height) {
-                case (-100...100, ...0):  Task {await onSwipeUp()}
+                case (-100...100, ...0):
+                    onSwipeUp()
+                    presentationMode.wrappedValue.dismiss()
                 default:  print("no clue")
                 }
             }
@@ -40,11 +49,6 @@ struct Keyboard: View {
 
 struct Keyboard_Previews: PreviewProvider {
     static var previews: some View {
-        Keyboard(
-            onPressDigit: { thb in return},
-            onPressClear: {btn in return },
-            onPressBackspace: {btn in return },
-            onSwipeUp: {}
-        ).background(.black)
+        Keyboard( viewModel: NewTransactionViewModel(isExchange: false), onSwipeUp: {} ).background(.black)
     }
 }

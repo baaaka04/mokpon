@@ -7,7 +7,7 @@ import SwiftUI
 final class NewTransactionViewModel : ObservableObject {
     @Published var sum : Int = 0
     @Published var subCategory = ""
-    @Published var category: Category?
+    @Published var category: Category? = nil
     @Published var type: ExpensesType = .expense
     @Published var currency : Currency? = nil
     @Published var currentCurrencyInd : Int = 0
@@ -16,8 +16,13 @@ final class NewTransactionViewModel : ObservableObject {
     //CALCULATOR
     @Published var memo : Int = 0
     @Published var prevKey : String = "="
-    @Published var isCalcVisible : Bool = false
     @Published var needToErase = false
+    
+    let isExchange : Bool
+    
+    init(isExchange: Bool) {
+        self.isExchange = isExchange
+    }
     
     // Firebase POST request
     func sendNewTransactionFirebase () async throws {
@@ -28,7 +33,7 @@ final class NewTransactionViewModel : ObservableObject {
             subcategory: subCategory,
             type: type,
             date: Date(),
-            sum: sum,
+            sum: type == .income || isExchange ? sum : -sum,
             currencyId: currencyId,
             userId: user.uid
         )
@@ -37,12 +42,12 @@ final class NewTransactionViewModel : ObservableObject {
     func updateUserAmounts () async throws {
         let user = try AuthenticationManager.shared.getAuthenticatedUser()
         guard let currency else {return}
-        try await AmountManager.shared.updateUserAmounts(userId: user.uid, curId: currency.id, sumDiff: type == .income ? sum : -sum)
+        try await AmountManager.shared.updateUserAmounts(userId: user.uid, curId: currency.id, sumDiff: type == .income || isExchange ? sum : -sum)
     }
     
     //    POST Request /newRow route
     func sendNewTransaction () async -> Void {
-        await APIService.shared.sendNewTransaction(categoryName: category?.name, subcategoryName: subCategory, type: type, date: Date(), sum: sum)
+        await APIService.shared.sendNewTransaction(categoryName: category?.name, subcategoryName: subCategory, type: type, date: Date(), sum: isExchange ? -sum : sum)
     }
     // GET Request from Firebase DB for hotkeys
     func getHotkeys() {
@@ -62,6 +67,19 @@ final class NewTransactionViewModel : ObservableObject {
         self.category = category
         self.subCategory = subcategory
         self.type = category.type
+    }
+    
+    @discardableResult
+    func switchCurrency (currencies: [Currency]?) -> Int {
+        guard let currencies,
+              currencies.count != 0 else {return 0}
+        
+        let newValue = self.currentCurrencyInd + Int(1)
+        let newIndex = newValue % currencies.count
+        
+        self.currency = currencies[newIndex]
+        self.currentCurrencyInd = newIndex
+        return newIndex
     }
 }
 
