@@ -16,49 +16,58 @@ struct Type_CategoryView: View {
     var body: some View {
         ZStack{
 //Categories
-            Menu {
-                ForEach(viewModel.categories ?? []) { cat in
-                    Button {
-                        selection = cat
-                        type = cat.type
-                    } label: {
-                        Label { Text(cat.name) } icon: { Image(systemName: cat.icon)  }
+            if type != .exchange {
+                Menu {
+                    ForEach(viewModel.categories ?? []) { cat in
+                        Button {
+                            selection = cat
+                            type = cat.type
+                        } label: {
+                            Label { Text(cat.name) } icon: { Image(systemName: cat.icon)  }
+                        }
+                    }
+                    
+                } label: {
+                    Label(
+                        title: {Text("\(selection?.name ?? "Category")")},
+                        icon: {Image(systemName: "chevron.down")}
+                    )
+                    .font(.custom("DMSans-Regular", size: 10))
+                    .padding(15)
+                    .padding(.horizontal, 30)
+                    .background(Image("Trapeze"))
+                }
+                .offset(y:35)
+            }
+//Type: Income/Expense
+            Group {
+                if type == .exchange {
+                    Text("EXCHANGE")
+                        .frame(height: 47)
+                        .frame(maxWidth: .infinity)
+                } else {
+                    LazyVGrid (columns: columns) {
+                        Button("INCOME") {
+                            type = .income
+                        }
+                        .frame(height: 47)
+                        .frame(maxWidth: .infinity)
+                        .background(type == .income
+                                    ? Color.expense_type.opacity(0.5)
+                                    : Color.white.opacity(0)
+                        )
+
+                        Button("EXPENSE") {
+                            type = .expense
+                        }
+                        .frame(height: 47)
+                        .frame(maxWidth: .infinity)
+                        .background(type == .expense
+                                    ? Color.expense_type.opacity(0.5)
+                                    : Color.white.opacity(0)
+                        )
                     }
                 }
-                
-            } label: {
-                Label(
-                    title: {Text("\(selection?.name ?? "Category")")},
-                    icon: {Image(systemName: "chevron.down")}
-                )
-                .font(.custom("DMSans-Regular", size: 10))
-                .padding(15)
-                .padding(.horizontal, 30)
-                .background(Image("Trapeze"))
-            }
-            .offset(y:35)
-            
-//Type: Income/Expense
-            LazyVGrid (columns: columns) {
-                Button("INCOME") {
-                    type = .income
-                }
-                .frame(height: 47)
-                .frame(maxWidth: .infinity)
-                .background(type == .income
-                            ? Color.expense_type.opacity(0.5)
-                            : Color.white.opacity(0)
-                )
-                
-                Button("EXPENSE") {
-                    type = .expense
-                }
-                .frame(height: 47)
-                .frame(maxWidth: .infinity)
-                .background(type == .expense
-                            ? Color.expense_type.opacity(0.5)
-                            : Color.white.opacity(0)
-                )
             }
             .background(
                 LinearGradient(
@@ -79,7 +88,7 @@ struct Type_CategoryView_Previews: PreviewProvider {
     static var previews: some View {
         Type_CategoryView(
             selection: .constant(nil),
-            type: .constant(ExpensesType.expense)
-        )
+            type: .constant(ExpensesType.exchange)
+        ).environmentObject(GlobalViewModel())
     }
 }

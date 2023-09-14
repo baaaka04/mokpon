@@ -132,8 +132,7 @@ struct NewTransactionForm: View {
 
 struct NewTransactionForm_Previews: PreviewProvider {
     static var previews: some View {
-        RootView()
-        //        NewTransactionForm()
+        NewTransactionForm().environmentObject(GlobalViewModel())
     }
 }
 
@@ -167,13 +166,19 @@ extension NewTransactionForm {
     }
     private func onPressExchange () {
         isExchange.toggle()
+        if viewModel.type == .exchange {
+            viewModel.type = .expense
+            viewModel.category = nil
+            viewModel.subCategory = ""
+        } else {
+            viewModel.type = .exchange
+            viewModel.category = globalViewModel.categories?.first { $0.type == .exchange }
+            viewModel.subCategory = "обмен"
+        }
         viewModelExchange.currency = viewModel.currency
         viewModelExchange.currentCurrencyInd = currencyIndex
-        viewModel.type = .exchange
         viewModelExchange.type = .exchange
-        viewModel.category = globalViewModel.categories?.first { $0.type == .exchange }
         viewModelExchange.category = globalViewModel.categories?.first { $0.type == .exchange }
-        viewModel.subCategory = "обмен"
         viewModelExchange.subCategory = "обмен"
         
         if selectedNumberPad == .exchange {selectedNumberPad = .original}
