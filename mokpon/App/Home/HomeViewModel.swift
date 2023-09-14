@@ -50,22 +50,24 @@ final class HomeViewModel : ObservableObject {
                 } else { return nil } // if couldn't find a category/currency, then skip
             })
             self.allSearchScopes = ["All"] + Set (self.transactions.map { $0.category.name })
-            print("\(Date()): New transactions has been loaded!")
+            print("\(Date()): New transactions have been loaded!")
         }
     }
     
     func getLastTransactions () {
         Task {
+            // Delay (1 second = 1_000_000_000 nanoseconds)
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
             let (newTransactions, lastDocument) = try await TransactionManager.shared.getLastNTransactions(limit: 10)
-            self.transactions.append(contentsOf: newTransactions.compactMap {
+            self.transactions = newTransactions.compactMap {
                 if let category = DirectoriesManager.shared.getCategory(byID: $0.categoryId),
                    let currency = DirectoriesManager.shared.getCurrency(byID: $0.currencyId) {
                     return Transaction(DBTransaction: $0, category: category , currency: currency)
                 } else { return nil } // if couldn't find a category/currency, then skip
-            })
+            }
             self.allSearchScopes = ["All"] + Set (self.transactions.map { $0.category.name })
             self.lastDocument = lastDocument
-            print("\(Date()): Last transactions has been loaded!")
+            print("\(Date()): Last transactions have been loaded!")
         }
     }
     
@@ -95,9 +97,14 @@ final class HomeViewModel : ObservableObject {
         })
     }
         
-    func getUserAmounts () async throws {
-        let user = try AuthenticationManager.shared.getAuthenticatedUser()
-        self.amounts = try await AmountManager.shared.getUserAmounts(userId: user.uid)
+    func getUserAmounts () {
+        Task {
+            // Delay (1 second = 1_000_000_000 nanoseconds)
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            let user = try AuthenticationManager.shared.getAuthenticatedUser()
+            self.amounts = try await AmountManager.shared.getUserAmounts(userId: user.uid)
+            print("\(Date()): Amounts have been updated!")
+        }
     }
     
     func updateUserAmount(curId: String, sumDiff: Int) async throws {

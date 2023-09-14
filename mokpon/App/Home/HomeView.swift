@@ -13,9 +13,7 @@ struct Home: View {
                     
                     DebitCard(amounts: vm.amounts)
                         .onAppear {
-                            Task {
-                                try await vm.getUserAmounts()
-                            }
+                            vm.getUserAmounts()
                         }
                     
                     Currencies(
@@ -71,9 +69,7 @@ struct Home: View {
             .refreshable {
                 vm.getLastTransactions()
                 vm.fetchCurrencyRates()
-                Task {
-                    try await vm.getUserAmounts()
-                }
+                vm.getUserAmounts()
             }
             
             

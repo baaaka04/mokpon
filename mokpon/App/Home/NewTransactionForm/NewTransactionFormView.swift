@@ -150,6 +150,7 @@ extension NewTransactionForm {
                 try await viewModelExchange.updateUserAmounts()
             }
         }
+        presentationMode.wrappedValue.dismiss()
     }
     private func switchCurrency (isExchange: Bool) {
         if isExchange {

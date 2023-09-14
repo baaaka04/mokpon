@@ -19,9 +19,7 @@ struct Keyboard: View {
         GridItem(.flexible(), spacing: nil, alignment: nil),
         GridItem(.flexible(), spacing: nil, alignment: nil),
     ]
-    
-    @Environment(\.presentationMode) var presentationMode
-    
+        
     var body: some View {
         
         LazyVGrid (columns: columns) {
@@ -37,9 +35,7 @@ struct Keyboard: View {
         .gesture(DragGesture(minimumDistance: 3.0, coordinateSpace: .local)
             .onEnded { value in
                 switch(value.translation.width, value.translation.height) {
-                case (-100...100, ...0):
-                    onSwipeUp()
-                    presentationMode.wrappedValue.dismiss()
+                case (-100...100, ...0): onSwipeUp()
                 default:  print("no clue")
                 }
             }

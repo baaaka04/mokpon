@@ -37,6 +37,7 @@ final class NewTransactionViewModel : ObservableObject {
             currencyId: currencyId,
             userId: user.uid
         )
+        print("\(Date()): Transaction has been sent")
     }
     
     func updateUserAmounts () async throws {
