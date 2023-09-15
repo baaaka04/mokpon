@@ -6,18 +6,18 @@ struct DebitCard: View {
     
     var body: some View {
         ZStack {
-            VStack{
-                Spacer()
-                
-                HStack{
-                    Image("Chip")
-                    Image("Wireless")
+            ZStack{
+                HStack {
+                    HStack {
+                        Image("Chip")
+                        Image("Wireless")
+                    }
                     Spacer()
                     VStack {
                         if let amounts {
                             ForEach(amounts, id: \.curId) { amount in
                                 HStack {
-                                let currency = DirectoriesManager.shared.getCurrency(byID: amount.curId)
+                                    let currency = DirectoriesManager.shared.getCurrency(byID: amount.curId)
                                     Spacer(minLength: 0)
                                     Text("\(currency?.symbol ?? "?") \(amount.sum)")
                                 }
@@ -27,24 +27,26 @@ struct DebitCard: View {
                         } else { ProgressView() }
                     }
                 }
-                .padding()
-                HStack (alignment: .bottom){
-                    Text("ARTEM BEREZIN")
+                VStack {
                     Spacer()
-                    ZStack{
-                        Circle()
-                            .frame(width:45)
-                            .foregroundColor(.red.opacity(0.7))
-                            .offset(x:12)
-                        Circle()
-                            .frame(width:45)
-                            .foregroundColor(.orange.opacity(0.7))
-                            .offset(x:-12)
+                    HStack (alignment: .bottom){
+                        Text("ARTEM BEREZIN")
+                        Spacer()
+                        ZStack{
+                            Circle()
+                                .frame(width:45)
+                                .foregroundColor(.red.opacity(0.7))
+                                .offset(x:12)
+                            Circle()
+                                .frame(width:45)
+                                .foregroundColor(.orange.opacity(0.7))
+                                .offset(x:-12)
+                        }
+                        .frame(width: 75)
                     }
-                    .frame(width: 75)
                 }
-                .padding()
             }
+            .padding()
         }
         .frame(width: 320, height: 230)
         .background(
