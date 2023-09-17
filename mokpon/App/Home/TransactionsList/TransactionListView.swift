@@ -59,8 +59,7 @@ struct TransactionListView: View {
                                 let theItem = transGrouped.value[i]
                                 Task {
                                     deleteTransaction(theItem.id)
-                                    let sumDiff = theItem.type == .income ? theItem.sum : -theItem.sum
-                                    try await updateUserAmounts(theItem.currency.id, sumDiff)
+                                    try await updateUserAmounts(theItem.currency.id, -theItem.sum)
                                     getTransactions()
                                 }
                             }
