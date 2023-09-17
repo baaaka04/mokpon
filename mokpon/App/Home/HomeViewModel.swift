@@ -56,8 +56,6 @@ final class HomeViewModel : ObservableObject {
     
     func getLastTransactions () {
         Task {
-            // Delay (1 second = 1_000_000_000 nanoseconds)
-            try? await Task.sleep(nanoseconds: 1_500_000_000)
             let (newTransactions, lastDocument) = try await TransactionManager.shared.getLastNTransactions(limit: 10)
             self.transactions = newTransactions.compactMap {
                 if let category = DirectoriesManager.shared.getCategory(byID: $0.categoryId),
@@ -99,8 +97,6 @@ final class HomeViewModel : ObservableObject {
         
     func getUserAmounts () {
         Task {
-            // Delay (1 second = 1_000_000_000 nanoseconds)
-            try? await Task.sleep(nanoseconds: 1_500_000_000)
             let user = try AuthenticationManager.shared.getAuthenticatedUser()
             self.amounts = try await AmountManager.shared.getUserAmounts(userId: user.uid)
             print("\(Date()): Amounts have been updated!")
