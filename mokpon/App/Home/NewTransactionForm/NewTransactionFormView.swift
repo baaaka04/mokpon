@@ -140,13 +140,11 @@ extension NewTransactionForm {
     
     func sendTransaction () {
         Task {
-            try await viewModel.sendNewTransactionFirebase()
-            await viewModel.sendNewTransaction()
+            try await viewModel.sendNewTransaction()
             try await viewModel.updateUserAmounts()
             
             if isExchange {
-                try await viewModelExchange.sendNewTransactionFirebase()
-                await viewModelExchange.sendNewTransaction()
+                try await viewModelExchange.sendNewTransaction()
                 try await viewModelExchange.updateUserAmounts()
             }
             presentationMode.wrappedValue.dismiss()

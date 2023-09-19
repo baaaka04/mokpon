@@ -26,7 +26,6 @@
 		F719DC14294F344600DE1B8E /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719DC13294F344600DE1B8E /* TransactionListView.swift */; };
 		F729732C29EC40C50007D493 /* ChartsNavBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F729732B29EC40C50007D493 /* ChartsNavBarView.swift */; };
 		F729732E29EC44090007D493 /* ChartsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F729732D29EC44090007D493 /* ChartsHeaderView.swift */; };
-		F729733329F035390007D493 /* CalculatorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F729733229F035390007D493 /* CalculatorModel.swift */; };
 		F735AB2D29549274007DFBDA /* DMSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F735AB2C29549274007DFBDA /* DMSans-Regular.ttf */; };
 		F73DD5E52A0A78B8001BCDAC /* AllTransactuionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73DD5E42A0A78B8001BCDAC /* AllTransactuionsView.swift */; };
 		F74128C5298FEA98006D2A8B /* Currencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74128C4298FEA98006D2A8B /* Currencies.swift */; };
@@ -99,7 +98,6 @@
 		F719DC13294F344600DE1B8E /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
 		F729732B29EC40C50007D493 /* ChartsNavBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsNavBarView.swift; sourceTree = "<group>"; };
 		F729732D29EC44090007D493 /* ChartsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsHeaderView.swift; sourceTree = "<group>"; };
-		F729733229F035390007D493 /* CalculatorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorModel.swift; sourceTree = "<group>"; };
 		F735AB2C29549274007DFBDA /* DMSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMSans-Regular.ttf"; sourceTree = "<group>"; };
 		F735AB30295494B9007DFBDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F73DD5E42A0A78B8001BCDAC /* AllTransactuionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTransactuionsView.swift; sourceTree = "<group>"; };
@@ -196,7 +194,6 @@
 			isa = PBXGroup;
 			children = (
 				F7130FA42A03875700972B10 /* Calculator */,
-				F7FE87A52A14987B005EF3D5 /* CalculatorButton.swift */,
 				F789C06429BA12F7002FBBF7 /* HotkeysView.swift */,
 				F708F6A02964520100E6E9FA /* Keyboard.swift */,
 				F75F77612AADF76000C658F1 /* NumberPad.swift */,
@@ -209,8 +206,8 @@
 		F7130FA42A03875700972B10 /* Calculator */ = {
 			isa = PBXGroup;
 			children = (
+				F7FE87A52A14987B005EF3D5 /* CalculatorButton.swift */,
 				F7EADA7429C46DF200B177C9 /* CalculatorView.swift */,
-				F729733229F035390007D493 /* CalculatorModel.swift */,
 			);
 			path = Calculator;
 			sourceTree = "<group>";
@@ -559,7 +556,6 @@
 				F7EADA7B29C5C03600B177C9 /* HomeView.swift in Sources */,
 				F7EADA7929C5BDBD00B177C9 /* NavBarModel.swift in Sources */,
 				F708F68F295DD09500E6E9FA /* HomeViewModel.swift in Sources */,
-				F729733329F035390007D493 /* CalculatorModel.swift in Sources */,
 				F7696C912A924D09003239E0 /* DirectoriesManager.swift in Sources */,
 				F74128C5298FEA98006D2A8B /* Currencies.swift in Sources */,
 				F7130F992A0297D600972B10 /* PieChart.swift in Sources */,

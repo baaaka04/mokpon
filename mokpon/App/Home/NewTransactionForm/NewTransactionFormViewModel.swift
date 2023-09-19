@@ -25,7 +25,7 @@ final class NewTransactionViewModel : ObservableObject {
     }
     
     // Firebase POST request
-    func sendNewTransactionFirebase () async throws {
+    func sendNewTransaction () async throws {
         let user = try AuthenticationManager.shared.getAuthenticatedUser()
         guard let currencyId = currency?.id else {return}
         try await TransactionManager.shared.createNewTransaction(
@@ -46,10 +46,6 @@ final class NewTransactionViewModel : ObservableObject {
         try await AmountManager.shared.updateUserAmounts(userId: user.uid, curId: currency.id, sumDiff: type == .income || isExchange ? sum : -sum)
     }
     
-    //    POST Request /newRow route
-    func sendNewTransaction () async -> Void {
-        await APIService.shared.sendNewTransaction(categoryName: category?.name, subcategoryName: subCategory, type: type, date: Date(), sum: isExchange ? -sum : sum)
-    }
     // GET Request from Firebase DB for hotkeys
     func getHotkeys() {
         Task {
