@@ -13,7 +13,6 @@ struct NewTransactionForm: View {
     
     @State private var isExchange : Bool = false
     @State private var selectedNumberPad : NumberPadType = .original
-    @State private var selectedTabIndex = 1
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -55,37 +54,17 @@ struct NewTransactionForm: View {
                     NumberPad(sum: viewModelExchange.sum, type: viewModelExchange.type, currency: viewModelExchange.currency, switchCurrency: {switchCurrency(isExchange: true)}, onSwipeRight: {viewModelExchange.onPressBackspace(btn: "")}, isExchange: true)
                         .foregroundColor( selectedNumberPad == .exchange ? Color.accentColor : nil )
                         .onTapGesture { selectedNumberPad = .exchange }
-                }
-
-                Spacer(minLength: 0)
-                
-                if !isExchange { //TODO: create a separated component
+                } else {
                     SubcategoryInput(subcategory: $viewModel.subCategory)
                         .frame(height: 30)
-                    
-                    VStack {
-                        TabView (selection: $selectedTabIndex) {
-                            CalculatorView(onPressOperationButton: viewModel.calcualte)
-                                .tag(0)
-                            HotkeysView(
-                                onPressHotkey: viewModel.onPressHotkey,
-                                hotkeys: viewModel.hotkeys,
-                                fetchHotkeys: viewModel.getHotkeys
-                            )
-                            .tag(1)
-                        }
-                        .tabViewStyle(.page(indexDisplayMode: .never))
-                        .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .local)
-                            .onEnded { value in
-                                if value.translation.width > 0 { switchTabToHotkeys() }
-                                if value.translation.width < 0 { switchTabToCalculator () }
-                            }
-                        )
-                    }
-                    .frame(height: 60)
-                    .padding(.bottom, 10)
-                    .overlay(Rectangle().frame(width: nil, height: 1, alignment: .bottom).foregroundColor(.yellow), alignment: .bottom)
+                    SliderPad(
+                        onPressOperationButton: viewModel.calcualte,
+                        onPressHotkey: viewModel.onPressHotkey,
+                        hotkeys: viewModel.hotkeys,
+                        fetchHotkeys: viewModel.getHotkeys
+                    )
                 }
+                Spacer(minLength: 0)
             }
             .padding(.horizontal)
             
@@ -156,12 +135,6 @@ extension NewTransactionForm {
         } else {
             currencyIndex = viewModel.switchCurrency(currencies: globalViewModel.currencies)
         }
-    }
-    private func switchTabToCalculator () {
-        if selectedTabIndex == 0 { withAnimation{ selectedTabIndex = 1 } }
-    }
-    private func switchTabToHotkeys () {
-        if selectedTabIndex == 1 { withAnimation{ selectedTabIndex = 0 } }
     }
     private func onPressExchange () {
         isExchange.toggle()
