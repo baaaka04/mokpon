@@ -11,21 +11,7 @@ struct ContentView: View {
             GeometryReader{ geo in
                 
                 ZStack {
-                    Rectangle()
-                        .fill(
-                            EllipticalGradient(
-                                gradient: Gradient(colors: [
-                                    Color.bg_secondary,
-                                    Color.bg_main
-                                ]),
-                                center: .center,
-                                startRadiusFraction: 0.01,
-                                endRadiusFraction: 0.5
-                            )
-                        )
-                        .frame(width: 700, height: 450)
-                        .position(x: 30, y: -140)
-                        .opacity(0.5)
+                    BackgroundCloud(posX: 30, posY: -140, width: 700, height: 450)
                     
                     switch currentRoute {
                     case .home:

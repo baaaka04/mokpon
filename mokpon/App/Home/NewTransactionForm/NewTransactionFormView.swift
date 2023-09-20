@@ -76,35 +76,8 @@ struct NewTransactionForm: View {
             }.font(.system(size: 32))
         }
         .foregroundColor(.white)
-        .background(Rectangle()
-            .fill(EllipticalGradient(
-                gradient: Gradient(colors: [
-                    Color.bg_secondary,
-                    Color.bg_main,
-                ]),
-                center: .center,
-                startRadiusFraction: 0.01,
-                endRadiusFraction: 0.5)
-            )
-                .ignoresSafeArea()
-                .frame(width: 700, height: 450)
-                .position(x: -30, y: -140)
-                .opacity(0.5)
-        )
-        .background(Rectangle()
-            .fill(EllipticalGradient(
-                gradient: Gradient(colors: [
-                    Color.bg_secondary,
-                    Color.bg_main
-                ]),
-                center: .center,
-                startRadiusFraction: 0.01,
-                endRadiusFraction: 0.5)
-            )
-                .frame(height: 1500)
-                .offset(y: 600)
-                .opacity(0.3)
-        )
+        .background(BackgroundCloud(height: 1500).offset(y:700))
+        .background(BackgroundCloud(posX: -30, posY: -140, width: 700, height: 450))
         .background(Color.bg_main.ignoresSafeArea())
     }
 }

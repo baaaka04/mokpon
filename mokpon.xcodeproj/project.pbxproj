@@ -30,6 +30,7 @@
 		F73DD5E52A0A78B8001BCDAC /* AllTransactuionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73DD5E42A0A78B8001BCDAC /* AllTransactuionsView.swift */; };
 		F74128C5298FEA98006D2A8B /* Currencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74128C4298FEA98006D2A8B /* Currencies.swift */; };
 		F7470F6E2AB98B0F00DB4847 /* SliderPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7470F6D2AB98B0F00DB4847 /* SliderPad.swift */; };
+		F7470F702AB9C99600DB4847 /* BackgroundCloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7470F6F2AB9C99600DB4847 /* BackgroundCloud.swift */; };
 		F754A44729D6F3E7004A61C8 /* PieSliceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F754A44629D6F3E7004A61C8 /* PieSliceView.swift */; };
 		F754A44A29D704D9004A61C8 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F754A44929D704D9004A61C8 /* PieChartView.swift */; };
 		F75F77502A98E35E00C658F1 /* FireStoreQueryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */; };
@@ -104,6 +105,7 @@
 		F73DD5E42A0A78B8001BCDAC /* AllTransactuionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTransactuionsView.swift; sourceTree = "<group>"; };
 		F74128C4298FEA98006D2A8B /* Currencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currencies.swift; sourceTree = "<group>"; };
 		F7470F6D2AB98B0F00DB4847 /* SliderPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderPad.swift; sourceTree = "<group>"; };
+		F7470F6F2AB9C99600DB4847 /* BackgroundCloud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundCloud.swift; sourceTree = "<group>"; };
 		F754A44629D6F3E7004A61C8 /* PieSliceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieSliceView.swift; sourceTree = "<group>"; };
 		F754A44929D704D9004A61C8 /* PieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreQueryExtension.swift; sourceTree = "<group>"; };
@@ -229,6 +231,7 @@
 			children = (
 				F708F690295DDB5900E6E9FA /* AddButton.swift */,
 				F709306D2956160C0071BF75 /* DebitCard.swift */,
+				F7470F6F2AB9C99600DB4847 /* BackgroundCloud.swift */,
 				F74128C4298FEA98006D2A8B /* Currencies.swift */,
 				F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */,
 			);
@@ -564,6 +567,7 @@
 				F7130F992A0297D600972B10 /* PieChart.swift in Sources */,
 				F715D615295B3A1100B1177F /* ColorExtension.swift in Sources */,
 				F7E42C9B2A7AABA3004E0BDE /* RootView.swift in Sources */,
+				F7470F702AB9C99600DB4847 /* BackgroundCloud.swift in Sources */,
 				F79971912A2B9B0F001FEED3 /* CategoryExpensesView.swift in Sources */,
 				F78417C029DC4DE9002D1E24 /* ExpensesListView.swift in Sources */,
 				F719DC04294F0EA600DE1B8E /* mokponApp.swift in Sources */,
