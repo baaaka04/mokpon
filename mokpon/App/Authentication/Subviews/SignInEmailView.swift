@@ -8,57 +8,57 @@ struct SignInEmailView: View {
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        VStack {
-            TextField("Email...", text: $viewModel.email)
-                .padding()
-                .background(.gray.opacity(0.4))
-                .cornerRadius(10)
-            SecureField("Password...", text: $viewModel.password)
-                .padding()
-                .background(.gray.opacity(0.4))
-                .cornerRadius(10)
-            Button {
-                Task {
-                    if let user = viewModel.user, user.isAnonymous ?? false {
-                        do {
-                            try await viewModel.linkEmailAccount()
-                            print("EMAIL LINKED")
-                            presentationMode.wrappedValue.dismiss()
-                            return
-                        } catch {
-                            print(error)
-                        }
-                    } else {
-                        do {
-                            try await viewModel.signUp()
-                            showSignInView = false
-                            return
-                        } catch {
-                            print(error)
-                        }
-                        do {
-                            try await viewModel.signIn()
-                            showSignInView = false
-                            return
-                        } catch {
-                            print(error)
+        ZStack {
+            BackgroundCloud(posX: 230, posY: 740, width: 600, height: 450)
+            VStack (spacing: 20) {
+                TextField("Email...", text: $viewModel.email)
+                    .padding()
+                    .background(.gray.opacity(0.4))
+                    .cornerRadius(10)
+                SecureField("Password...", text: $viewModel.password)
+                    .padding()
+                    .background(.gray.opacity(0.4))
+                    .cornerRadius(10)
+                Button {
+                    Task {
+                        if let user = viewModel.user, user.isAnonymous ?? false {
+                            do {
+                                try await viewModel.linkEmailAccount()
+                                print("EMAIL LINKED")
+                                presentationMode.wrappedValue.dismiss()
+                                return
+                            } catch {
+                                print(error)
+                            }
+                        } else {
+                            do {
+                                try await viewModel.signUp()
+                                showSignInView = false
+                                return
+                            } catch {
+                                print(error)
+                            }
+                            do {
+                                try await viewModel.signIn()
+                                showSignInView = false
+                                return
+                            } catch {
+                                print(error)
+                            }
                         }
                     }
+                } label: {
+                    Text("Sign In").gradient()
                 }
-            } label: {
-                Text("Sign In")
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(.blue)
-                    .cornerRadius(10)
+                Spacer()
             }
-            Spacer()
+            .navigationTitle("Signing in with Email")
+            .padding()
+            .task {
+                try? await viewModel.loadAuthUser()
+            }
         }
-        .padding()
-        .task {
-            try? await viewModel.loadAuthUser()
-        }
+        .background(Color.bg_main.ignoresSafeArea())
     }
 }
 

@@ -31,6 +31,7 @@
 		F74128C5298FEA98006D2A8B /* Currencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74128C4298FEA98006D2A8B /* Currencies.swift */; };
 		F7470F6E2AB98B0F00DB4847 /* SliderPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7470F6D2AB98B0F00DB4847 /* SliderPad.swift */; };
 		F7470F702AB9C99600DB4847 /* BackgroundCloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7470F6F2AB9C99600DB4847 /* BackgroundCloud.swift */; };
+		F7470F722ABAED8600DB4847 /* TextExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7470F712ABAED8600DB4847 /* TextExtension.swift */; };
 		F754A44729D6F3E7004A61C8 /* PieSliceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F754A44629D6F3E7004A61C8 /* PieSliceView.swift */; };
 		F754A44A29D704D9004A61C8 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F754A44929D704D9004A61C8 /* PieChartView.swift */; };
 		F75F77502A98E35E00C658F1 /* FireStoreQueryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */; };
@@ -106,6 +107,7 @@
 		F74128C4298FEA98006D2A8B /* Currencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currencies.swift; sourceTree = "<group>"; };
 		F7470F6D2AB98B0F00DB4847 /* SliderPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderPad.swift; sourceTree = "<group>"; };
 		F7470F6F2AB9C99600DB4847 /* BackgroundCloud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundCloud.swift; sourceTree = "<group>"; };
+		F7470F712ABAED8600DB4847 /* TextExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextExtension.swift; sourceTree = "<group>"; };
 		F754A44629D6F3E7004A61C8 /* PieSliceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieSliceView.swift; sourceTree = "<group>"; };
 		F754A44929D704D9004A61C8 /* PieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreQueryExtension.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 				F75F775B2AA721CE00C658F1 /* DateExtension.swift */,
 				F79971942A2D052A001FEED3 /* StringExtension.swift */,
 				F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */,
+				F7470F712ABAED8600DB4847 /* TextExtension.swift */,
 				F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */,
 			);
 			path = Extensions;
@@ -539,6 +542,7 @@
 				F7130FA12A02B55E00972B10 /* BarChartView.swift in Sources */,
 				F75F77522A9A0B9100C658F1 /* TransactionManager.swift in Sources */,
 				F7130F9B2A02A18900972B10 /* DictionaryExtension.swift in Sources */,
+				F7470F722ABAED8600DB4847 /* TextExtension.swift in Sources */,
 				F75F77502A98E35E00C658F1 /* FireStoreQueryExtension.swift in Sources */,
 				F75F77582AA4828500C658F1 /* AmountManager.swift in Sources */,
 				F79971952A2D052A001FEED3 /* StringExtension.swift in Sources */,

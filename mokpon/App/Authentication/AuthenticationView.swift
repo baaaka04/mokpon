@@ -13,33 +13,14 @@ struct AuthenticationView: View {
             ZStack {
                 BackgroundCloud(posX: 230, posY: 740, width: 600, height: 450)
                 
-                VStack {
+                VStack (spacing: 15) {
                     
                     Image("AuthLogo")
                     Spacer()
                     NavigationLink {
                         SignInEmailView(showSignInView: $showSignInView)
                     } label: {
-                        Text("Sign In with Email")
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(
-                                LinearGradient(
-                                    gradient:
-                                        Gradient(colors: [
-                                            Color.addbutton_secondary,
-                                            Color.addbutton_main,
-                                        ]),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                            .cornerRadius(15)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 15)
-                                    .strokeBorder(Color.white.opacity(0.5),lineWidth: 1)
-                            )
+                        Text("Sign In with Email").gradient()
                     }
                     
                     GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .dark, style: .wide, state: .normal)) {
