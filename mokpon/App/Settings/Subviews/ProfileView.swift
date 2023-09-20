@@ -6,20 +6,31 @@ struct ProfileView: View {
     
     var body: some View {
         VStack {
-            Text("User ID: \(user?.userId ?? "not found")")
+            HStack (spacing: 20) {
+                Image(systemName: "person")
+                    .resizable()
+                    .padding()
+                    .frame(maxWidth: 80, maxHeight: 80)
+                    .foregroundColor(.bg_main)
+                    .background(Color.white.opacity(0.7))
+                    .cornerRadius(100)
+                Text("Email: \(user?.email ?? "not found")")
+                Spacer()
+            }
             
-            if let isAnonymous = user?.isAnonymous {
-                Text("Is Anonymous: \(isAnonymous.description.capitalized)")
-            }
-            if let photo = user?.photoUrl {
-                Text("Photo URL: \(photo)")
-            }
         }
+        .frame(maxWidth: .infinity)
+        .padding(10)
+        .background(.white.opacity(0.1))
+        .cornerRadius(20)
     }
 }
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        SettingsView(showSingInView: .constant(false))
+            .background(Color.bg_main)
+            .environmentObject(GlobalViewModel())
+            .preferredColorScheme(.dark)
     }
 }

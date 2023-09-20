@@ -10,8 +10,11 @@ struct SettingsView: View {
     
     var body: some View {
         VStack {
+            Text("Settings")
+                .font(.title3.width(.expanded))
+                .foregroundColor(.white)
             ProfileView(user: viewModel.user)
-            
+                .padding()
             List {
                 Button {
                     Task {
@@ -25,7 +28,7 @@ struct SettingsView: View {
                     }
                     
                 } label: {
-                    Text("LogOut")
+                    Text("Logout")
                 }
                 Button (role: .destructive) {
                     showAlert = true
@@ -60,7 +63,7 @@ struct SettingsView: View {
                         } label: {
                             Text("Selected currency: ")
                         }
-
+                        
                     } header: {
                         Text("Main currency")
                     }
@@ -74,6 +77,7 @@ struct SettingsView: View {
                     anonymousSection
                 }
             }
+            .scrollContentBackground(.hidden)
         }
         .foregroundColor(.accentColor)
         .task {
@@ -85,7 +89,8 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(showSingInView: .constant(true))
+        ContentView(showSignInView: .constant(false))
+//        SettingsView(showSingInView: .constant(true))
             .environmentObject(GlobalViewModel())
             .preferredColorScheme(.dark)
     }
@@ -117,7 +122,7 @@ extension SettingsView {
     private var anonymousSection: some View {
         
         Section {
-            Button ("SignIn with Google") {
+            Button ("Link Google account") {
                 Task {
                     do {
                         try await viewModel.linkGoogleAccount()
@@ -130,7 +135,7 @@ extension SettingsView {
             NavigationLink {
                 SignInEmailView(showSignInView: .constant(false))
             } label: {
-                Text("Sign In with Email")
+                Text("Link Email")
             }
             
         } header: {
