@@ -11,12 +11,15 @@ struct Home: View {
             ScrollView {
                 VStack{
                     
-                    DebitCard()
+                    DebitCard(amounts: vm.amounts)
+                        .onAppear {
+                            vm.getUserAmounts()
+                        }
                     
                     Currencies(
-                        fetchCurrency: vm.fetchCurrency,
-                        usdrub: vm.currencies.RUB,
-                        usdkgs: vm.currencies.KGS
+                        fetchCurrencyRates: vm.fetchCurrencyRates,
+                        usdrub: vm.currencyRates?.RUB,
+                        usdkgs: vm.currencyRates?.KGS
                     )
                     .padding(.horizontal, 40)
                     .padding(.vertical, 10)
@@ -35,8 +38,9 @@ struct Home: View {
                             .popover(isPresented: $vm.showAllTransactions) {
                                 AllTransactuionsView (
                                     transactions: vm.isSearching ? vm.filteredTransactions : vm.transactions,
-                                    fetchTransactions: vm.fetchTransactions,
-                                    isLoading: vm.isLoading,
+                                    getTransactions: vm.getTransactions,
+                                    deleteTransaction: vm.deleteTransaction,
+                                    updateUserAmounts: vm.updateUserAmount,
                                     showView: $vm.showAllTransactions,
                                     scopes: vm.allSearchScopes,
                                     searchText: $vm.searchtext,
@@ -47,10 +51,12 @@ struct Home: View {
                         }
                         .padding(.top)
                         TransactionListView(
-                            transactions: vm.transactions.count < 5 ? vm.transactions : Array(vm.transactions[0...4]),
-                            fetchTransactions: vm.fetchTransactions,
-                            isLoading: vm.isLoading,
-                            setupSearching: { isSearching in  }
+                            transactions: vm.transactions,
+                            getTransactions: vm.getLastTransactions,
+                            deleteTransaction : vm.deleteTransaction,
+                            updateUserAmounts: vm.updateUserAmount,
+                            setupSearching: { isSearching in  },
+                            transactionLimit: 5 //show only last 5 transactions
                         )
                     }
                     .padding(.horizontal)
@@ -61,12 +67,9 @@ struct Home: View {
                 .frame(minHeight: 1100)
             }
             .refreshable {
-                Task {
-                    await vm.fetchTransactions()
-                }
-                Task {
-                    await vm.fetchCurrency()
-                }
+                vm.getLastTransactions()
+                vm.fetchCurrencyRates()
+                vm.getUserAmounts()
             }
             
             
@@ -77,7 +80,7 @@ struct Home: View {
                     Spacer()
                     NavigationLink(
                         destination:
-                            NewTransactionForm(sendNewTransaction: vm.sendNewTransaction)
+                            NewTransactionForm()
                             .navigationBarHidden(true),
                         label: {
                             AddButton()

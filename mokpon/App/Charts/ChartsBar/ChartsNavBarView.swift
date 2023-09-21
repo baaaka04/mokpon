@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ChartsNavBarView: View {
     
-    @Binding var chartType : ChartSelected
+    @Binding var chartType : ChartType
     
     var body: some View {
         

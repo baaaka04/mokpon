@@ -1,42 +1,87 @@
 import Foundation
+import SwiftUI
 
 
-class NewTransactionViewModel : ObservableObject {
+
+@MainActor
+final class NewTransactionViewModel : ObservableObject {
     @Published var sum : Int = 0
     @Published var subCategory = ""
-    @Published var category: String?
+    @Published var category: Category? = nil
     @Published var type: ExpensesType = .expense
-    @Published var currency : Currency = .KGS
+    @Published var currency : Currency? = nil
+    @Published var currentCurrencyInd : Int = 0
+    @Published var hotkeys : [Hotkey]? = nil
     
-    //calculator
+    //CALCULATOR
     @Published var memo : Int = 0
     @Published var prevKey : String = "="
-    @Published var isCalcVisible : Bool = false
     @Published var needToErase = false
-    //calculator
     
-    @Published var hotkeys : [[String]] = [[]]
+    let isExchange : Bool
     
-    func fetchHotkeys() async -> Void {
-        let fetchedData = await APIService.shared.fetchHotkeys()
-        await MainActor.run {
-            self.hotkeys = fetchedData
+    init(isExchange: Bool) {
+        self.isExchange = isExchange
+    }
+    
+    // Firebase POST request
+    func sendNewTransaction () async throws {
+        let user = try AuthenticationManager.shared.getAuthenticatedUser()
+        guard let currencyId = currency?.id else {return}
+        try await TransactionManager.shared.createNewTransaction(
+            categoryId: category?.id ?? "n/a",
+            subcategory: subCategory,
+            type: type,
+            date: Date(),
+            sum: type == .income || isExchange ? sum : -sum,
+            currencyId: currencyId,
+            userId: user.uid
+        )
+        print("\(Date()): Transaction has been sent")
+    }
+    
+    func updateUserAmounts () async throws {
+        let user = try AuthenticationManager.shared.getAuthenticatedUser()
+        guard let currency else {return}
+        try await AmountManager.shared.updateUserAmounts(userId: user.uid, curId: currency.id, sumDiff: type == .income || isExchange ? sum : -sum)
+    }
+    
+    // GET Request from Firebase DB for hotkeys
+    func getHotkeys() {
+        Task {
+            let DBHotkeys = try await TransactionManager.shared.getHotkeys()
+            self.hotkeys = DBHotkeys
+                .prefix(8)
+                .compactMap {
+                    if let category = DirectoriesManager.shared.getCategory(byID: $0.categoryId) {
+                        return Hotkey(category: category, subcategory: $0.subcategory)
+                    } else { return nil } //if couldn't find a category, then skip
+                }
         }
     }
         
-    func onPressHotkey (hotkey: [String]) -> Void {
-        self.category = hotkey[0]
-        self.subCategory = hotkey[1]
-        switch hotkey[2] {
-        case "доход":
-            self.type = .income
-        case "инвест":
-            self.type = .invest
-        default:
-            self.type = .expense
-        }
+    func onPressHotkey (category: Category, subcategory: String) -> Void {
+        self.category = category
+        self.subCategory = subcategory
+        self.type = category.type
     }
     
+    @discardableResult
+    func switchCurrency (currencies: [Currency]?) -> Int {
+        guard let currencies,
+              currencies.count != 0 else {return 0}
+        
+        let newValue = self.currentCurrencyInd + Int(1)
+        let newIndex = newValue % currencies.count
+        
+        self.currency = currencies[newIndex]
+        self.currentCurrencyInd = newIndex
+        return newIndex
+    }
+}
+
+//Calculator buttons
+extension NewTransactionViewModel {
     func onPressDigit(number : String) -> Void {
         self.needToErase ? self.sum = 0 : nil
         let prevNumber = self.sum
@@ -83,7 +128,5 @@ class NewTransactionViewModel : ObservableObject {
         }
         self.prevKey = key // set last action as current for calculations
         self.needToErase = true //clear input for a new number after pushing OperationButton
-        
     }
-        
 }

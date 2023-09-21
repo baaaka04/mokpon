@@ -2,53 +2,48 @@ import SwiftUI
 
 struct CategoryExpensesView: View {
     
-    var viewData : [ChartDatalist]
+    @StateObject var viewModel = CategoryViewModel()
+    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
+
     var date : ChartsDate
-    var title : String
+    var category : Category
     
     var body: some View {
         
         ScrollView {
-            
-            VStack {
-                Text(title.capitalizedSentence)
-                    .font(.title2.width(.expanded))
-                    .padding(.horizontal)
-                    .padding(.top)
-                
-                PieChartView(
-                    values: viewData.map({ item in
-                        Double(item.curSum)
-                    }),
-                    colors: Color.palette,
-                    names: viewData.map({ item in
-                        item.category
-                    }),
-                    backgroundColor: Color.bg_main
-                )
-                .padding(.horizontal, 70)
-                .frame(height: 250)
-                
-                ExpensesListView(
-                    listData: viewData,
-                    chartType: .pie,
-                    chartDate: date,
-                    isClickable: false
-                )
-            }
+            if !viewModel.pieChartData.isEmpty {
+                VStack {
+                    Text(category.name.capitalizedSentence)
+                        .font(.title2.width(.expanded))
+                        .padding(.horizontal)
+                        .padding(.top)
+                    
+                    PieChartView(chartData: viewModel.pieChartData)
+                        .padding(.horizontal, 70)
+                        .frame(height: 250)
+                    
+                    ExpensesListView(
+                        expenses: viewModel.pieChartData,
+                        selectedType: .pie,
+                        selectedPeriod: date,
+                        isClickable: false
+                    )
+                }
+            } else { ProgressView().frame(maxWidth: .infinity) }
         }
         .background(Color.bg_main)
+        .task {
+            viewModel.getCategoryExpenses(category: category, currencyName: mainCurrency, date: date)
+        }
     }
 }
 
 struct SubcategoryView_Previews: PreviewProvider {
     static var previews: some View {
-        CategoryExpensesView(viewData:
-            [
-            .init(category: "здоровая пища", prevSum: 0, curSum: 140),
-            .init(category: "всячина", prevSum: 0, curSum: 70),
-            .init(category: "кафе", prevSum: 0, curSum: 50),
-            ], date: ChartsDate(month: 6, year: 2023), title: "Питание")
+        CategoryExpensesView(
+            date: ChartsDate(month: 9, year: 2023),
+            category: Category(id: "", name: "", icon: "", type: .expense)
+        )
         .foregroundColor(.white)
     }
 }

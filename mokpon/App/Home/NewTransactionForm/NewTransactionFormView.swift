@@ -1,18 +1,23 @@
 import SwiftUI
 
+enum NumberPadType {
+    case exchange, original
+}
 
 struct NewTransactionForm: View {
     
-    @StateObject private var viewModel = NewTransactionViewModel()
+    @ObservedObject var viewModel = NewTransactionViewModel(isExchange: false)
+    @ObservedObject var viewModelExchange = NewTransactionViewModel(isExchange: true)
+    @EnvironmentObject var globalViewModel : GlobalViewModel
+    @AppStorage("currencyIndex") private var currencyIndex : Int = 0
     
-    var sendNewTransaction : (Transaction) async -> Void
+    @State private var isExchange : Bool = false
+    @State private var selectedNumberPad : NumberPadType = .original
     
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        
         VStack {
-            
             HStack{
                 Button {
                     presentationMode.wrappedValue.dismiss()
@@ -20,8 +25,10 @@ struct NewTransactionForm: View {
                     Label(title: {Text("")}, icon: {Image(systemName: "xmark")})
                 }
                 Spacer()
-                Button {viewModel.isCalcVisible = !viewModel.isCalcVisible} label: {
-                    Label(title: {Text("Calculate")}, icon: {Image(systemName: "sum")})
+                Button {
+                    onPressExchange()
+                } label: {
+                    Label(title: {Text("Exchange")}, icon: {Image(systemName: "arrow.triangle.2.circlepath")})
                 }
             }
             .font(.custom("DMSans-Regular", size: 14))
@@ -35,113 +42,90 @@ struct NewTransactionForm: View {
             VStack {
                 Spacer(minLength: 0)
                 //  Sum & Desciption
-                HStack {
-                    Text(viewModel.type != .income ? "-" : "")
-                    Spacer()
-                    HStack {
-                        switch viewModel.currency {
-                        case .KGS:
-                            Text("c").underline()
-                                .onTapGesture {
-                                    viewModel.currency = .RUB
-                                }
-                        case .RUB:
-                            Text("₽").onTapGesture {
-                                viewModel.currency = .KGS
-                            }
-                        }
-                        Spacer()
-                        Text("\(viewModel.sum)")
-                            .lineLimit(1)
+                NumberPad(sum: viewModel.sum, type: viewModel.type, currency: viewModel.currency, switchCurrency: {switchCurrency(isExchange: false)}, onSwipeRight: {viewModel.onPressBackspace(btn: "")}, isExchange: viewModel.isExchange)
+                    .onAppear {
+                        viewModel.currency = globalViewModel.currencies?[currencyIndex]
+                        viewModel.currentCurrencyInd = currencyIndex
                     }
+                    .foregroundColor( selectedNumberPad == .original && isExchange ? Color.accentColor : nil )
+                    .onTapGesture { selectedNumberPad = .original }
+                
+                if isExchange {
+                    NumberPad(sum: viewModelExchange.sum, type: viewModelExchange.type, currency: viewModelExchange.currency, switchCurrency: {switchCurrency(isExchange: true)}, onSwipeRight: {viewModelExchange.onPressBackspace(btn: "")}, isExchange: true)
+                        .foregroundColor( selectedNumberPad == .exchange ? Color.accentColor : nil )
+                        .onTapGesture { selectedNumberPad = .exchange }
+                } else {
+                    SubcategoryInput(subcategory: $viewModel.subCategory)
+                        .frame(height: 30)
+                    SliderPad(
+                        onPressOperationButton: viewModel.calcualte,
+                        onPressHotkey: viewModel.onPressHotkey,
+                        hotkeys: viewModel.hotkeys,
+                        fetchHotkeys: viewModel.getHotkeys
+                    )
                 }
-                .minimumScaleFactor(0.3)
-                .padding(.vertical, 30)
-                .font(.custom("gothicb", size: 62))
                 Spacer(minLength: 0)
-                // Using ZStack to color the placeholder
-                ZStack(alignment: .leading) {
-                    if viewModel.subCategory.isEmpty {
-                        Text("Add Description")
-                            .foregroundColor(.white.opacity(0.5))
-                            .padding(.horizontal, 10)
-                    }
-                    TextField("", text: $viewModel.subCategory )
-                        .onChange(of: viewModel.subCategory) { _ in
-                            let newText = String(viewModel.subCategory.prefix(35))
-                            viewModel.subCategory = newText
-                        }
-                        .padding(4)
-                        .overlay(Rectangle()
-                            .frame(width: nil, height: 1, alignment: .bottom)
-                            .foregroundColor(.yellow), alignment: .bottom)
-                        .accentColor(.yellow)
-                }
-                .frame(height: 30)
-                VStack {
-                    if viewModel.isCalcVisible {
-                        CalculatorView(onPressOperationButton: viewModel.calcualte)
-                    } else {
-                        HotkeysView(
-                            onPressHotkey: viewModel.onPressHotkey,
-                            hotkeys: viewModel.hotkeys,
-                            fetchHotkeys: viewModel.fetchHotkeys
-                        )
-                    }
-                }
-                .frame(height: 60)
-                .padding(.bottom, 10)
-                .overlay(Rectangle().frame(width: nil, height: 1, alignment: .bottom).foregroundColor(.yellow), alignment: .bottom)
             }
             .padding(.horizontal)
             
-            Keyboard(
-                onPressDigit: viewModel.onPressDigit,
-                onPressClear: viewModel.onPressClear,
-                onPressBackspace: viewModel.onPressBackspace,
-                onSwipeUp: {
-                    await sendNewTransaction(Transaction(category: viewModel.category ?? "", subCategory: viewModel.subCategory, type: viewModel.type, date: .now, sum: viewModel.sum))
-                    presentationMode.wrappedValue.dismiss()
+            Group {
+                switch selectedNumberPad {
+                case .exchange: Keyboard(viewModel: viewModelExchange, onSwipeUp: sendTransaction)
+                case .original: Keyboard(viewModel: viewModel, onSwipeUp: sendTransaction)
                 }
-            )
-            .font(.system(size: 32))
+            }.font(.system(size: 32))
         }
         .foregroundColor(.white)
-        .background(Rectangle()
-            .fill(EllipticalGradient(
-                gradient: Gradient(colors: [
-                    Color.bg_secondary,
-                    Color.bg_main,
-                ]),
-                center: .center,
-                startRadiusFraction: 0.01,
-                endRadiusFraction: 0.5)
-            )
-                .ignoresSafeArea()
-                .frame(width: 700, height: 450)
-                .position(x: -30, y: -140)
-                .opacity(0.5)
-        )
-        .background(Rectangle()
-            .fill(EllipticalGradient(
-                gradient: Gradient(colors: [
-                    Color.bg_secondary,
-                    Color.bg_main
-                ]),
-                center: .center,
-                startRadiusFraction: 0.01,
-                endRadiusFraction: 0.5)
-            )
-                .frame(height: 1500)
-                .offset(y: 600)
-                .opacity(0.3)
-        )
+        .background(BackgroundCloud(height: 1500).offset(y:700))
+        .background(BackgroundCloud(posX: -30, posY: -140, width: 700, height: 450))
         .background(Color.bg_main.ignoresSafeArea())
     }
 }
 
 struct NewTransactionForm_Previews: PreviewProvider {
     static var previews: some View {
-        NewTransactionForm(sendNewTransaction: {(transaction) -> Void in return})
+        NewTransactionForm().environmentObject(GlobalViewModel())
+    }
+}
+
+extension NewTransactionForm {
+    
+    func sendTransaction () {
+        Task {
+            try await viewModel.sendNewTransaction()
+            try await viewModel.updateUserAmounts()
+            
+            if isExchange {
+                try await viewModelExchange.sendNewTransaction()
+                try await viewModelExchange.updateUserAmounts()
+            }
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+    private func switchCurrency (isExchange: Bool) {
+        if isExchange {
+            viewModelExchange.switchCurrency(currencies: globalViewModel.currencies)
+        } else {
+            currencyIndex = viewModel.switchCurrency(currencies: globalViewModel.currencies)
+        }
+    }
+    private func onPressExchange () {
+        isExchange.toggle()
+        if viewModel.type == .exchange {
+            viewModel.type = .expense
+            viewModel.category = nil
+            viewModel.subCategory = ""
+        } else {
+            viewModel.type = .exchange
+            viewModel.category = globalViewModel.categories?.first { $0.type == .exchange }
+            viewModel.subCategory = "обмен"
+        }
+        viewModelExchange.currency = viewModel.currency
+        viewModelExchange.currentCurrencyInd = currencyIndex
+        viewModelExchange.type = .exchange
+        viewModelExchange.category = globalViewModel.categories?.first { $0.type == .exchange }
+        viewModelExchange.subCategory = "обмен"
+        
+        if selectedNumberPad == .exchange {selectedNumberPad = .original}
     }
 }

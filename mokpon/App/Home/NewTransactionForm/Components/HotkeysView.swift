@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct HotkeysView: View {
-    
-    let onPressHotkey: (_ hotkey: [String]) -> Void
-    var hotkeys : [[String]]?
-    var fetchHotkeys : () async -> Void
+        
+    let onPressHotkey: @MainActor(_ category: Category, _ subcategory: String) -> Void
+    var hotkeys : [Hotkey]?
+    var fetchHotkeys : @MainActor() -> Void
     
     let HTcolumns: [GridItem] = [
         GridItem(.flexible(), spacing: nil, alignment: nil),
@@ -15,16 +15,14 @@ struct HotkeysView: View {
     
     var body: some View {
         Group {
-            if hotkeys?[0].count == 0 {
-                ProgressView("Loading...").tint(.white).frame(maxWidth: .infinity)
-            } else {
+            if let hotkeys {
                 LazyVGrid(columns: HTcolumns, alignment: .center, spacing: 5) {
-                    ForEach(hotkeys!, id: \.self) { item in
+                    ForEach(hotkeys, id: \.subcategory) { hk in
                         Button(
                             action: {
-                                onPressHotkey(item)
+                                onPressHotkey(hk.category, hk.subcategory)
                             },
-                            label: { Text(item[1])
+                            label: { Text(hk.subcategory)
                                     .frame(maxWidth: 50, maxHeight: 27)
                                     .font(.custom("DMSans-Regular", size: 10))
                                     .lineLimit(2)
@@ -32,17 +30,19 @@ struct HotkeysView: View {
                         )
                     }
                 }
+            } else {
+                ProgressView("Loading...").tint(.white).frame(maxWidth: .infinity)
             }
         }
         .task {
-            await fetchHotkeys()
+            fetchHotkeys()
         }
     }
 }
 
 struct HotkeysView_Previews: PreviewProvider {
     static var previews: some View {
-        HotkeysView(onPressHotkey: {s in return}, hotkeys: [["питание","здоровая пища","опер"],["развлечения","прочее","опер"],["питание","всячина","опер"],["прочее","ат баши","опер"],["питание","кафе","опер"],["транспорт","такси","опер"],["транспорт","автобус","опер"],["ЖКХ","жкх","опер"]], fetchHotkeys: {})
+        HotkeysView(onPressHotkey: {s,y in return}, hotkeys: [], fetchHotkeys: {})
             .frame(maxHeight: .infinity)
             .background(.black)
     }

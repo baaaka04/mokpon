@@ -1,59 +1,55 @@
 import Foundation
 import SwiftUI
 
-enum ExpensesType {
-    case income, expense, invest
-}
-enum Currency {
-    case RUB, KGS
-}
-
-struct Transaction : Hashable, Decodable {
-    let id = UUID()
-    let category : String
-    let subCategory : String
-    let type : String
+struct Transaction : Equatable {
+    let id : String
+    let category : Category
+    let subcategory : String
     let date : Date
     let sum : Int
+    let currency : Currency
+    let type : ExpensesType
     
-    init(category: String, subCategory: String, type: ExpensesType, date: Date, sum: Int) {
+    init(DBTransaction: DBTransaction, category: Category, currency: Currency) {
+        self.id = DBTransaction.id
+        self.subcategory = DBTransaction.subcategory
+        self.date = DBTransaction.date
+        self.sum = DBTransaction.sum
+        self.type = DBTransaction.type
+        
         self.category = category
-        self.subCategory = subCategory
-        
-        switch type {
-        case .expense: self.type = "опер"
-        case .income: self.type = "доход"
-        case .invest: self.type = "инвест"
-        }
-        
-        self.date = date
-        self.sum = sum
+        self.currency = currency
+    }
+    
+    static func ==(lhs: Transaction, rhs: Transaction) -> Bool {
+        return lhs.id == rhs.id
     }
 }
-struct TransactionToJSON : Encodable{
-    let category : String
-    let subCategory : String
-    let opex : String
-    let date : String
-    let sum : String
+enum ExpensesType : String, Codable {
+    case income = "доход"
+    case expense = "опер"
+    case invest = "инвест"
+    case exchange
 }
-let categories : [String: String] = [
-    "питание": "cart",
-    "транспорт": "bus.fill",
-    "здоровье": "cross",
-    "ЖКХ": "house",
-    "одежда": "tshirt",
-    "развлечения": "party.popper",
-    "подарки": "gift",
-    "бытовуха": "stove",
-    "интернет и связь": "wifi",
-    "прочее": "questionmark",
-    "животные": "pawprint.fill",
-    "доход": "dollarsign"
-]
+struct Category : Codable, Identifiable, Hashable {
+    let id : String
+    let name : String
+    let icon : String
+    let type : ExpensesType
+}
+
+struct Currency : Codable, Identifiable, Hashable {
+    let id : String
+    let name : String
+    let symbol : String
+}
+struct Hotkey {
+    let category : Category
+    let subcategory : String
+}
 
 // CurrencyModel ----------------
-struct Rates: Decodable, Encodable {
+struct Rates: Codable {
     let KGS : Double
     let RUB : Double
 }

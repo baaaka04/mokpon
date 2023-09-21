@@ -3,47 +3,74 @@ import SwiftUI
 struct TransactionListView: View {
     
     let transactions : [Transaction]
-    let fetchTransactions : () async -> Void
-    var isLoading : Bool
-    var setupSearching : (_ isSearching: Bool) -> Void
+    let getTransactions : @MainActor() -> ()
+    let deleteTransaction : @MainActor(_ transactionId: String) -> ()
+    let updateUserAmounts : (_ curId: String, _ sumDiff : Int) async throws -> ()
+    var setupSearching : @MainActor(_ isSearching: Bool) -> Void
+    var transactionLimit : Int? = nil
+    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
     
     @Environment(\.isSearching) private var isSearching
     
-    var body: some View {
-        //using Dictionary to group by date
-        let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: transactions, by: { (element: Transaction) in
-            return element.date
+    func transformTransactions (trans: [Transaction], limit: Int?) -> [EnumeratedSequence<Array<Dictionary<Date, [Transaction]>.Element>>.Element] {
+        var arr = trans
+        if let limit, trans.count > limit {arr = Array(trans[0..<limit])}
+        let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: arr, by: { (element: Transaction) in
+            return Calendar.current.startOfDay(for: element.date)
         })
         //we need an array to define the last group
         //enumerate - to be able using index
-        let transactionsInArray = Array(transactionsByDate.sorted(by: {(a, b) in return b.key < a.key }))
+        return Array(transactionsByDate.sorted(by: {(a, b) in return b.key < a.key }))
             .enumerated()
             .sorted{$1.element.key < $0.element.key}
+    }
+    
+    @MainActor
+    func convertCurrency (trans: Transaction) -> Int {
+        TransactionManager.shared.convertCurrency(value:trans.sum, from: trans.currency.name, to: mainCurrency) ?? 0
+    }
+    
+    func getCurrencyByName (name: String) -> Currency? {
+        DirectoriesManager.shared.getCurrency(byName: name)
+    }
+    
+    var body: some View {
         
         VStack {
-            if transactions.count == 0 {
-                VStack (alignment: .center) {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                }
-                .frame(maxHeight: .infinity)
-            } else {
-                List (transactionsInArray, id: \.element.key) { (index, transGrouped) in
+            if transactions.count != 0 {
+                
+                List (transformTransactions(trans: transactions, limit: transactionLimit), id: \.element.key) { (index, transGrouped) in
                     Section {
                         ForEach (transGrouped.value, id: \.self.id) { item in
-                            ExpenseView(transaction: item, isLast: index == transactionsInArray.count - 1, isLoading: isLoading)
+                            ExpenseView(transaction: item)
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Rectangle().background(.clear).padding())
+                            if item == transactions.last {
+                                ProgressView()
+                                    .frame(maxWidth: .infinity)
+                                    .onAppear {
+                                        getTransactions()
+                                    }
+                            }
                         }
-                        .onDelete(perform: {index in })
+                        .onDelete { indexSet in
+                            for i in indexSet.makeIterator() {
+                                let theItem = transGrouped.value[i]
+                                Task {
+                                    deleteTransaction(theItem.id)
+                                    try await updateUserAmounts(theItem.currency.id, -theItem.sum)
+                                    getTransactions()
+                                }
+                            }
+                        }
                     } header : {
                         HStack{
                             let date = transGrouped.key
                             let dateCheck = Calendar.current
                             Text(dateCheck.isDateInToday(date) ? "Today" : dateCheck.isDateInYesterday(date) ? "Yesterday" : date.formatted(date: .abbreviated, time: .omitted))
                             Spacer()
-                            Text("\(transGrouped.value.reduce(0, {acc, trans in acc + trans.sum})) ₽")
+                            Text("\(transGrouped.value.reduce(0, {acc, trans in acc + convertCurrency(trans: trans)}))\(getCurrencyByName(name:mainCurrency)?.symbol ?? "")")
                         }
                         .font(.headline)
                         .padding(.horizontal)
@@ -56,21 +83,30 @@ struct TransactionListView: View {
                 .onChange(of: isSearching, perform: { newValue in
                     setupSearching(newValue)
                 })
+            } else {
+                VStack (alignment: .center) {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                }
+                .frame(maxHeight: .infinity)
             }
+            
         }
         .task {
-            //            fetch transactions only if it's the first appearance
-            if transactions.count == 0 {await fetchTransactions()}
+            getTransactions()
         }
     }
 }
 
 struct TransactionListView_Previews: PreviewProvider {
     static var previews: some View {
-        TransactionListView(transactions: [
-            Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
-            Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
-            Transaction(category: "transport", subCategory: "taxi", type: .expense, date: Date(), sum: 150)
-        ], fetchTransactions: HomeViewModel().fetchTransactions, isLoading: false, setupSearching: {x in })
+        TransactionListView(
+            transactions: [],
+            getTransactions: {},
+            deleteTransaction: {a in },
+            updateUserAmounts: { curId, sumDiff in  },
+            setupSearching: {x in },
+            transactionLimit: 6
+        )
     }
 }

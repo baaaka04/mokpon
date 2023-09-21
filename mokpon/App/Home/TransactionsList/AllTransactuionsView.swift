@@ -3,15 +3,16 @@ import SwiftUI
 struct AllTransactuionsView: View {
     
     let transactions : [Transaction]
-    let fetchTransactions : () async -> Void
-    var isLoading : Bool
+    let getTransactions : @MainActor() -> ()
+    let deleteTransaction : @MainActor(_ transactionId: String) -> ()
+    let updateUserAmounts : (_ curId: String, _ sumDiff : Int) async throws -> ()
     @Binding var showView : Bool
     
     //searching
     let scopes : [String]
     @Binding var searchText : String
     @Binding var searchScope : String
-    var setupSearching : (_ isSearching: Bool) -> Void
+    var setupSearching : @MainActor(_ isSearching: Bool) -> Void
     
     
     var body: some View {
@@ -21,8 +22,9 @@ struct AllTransactuionsView: View {
                 VStack {
                     TransactionListView(
                         transactions: transactions,
-                        fetchTransactions: fetchTransactions,
-                        isLoading: isLoading,
+                        getTransactions: getTransactions,
+                        deleteTransaction: deleteTransaction,
+                        updateUserAmounts: updateUserAmounts,
                         setupSearching: setupSearching
                     )
                     .toolbar {
@@ -56,13 +58,10 @@ struct AllTransactuionsView: View {
 struct AllTransactuionsView_Previews: PreviewProvider {
     static var previews: some View {
         AllTransactuionsView(
-            transactions: [
-                Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
-                Transaction(category: "food", subCategory: "healthy", type: .expense, date: Date(), sum: 200),
-                Transaction(category: "transport", subCategory: "taxi", type: .expense, date: Date(), sum: 150)
-            ],
-            fetchTransactions: HomeViewModel().fetchTransactions,
-            isLoading: false,
+            transactions: [],
+            getTransactions: {},
+            deleteTransaction: {a in },
+            updateUserAmounts: { curId, sumDiff in  },
             showView: .constant(true),
             scopes: ["All", "питание", "здоровье"],
             searchText: .constant(""),

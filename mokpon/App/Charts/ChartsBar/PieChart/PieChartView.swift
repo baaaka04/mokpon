@@ -1,11 +1,16 @@
 import SwiftUI
 
 struct PieChartView: View {
+
     let values: [Double]
     var colors: [Color]
     let names: [String]
-    
-    var backgroundColor: Color
+        
+    init(chartData: [ChartData]) {
+        self.values = chartData.map{ Double($0.sum) }
+        self.colors = Color.palette
+        self.names = chartData.map{ $0.category.name }
+    }
     
     var slices: [PieSliceData] {
         let sum = values.reduce(0, +)
@@ -41,7 +46,7 @@ struct PieChartView: View {
                     .frame(width: geometry.size.width, height: geometry.size.width)
                     
                     Circle()
-                        .fill(self.backgroundColor)
+                        .fill(Color.gray)
                         .frame(width: geometry.size.width * 0.5, height: geometry.size.width * 0.5)
                     
                     VStack {
@@ -61,6 +66,6 @@ struct PieChartView: View {
 
 struct PieChartView_Previews: PreviewProvider {
     static var previews: some View {
-        PieChartView(values: [1300, 500, 300], colors: [Color.blue, Color.green, Color.orange, Color.gray], names: ["food","taxi","fun"], backgroundColor: Color(.gray))
+        PieChartView(chartData: [])
     }
 }
