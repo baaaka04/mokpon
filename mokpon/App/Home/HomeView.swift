@@ -47,6 +47,7 @@ struct Home: View {
                                     searchScope: $vm.searchScope,
                                     setupSearching: vm.setupSearching
                                 )
+                                .presentationDragIndicator(.visible)
                             }
                         }
                         .padding(.top)
