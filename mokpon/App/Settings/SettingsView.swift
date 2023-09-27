@@ -2,11 +2,21 @@ import SwiftUI
 
 struct SettingsView: View {
     
-    @StateObject private var viewModel = SettingsViewModel()
+    @StateObject private var viewModel : SettingsViewModel
     @EnvironmentObject private var globalViewModel : GlobalViewModel
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
     @Binding var showSingInView : Bool
     @State private var showAlert : Bool = false
+    
+    let authManager: AuthenticationManager
+    let userManager: UserManager
+    
+    init(showSingInView: Binding<Bool>, authManager: AuthenticationManager, userManager: UserManager) {
+        self.authManager = authManager
+        self.userManager = userManager
+        _showSingInView = showSingInView
+        _viewModel = StateObject(wrappedValue: SettingsViewModel(authManager: authManager, userManager: userManager))
+    }
     
     var body: some View {
         VStack {
@@ -89,9 +99,9 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(showSignInView: .constant(false))
+        ContentView(authManager: AuthenticationManager(), userManager: UserManager(), showSignInView: .constant(false), directoriesManager: DirectoriesManager(completion: {}))
 //        SettingsView(showSingInView: .constant(true))
-            .environmentObject(GlobalViewModel())
+            .environmentObject(GlobalViewModel(directoriesManager: DirectoriesManager(completion: {})))
             .preferredColorScheme(.dark)
     }
 }
@@ -133,7 +143,7 @@ extension SettingsView {
                 }
             }
             NavigationLink {
-                SignInEmailView(showSignInView: .constant(false))
+                SignInEmailView(authManager: authManager, userManager: userManager,showSignInView: .constant(false))
             } label: {
                 Text("Link Email")
             }

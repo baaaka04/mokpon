@@ -5,8 +5,18 @@ import GoogleSignInSwift
 
 struct AuthenticationView: View {
     
-    @StateObject private var viewModel = AutheticationViewModel()
+    @StateObject private var viewModel: AutheticationViewModel
     @Binding var showSignInView : Bool
+    
+    let authManager: AuthenticationManager
+    let userManager: UserManager
+    
+    init(authManager: AuthenticationManager, userManager: UserManager, showSignInView: Binding<Bool>) {
+        self.authManager = authManager
+        self.userManager = userManager
+        _viewModel = StateObject(wrappedValue: AutheticationViewModel(authManager: authManager, userManager: userManager))
+        self._showSignInView = showSignInView
+    }
     
     var body: some View {
         NavigationStack {
@@ -18,7 +28,7 @@ struct AuthenticationView: View {
                     Image("AuthLogo")
                     Spacer()
                     NavigationLink {
-                        SignInEmailView(showSignInView: $showSignInView)
+                        SignInEmailView(authManager: authManager, userManager: userManager, showSignInView: $showSignInView)
                     } label: {
                         Text("Sign In with Email").gradient()
                     }
@@ -54,7 +64,7 @@ struct AuthenticationView: View {
 struct AuthenticationView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            AuthenticationView(showSignInView: .constant(false))
+            AuthenticationView(authManager: AuthenticationManager(), userManager: UserManager(), showSignInView: .constant(false))
         }
     }
 }

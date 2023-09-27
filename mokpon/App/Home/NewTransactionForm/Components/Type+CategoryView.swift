@@ -89,6 +89,6 @@ struct Type_CategoryView_Previews: PreviewProvider {
         Type_CategoryView(
             selection: .constant(nil),
             type: .constant(ExpensesType.exchange)
-        ).environmentObject(GlobalViewModel())
+        ).environmentObject(GlobalViewModel(directoriesManager: DirectoriesManager(completion: {})))
     }
 }

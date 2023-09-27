@@ -2,11 +2,17 @@ import SwiftUI
 
 struct CategoryExpensesView: View {
     
-    @StateObject var viewModel = CategoryViewModel()
+    @StateObject var viewModel: CategoryViewModel
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
 
     var date : ChartsDate
     var category : Category
+    
+    init(currencyRatesService: CurrencyManager, chartsManager: ChartsManager, directoriesManager: DirectoriesManager, date: ChartsDate, category: Category) {
+        _viewModel = StateObject(wrappedValue: CategoryViewModel(currencyRatesService: currencyRatesService, chartsManager: chartsManager, directoriesManager: directoriesManager))
+        self.date = date
+        self.category = category
+    }
     
     var body: some View {
         
@@ -26,7 +32,8 @@ struct CategoryExpensesView: View {
                         expenses: viewModel.pieChartData,
                         selectedType: .pie,
                         selectedPeriod: date,
-                        isClickable: false
+                        isClickable: false,
+                        directoriesManager: viewModel.directoriesManager //will never initiated
                     )
                 }
             } else { ProgressView().frame(maxWidth: .infinity) }
@@ -41,6 +48,9 @@ struct CategoryExpensesView: View {
 struct SubcategoryView_Previews: PreviewProvider {
     static var previews: some View {
         CategoryExpensesView(
+            currencyRatesService: CurrencyManager(completion: {}),
+            chartsManager: ChartsManager(),
+            directoriesManager: DirectoriesManager(completion: {}),
             date: ChartsDate(month: 9, year: 2023),
             category: Category(id: "", name: "", icon: "", type: .expense)
         )

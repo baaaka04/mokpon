@@ -20,9 +20,8 @@ struct DBUser: Codable {
 
 final class UserManager {
     
-    static let shared = UserManager()
-    
-    private init () {}
+    init() {print("\(Date()): INIT UserManager")}
+    deinit {print("\(Date()): DEINIT UserManager")}
     
     private let userCollection = Firestore.firestore().collection("users") //if there's no collection in db, it will be created
     

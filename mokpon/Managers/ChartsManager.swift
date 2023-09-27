@@ -5,9 +5,8 @@ import FirebaseFirestoreSwift
 
 final class ChartsManager {
     
-    static let shared = ChartsManager()
-    
-    init () {}
+    init() {print("\(Date()): INIT ChartsManager")}
+    deinit {print("\(Date()): DEINIT ChartsManager")}
     
     private let transactionsCollection = Firestore.firestore().collection("transactions")
     

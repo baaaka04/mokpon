@@ -2,13 +2,16 @@ import SwiftUI
 
 struct TransactionListView: View {
     
+    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
+    
     let transactions : [Transaction]
     let getTransactions : @MainActor() -> ()
     let deleteTransaction : @MainActor(_ transactionId: String) -> ()
     let updateUserAmounts : (_ curId: String, _ sumDiff : Int) async throws -> ()
     var setupSearching : @MainActor(_ isSearching: Bool) -> Void
     var transactionLimit : Int? = nil
-    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
+    let convertCurrency : (_ value: Int, _ from: String?, _ to: String?) -> Int?
+    let directoriesManager: DirectoriesManager
     
     @Environment(\.isSearching) private var isSearching
     
@@ -26,12 +29,12 @@ struct TransactionListView: View {
     }
     
     @MainActor
-    func convertCurrency (trans: Transaction) -> Int {
-        TransactionManager.shared.convertCurrency(value:trans.sum, from: trans.currency.name, to: mainCurrency) ?? 0
+    func convertCurrency (trans: [Transaction]) -> Int {
+        trans.reduce(0, {acc, trans in acc + (convertCurrency(trans.sum, trans.currency.name, mainCurrency) ?? 0)})
     }
     
     func getCurrencyByName (name: String) -> Currency? {
-        DirectoriesManager.shared.getCurrency(byName: name)
+        directoriesManager.getCurrency(byName: name)
     }
     
     var body: some View {
@@ -70,7 +73,7 @@ struct TransactionListView: View {
                             let dateCheck = Calendar.current
                             Text(dateCheck.isDateInToday(date) ? "Today" : dateCheck.isDateInYesterday(date) ? "Yesterday" : date.formatted(date: .abbreviated, time: .omitted))
                             Spacer()
-                            Text("\(transGrouped.value.reduce(0, {acc, trans in acc + convertCurrency(trans: trans)}))\(getCurrencyByName(name:mainCurrency)?.symbol ?? "")")
+                            Text("\(convertCurrency(trans:transGrouped.value))\(getCurrencyByName(name:mainCurrency)?.symbol ?? "")")
                         }
                         .font(.headline)
                         .padding(.horizontal)
@@ -106,7 +109,9 @@ struct TransactionListView_Previews: PreviewProvider {
             deleteTransaction: {a in },
             updateUserAmounts: { curId, sumDiff in  },
             setupSearching: {x in },
-            transactionLimit: 6
+            transactionLimit: 6,
+            convertCurrency: {a,b,c in return 0},
+            directoriesManager: DirectoriesManager(completion: {})
         )
     }
 }

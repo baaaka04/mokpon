@@ -2,8 +2,13 @@ import SwiftUI
 
 struct SignInEmailView: View {
     
-    @StateObject private var viewModel = SettingsViewModel()
+    @StateObject private var viewModel: SettingsViewModel
     @Binding var showSignInView: Bool
+    
+    init(authManager: AuthenticationManager, userManager: UserManager, showSignInView: Binding<Bool>) {
+        _viewModel = StateObject(wrappedValue: SettingsViewModel(authManager: authManager, userManager: userManager))
+        _showSignInView = showSignInView
+    }
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -64,6 +69,6 @@ struct SignInEmailView: View {
 
 struct SignInEmailView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInEmailView(showSignInView: .constant(false))
+        SignInEmailView(authManager: AuthenticationManager(), userManager:UserManager(), showSignInView: .constant(false))
     }
 }

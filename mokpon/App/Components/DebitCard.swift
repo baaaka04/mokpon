@@ -3,6 +3,7 @@ import SwiftUI
 struct DebitCard: View {
     
     var amounts : [Amount]? = nil
+    let directoriesManager: DirectoriesManager
     
     var body: some View {
         ZStack {
@@ -17,7 +18,7 @@ struct DebitCard: View {
                         if let amounts {
                             ForEach(amounts, id: \.curId) { amount in
                                 HStack {
-                                    let currency = DirectoriesManager.shared.getCurrency(byID: amount.curId)
+                                    let currency = directoriesManager.getCurrency(byID: amount.curId)
                                     Spacer(minLength: 0)
                                     Text("\(currency?.symbol ?? "?") \(amount.sum)")
                                 }
@@ -71,7 +72,7 @@ struct DebitCard_Previews: PreviewProvider {
             .init(curId: "cur-01", sum: 400),
             .init(curId: "cur-02", sum: 2400),
             .init(curId: "cur-03", sum: 132400)
-        ])
+        ], directoriesManager: DirectoriesManager(completion: {}))
             .foregroundColor(.white)
             .font(.custom("DMSans-Regular", size: 18))
     }

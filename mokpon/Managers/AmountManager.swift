@@ -15,10 +15,9 @@ struct UserAmounts : Codable {
 }
 
 final class AmountManager {
-    
-    static let shared = AmountManager()
-    
-    init () {}
+            
+    init () {print("\(Date()): INIT AmountManager")}
+    deinit { print("\(Date()): DEINIT AmountManager") }
     
     private let amountsCollection = Firestore.firestore().collection("amounts")
     

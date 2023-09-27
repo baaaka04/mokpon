@@ -16,10 +16,22 @@ final class HomeViewModel : ObservableObject {
     private var cancellable = Set<AnyCancellable>()
     var isSearching : Bool = false
     private var lastDocument : DocumentSnapshot? = nil
+    let currencyRatesService: CurrencyManager
+    let transactionManager: TransactionManager
+    let amountManager: AmountManager
+    let authManager: AuthenticationManager
+    let directoriesManager: DirectoriesManager
     
-    init() {
+    init(currencyRatesService: CurrencyManager, transactionManager: TransactionManager, amountManager: AmountManager, authManager: AuthenticationManager, directoriesManager: DirectoriesManager) {
+        self.currencyRatesService = currencyRatesService
+        self.transactionManager = transactionManager
+        self.amountManager = amountManager
+        self.authManager = authManager
+        self.directoriesManager = directoriesManager
         addSubscribers()
+        print("\(Date()): INIT HomeViewModel")
     }
+    deinit {print("\(Date()): DEINIT HomeViewModel")}
     
     func setupSearching (isSearching : Bool) {
         self.isSearching = isSearching
@@ -38,40 +50,40 @@ final class HomeViewModel : ObservableObject {
     // GET Request from Firebase DB
     func getTransactions () {
         Task {
-            let (newTransactions, lastDocument) = try await TransactionManager.shared.getLastNTransactions(limit: 10, lastDocument: self.lastDocument)
+            let (newTransactions, lastDocument) = try await transactionManager.getLastNTransactions(limit: 10, lastDocument: self.lastDocument)
             if let lastDocument {
                 self.lastDocument = lastDocument
             }
             // append for pagination
             self.transactions.append(contentsOf: newTransactions.compactMap {
-                if let category = DirectoriesManager.shared.getCategory(byID: $0.categoryId),
-                   let currency = DirectoriesManager.shared.getCurrency(byID: $0.currencyId) {
+                if let category = directoriesManager.getCategory(byID: $0.categoryId),
+                   let currency = directoriesManager.getCurrency(byID: $0.currencyId) {
                     return Transaction(DBTransaction: $0, category: category , currency: currency)
                 } else { return nil } // if couldn't find a category/currency, then skip
             })
             self.allSearchScopes = ["All"] + Set (self.transactions.map { $0.category.name })
-            print("\(Date()): New transactions have been loaded!")
+            print("\(Date()): HomeViewModel - New transactions have been loaded!")
         }
     }
     
     func getLastTransactions () {
         Task {
-            let (newTransactions, lastDocument) = try await TransactionManager.shared.getLastNTransactions(limit: 10)
+            let (newTransactions, lastDocument) = try await transactionManager.getLastNTransactions(limit: 10)
             self.transactions = newTransactions.compactMap {
-                if let category = DirectoriesManager.shared.getCategory(byID: $0.categoryId),
-                   let currency = DirectoriesManager.shared.getCurrency(byID: $0.currencyId) {
+                if let category = directoriesManager.getCategory(byID: $0.categoryId),
+                   let currency = directoriesManager.getCurrency(byID: $0.currencyId) {
                     return Transaction(DBTransaction: $0, category: category , currency: currency)
                 } else { return nil } // if couldn't find a category/currency, then skip
             }
             self.allSearchScopes = ["All"] + Set (self.transactions.map { $0.category.name })
             self.lastDocument = lastDocument
-            print("\(Date()): Last transactions have been loaded!")
+            print("\(Date()): HomeViewModel - Last transactions have been loaded!")
         }
     }
     
     func deleteTransaction(transactionId: String) {
         Task {
-            try await TransactionManager.shared.deleteTransaction(transactionId: transactionId)
+            try await transactionManager.deleteTransaction(transactionId: transactionId)
         }
     }
     
@@ -97,20 +109,20 @@ final class HomeViewModel : ObservableObject {
         
     func getUserAmounts () {
         Task {
-            let user = try AuthenticationManager.shared.getAuthenticatedUser()
-            self.amounts = try await AmountManager.shared.getUserAmounts(userId: user.uid)
-            print("\(Date()): Amounts have been updated!")
+            let user = try authManager.getAuthenticatedUser()
+            self.amounts = try await amountManager.getUserAmounts(userId: user.uid)
+            print("\(Date()): HomeViewModel - Amounts have been updated!")
         }
     }
     
     func updateUserAmount(curId: String, sumDiff: Int) async throws {
-        let user = try AuthenticationManager.shared.getAuthenticatedUser()
-        try await AmountManager.shared.updateUserAmounts(userId: user.uid, curId:curId, sumDiff: sumDiff)
+        let user = try authManager.getAuthenticatedUser()
+        try await amountManager.updateUserAmounts(userId: user.uid, curId:curId, sumDiff: sumDiff)
     }
     
     func fetchCurrencyRates () -> Void {
         Task {
-            let fetchedData = await APIService.shared.fetchCurrencyRates()
+            let fetchedData = await currencyRatesService.fetchCurrencyRates()
             self.currencyRates = fetchedData
         }
     }

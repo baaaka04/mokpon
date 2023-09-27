@@ -3,19 +3,22 @@ import SwiftUI
 struct RootView: View {
     
     @State private var showSignInView: Bool = false
-    
+    let authManager = AuthenticationManager()
+    let userManager = UserManager()
+    let directoriesManager = DirectoriesManager(completion: {})
+        
     var body: some View {
         ZStack {
             if !showSignInView {
-                ContentView(showSignInView: $showSignInView)
+                ContentView(authManager: authManager, userManager: userManager, showSignInView: $showSignInView, directoriesManager: directoriesManager)
             }
         }
         .onAppear {
-            let authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
+            let authUser = try? authManager.getAuthenticatedUser()
             self.showSignInView = authUser == nil
         }
         .fullScreenCover(isPresented: $showSignInView) {
-            AuthenticationView(showSignInView: $showSignInView)
+            AuthenticationView(authManager: authManager, userManager: userManager, showSignInView: $showSignInView)
         }
     }
 }

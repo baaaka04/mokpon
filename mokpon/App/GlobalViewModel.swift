@@ -6,15 +6,15 @@ final class GlobalViewModel : ObservableObject {
     @Published var currencies : [Currency]? = nil
     
     
-    init () {
+    init (directoriesManager: DirectoriesManager) {
         Task {
-            self.categories = try await DirectoriesManager.shared.getAllCategories()
-            print("\(Date()): categories has been loaded")
+            self.categories = try await directoriesManager.getAllCategories()
         }
         Task {
-            self.currencies = try await DirectoriesManager.shared.getAllCurrencies()
-            print("\(Date()): currencies has been loaded")
+            self.currencies = try await directoriesManager.getAllCurrencies()
         }
+        print("\(Date()): INIT GlobalViewModel")
     }
+    deinit {print("\(Date()): DEINIT GlobalViewModel")}
     
 }

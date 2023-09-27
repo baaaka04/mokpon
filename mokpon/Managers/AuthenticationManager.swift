@@ -8,9 +8,8 @@ enum AuthProviderOption : String {
 
 final class AuthenticationManager {
     
-    static let shared = AuthenticationManager()
-    
-    private init () {}
+    init() {print("\(Date()): INIT AuthenticationManager")}
+    deinit {print("\(Date()): DEINIT AuthenticationManager")}
     
     func signOut () throws {
         try Auth.auth().signOut()

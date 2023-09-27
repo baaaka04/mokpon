@@ -8,6 +8,8 @@ struct ExpenseView : View {
     var selectedPeriod : ChartsDate
     var isClickable : Bool
     
+    var directoriesManager: DirectoriesManager? = nil
+    
     //BarChart initializer
     init(expenseBarData: ChartData) {
         self.selectedPeriod = ChartsDate(month: 1, year: 2020)
@@ -23,9 +25,10 @@ struct ExpenseView : View {
         )
     }
     //PieChart initializer
-    init(expensePieData: ChartData, selectedPeriod: ChartsDate, isClickable: Bool) {
+    init(expensePieData: ChartData, selectedPeriod: ChartsDate, isClickable: Bool, directoriesManager: DirectoriesManager) {
         self.isClickable = isClickable
         self.selectedPeriod = selectedPeriod
+        self.directoriesManager = directoriesManager
         self.viewData = ExpenseData(
             title: expensePieData.category.name,
             subtitle: "\(DateFormatter().monthSymbols[selectedPeriod.month-1].capitalized) \(selectedPeriod.year)",
@@ -69,7 +72,10 @@ struct ExpenseView : View {
         .background(Color.bg_main)
         .cornerRadius(20)
         .popover(isPresented: $showCategoryExpenses) {
-            CategoryExpensesView(date: selectedPeriod, category: viewData.category)
+            if let directoriesManager {
+                CategoryExpensesView(currencyRatesService: CurrencyManager(completion: {}), chartsManager: ChartsManager(), directoriesManager: directoriesManager, date: selectedPeriod, category: viewData.category) // should test it separately
+                    .presentationDragIndicator(.visible)
+            }
         }
         .onTapGesture {
             isClickable ? showCategoryExpenses.toggle() : nil
@@ -79,7 +85,7 @@ struct ExpenseView : View {
 
 struct ExpenseView_Previews: PreviewProvider {
     static var previews: some View {
-        ExpenseView(expensePieData: ChartData(category: Category(id: "cat-01", name: "food", icon: "cart", type: .expense), currency: Currency(id: "", name: "", symbol: ""), sum: -123, month: 8, year: 2023), selectedPeriod: ChartsDate(month: 9, year: 2023), isClickable: false)
+        ExpenseView(expensePieData: ChartData(category: Category(id: "cat-01", name: "food", icon: "cart", type: .expense), currency: Currency(id: "", name: "", symbol: ""), sum: -123, month: 8, year: 2023), selectedPeriod: ChartsDate(month: 9, year: 2023), isClickable: false, directoriesManager: DirectoriesManager(completion: {}))
             .font(.custom("DMSans-Regular", size: 13))
             .foregroundColor(.white)
     }

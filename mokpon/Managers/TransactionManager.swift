@@ -6,16 +6,9 @@ import FirebaseFirestoreSwift
 @MainActor
 final class TransactionManager {
     
-    static let shared = TransactionManager()
+    init() {print("\(Date()): INIT TransactionManager")}
+    deinit {print("\(Date()): DEINIT TransactionManager")}
     
-    var rates : Rates? = nil
-    
-    private init () {
-        Task {
-            self.rates = await APIService.shared.fetchCurrencyRates()
-        }
-    }
-
     private let transactionCollection = Firestore.firestore().collection("transactions") //if there's no collection in db, it will be created
     
     //use a dictionary instead of a struct because we need Document ID generated on Firebase
@@ -54,23 +47,6 @@ final class TransactionManager {
                 .sorted { $0.count > $1.count }
     }
     
-    func convertCurrency (value: Int, from: String?, to: String?) -> Int? {
-        
-        guard let rates, let from, let to else {return nil}
-        let rateInd : [String : Double] = [
-            "USDRUB" : rates.RUB,
-            "USDKGS" : rates.KGS,
-            "RUBUSD" : 1 / rates.RUB,
-            "RUBKGS" : rates.KGS / rates.RUB,
-            "KGSUSD" : 1 / rates.KGS,
-            "KGSRUB" : rates.RUB / rates.KGS,
-            "RUBRUB" : 1,
-            "USDUSD" : 1,
-            "KGSKGS" : 1
-        ]
-        
-        return Int( Double(value) * (rateInd[from+to] ?? 0) )
-    }
 }
 struct DBHotkey : Hashable {
     let categoryId: String

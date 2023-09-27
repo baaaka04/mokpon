@@ -19,16 +19,24 @@ final class NewTransactionViewModel : ObservableObject {
     @Published var needToErase = false
     
     let isExchange : Bool
+    let transactionManager: TransactionManager
+    let amountManager: AmountManager
+    let authManager: AuthenticationManager
+    let directoriesManager: DirectoriesManager
     
-    init(isExchange: Bool) {
+    init(isExchange: Bool, transactionManager: TransactionManager, amountManager: AmountManager, authManager: AuthenticationManager, directoriesManager: DirectoriesManager) {
         self.isExchange = isExchange
+        self.transactionManager = transactionManager
+        self.amountManager = amountManager
+        self.authManager = authManager
+        self.directoriesManager = directoriesManager
     }
     
     // Firebase POST request
     func sendNewTransaction () async throws {
-        let user = try AuthenticationManager.shared.getAuthenticatedUser()
+        let user = try authManager.getAuthenticatedUser()
         guard let currencyId = currency?.id else {return}
-        try await TransactionManager.shared.createNewTransaction(
+        try await transactionManager.createNewTransaction(
             categoryId: category?.id ?? "n/a",
             subcategory: subCategory,
             type: type,
@@ -41,19 +49,19 @@ final class NewTransactionViewModel : ObservableObject {
     }
     
     func updateUserAmounts () async throws {
-        let user = try AuthenticationManager.shared.getAuthenticatedUser()
+        let user = try authManager.getAuthenticatedUser()
         guard let currency else {return}
-        try await AmountManager.shared.updateUserAmounts(userId: user.uid, curId: currency.id, sumDiff: type == .income || isExchange ? sum : -sum)
+        try await amountManager.updateUserAmounts(userId: user.uid, curId: currency.id, sumDiff: type == .income || isExchange ? sum : -sum)
     }
     
     // GET Request from Firebase DB for hotkeys
     func getHotkeys() {
         Task {
-            let DBHotkeys = try await TransactionManager.shared.getHotkeys()
+            let DBHotkeys = try await transactionManager.getHotkeys()
             self.hotkeys = DBHotkeys
                 .prefix(8)
                 .compactMap {
-                    if let category = DirectoriesManager.shared.getCategory(byID: $0.categoryId) {
+                    if let category = directoriesManager.getCategory(byID: $0.categoryId) {
                         return Hotkey(category: category, subcategory: $0.subcategory)
                     } else { return nil } //if couldn't find a category, then skip
                 }

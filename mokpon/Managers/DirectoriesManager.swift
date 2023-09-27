@@ -5,27 +5,34 @@ import FirebaseFirestoreSwift
 final class DirectoriesManager {
     var categories : [Category]? = nil
     var currencies : [Currency]? = nil
-
-    static let shared = DirectoriesManager()
     
-    init () {
+    init (completion: @escaping () -> Void) {
         Task {
             self.categories = try await getAllCategories()
+            completion()//a completion handler to access methods of the class after 'async' init
         }
         Task {
             self.currencies = try await getAllCurrencies()
+            completion()//a completion handler to access methods of the class after 'async' init
         }
+        print("\(Date()): INIT DirectoriesManager")
+    }
+    
+    deinit {
+        print("\(Date()): DEINIT DirectoriesManager")
     }
         
     private let categoriesCollection = Firestore.firestore().collection("categories") //if there is no collection in db, it will be created
     private let currenciesCollection = Firestore.firestore().collection("currencies")
     
     func getAllCategories () async throws -> [Category] {
-        try await categoriesCollection.getDocuments(as: Category.self)
+        print("\(Date()): DirectoriesManager: categories has been loaded")
+        return try await categoriesCollection.getDocuments(as: Category.self)
     }
     
     func getAllCurrencies () async throws -> [Currency] {
-        try await currenciesCollection.getDocuments(as: Currency.self)
+        print("\(Date()): DirectoriesManager: currencies has been loaded")
+        return try await currenciesCollection.getDocuments(as: Currency.self)
     }
     
     func getCategory(byName name: String) -> Category? {

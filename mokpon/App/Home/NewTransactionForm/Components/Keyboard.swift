@@ -45,6 +45,6 @@ struct Keyboard: View {
 
 struct Keyboard_Previews: PreviewProvider {
     static var previews: some View {
-        Keyboard( viewModel: NewTransactionViewModel(isExchange: false), onSwipeUp: {} ).background(.black)
+        Keyboard( viewModel: NewTransactionViewModel(isExchange: false, transactionManager: TransactionManager(), amountManager: AmountManager(), authManager: AuthenticationManager(), directoriesManager: DirectoriesManager(completion: {})), onSwipeUp: {} ).background(.black)
     }
 }

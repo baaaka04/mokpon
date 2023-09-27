@@ -28,9 +28,9 @@ struct ProfileView: View {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(showSingInView: .constant(false))
+        SettingsView(showSingInView: .constant(false), authManager: AuthenticationManager(), userManager: UserManager())
             .background(Color.bg_main)
-            .environmentObject(GlobalViewModel())
+            .environmentObject(GlobalViewModel(directoriesManager: DirectoriesManager(completion: {})))
             .preferredColorScheme(.dark)
     }
 }

@@ -6,8 +6,8 @@ enum NumberPadType {
 
 struct NewTransactionForm: View {
     
-    @ObservedObject var viewModel = NewTransactionViewModel(isExchange: false)
-    @ObservedObject var viewModelExchange = NewTransactionViewModel(isExchange: true)
+    @ObservedObject var viewModel: NewTransactionViewModel
+    @ObservedObject var viewModelExchange: NewTransactionViewModel
     @EnvironmentObject var globalViewModel : GlobalViewModel
     @AppStorage("currencyIndex") private var currencyIndex : Int = 0
     
@@ -15,6 +15,11 @@ struct NewTransactionForm: View {
     @State private var selectedNumberPad : NumberPadType = .original
     
     @Environment(\.presentationMode) var presentationMode
+    
+    init(transactionManager: TransactionManager, amountManager: AmountManager, authManager: AuthenticationManager, directoriesManager: DirectoriesManager) {
+        self.viewModel = NewTransactionViewModel(isExchange: false, transactionManager: transactionManager, amountManager: amountManager, authManager: authManager, directoriesManager: directoriesManager)
+        self.viewModelExchange = NewTransactionViewModel(isExchange: true, transactionManager: transactionManager, amountManager: amountManager, authManager: authManager, directoriesManager: directoriesManager)
+    }
     
     var body: some View {
         VStack {
@@ -84,7 +89,7 @@ struct NewTransactionForm: View {
 
 struct NewTransactionForm_Previews: PreviewProvider {
     static var previews: some View {
-        NewTransactionForm().environmentObject(GlobalViewModel())
+        NewTransactionForm(transactionManager: TransactionManager(), amountManager: AmountManager(), authManager: AuthenticationManager(), directoriesManager: DirectoriesManager(completion: {})).environmentObject(GlobalViewModel(directoriesManager: DirectoriesManager(completion: {})))
     }
 }
 

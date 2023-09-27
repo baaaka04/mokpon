@@ -5,11 +5,12 @@ struct ExpensesListView: View {
     var selectedType : ChartType
     var selectedPeriod : ChartsDate
     var isClickable : Bool
+    let directoriesManager : DirectoriesManager
     
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
     
     private func getBarchartData (chartData: [ChartData]) -> [ChartData] {
-        guard let currency = DirectoriesManager.shared.getCurrency(byName: mainCurrency) else {return []}
+        guard let currency = directoriesManager.getCurrency(byName: mainCurrency) else {return []}
         let groupedByCategory : [Category : [ChartData]] = Dictionary(grouping: chartData) { $0.category }
         let differenceByCategory = groupedByCategory.map { (key: Category, value: [ChartData]) in
             let currentSum = value.first { $0.month == selectedPeriod.month && $0.year == selectedPeriod.year }?.sum ?? 0
@@ -40,7 +41,7 @@ struct ExpensesListView: View {
             case .pie:
                 ForEach(expenses) { chartData in
                     if chartData.sum != 0 {
-                        ExpenseView(expensePieData: chartData, selectedPeriod: selectedPeriod, isClickable: isClickable)
+                        ExpenseView(expensePieData: chartData, selectedPeriod: selectedPeriod, isClickable: isClickable, directoriesManager: directoriesManager)
                             .padding(.horizontal)
                     }
                 }
@@ -60,8 +61,8 @@ struct ExpensesListView_Previews: PreviewProvider {
             expenses: [ ],
             selectedType: .pie,
             selectedPeriod: ChartsDate(month: 6, year: 2023),
-            isClickable: false
+            isClickable: false,
+            directoriesManager: DirectoriesManager(completion: {})
         )
-        
     }
 }

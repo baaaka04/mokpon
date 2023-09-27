@@ -3,10 +3,14 @@ import Charts
 
 struct Charts: View {
     
-    @StateObject private var viewModel = ChartsViewModel()
+    @StateObject private var viewModel: ChartsViewModel
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
+    let directoriesManager: DirectoriesManager
     
-    init() {
+    init(currencyRatesService: CurrencyManager, directoriesManager: DirectoriesManager) {
+        self.directoriesManager = directoriesManager
+        _viewModel = StateObject(wrappedValue: ChartsViewModel(currencyRatesService: currencyRatesService, chartsManager: ChartsManager(), directoriesManager: directoriesManager))
+        
         UISegmentedControl.appearance().selectedSegmentTintColor = .white
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(.black.opacity(0.7))], for: .selected)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(.black.opacity(0.7))], for: .normal)
@@ -57,7 +61,8 @@ struct Charts: View {
                     expenses : viewModel.selectedChart == .bar ? viewModel.barChartData : viewModel.pieChartData,
                     selectedType: viewModel.selectedChart,
                     selectedPeriod: viewModel.chartDate,
-                    isClickable: viewModel.selectedChart == .pie
+                    isClickable: viewModel.selectedChart == .pie,
+                    directoriesManager: directoriesManager
                 )
                 
             }
@@ -68,7 +73,7 @@ struct Charts: View {
 
 struct Charts_Previews: PreviewProvider {
     static var previews: some View {
-        Charts()
+        Charts(currencyRatesService: CurrencyManager(completion: {}), directoriesManager: DirectoriesManager(completion: {}))
             .foregroundColor(.white)
             .frame(maxHeight: .infinity)
             .background(Color.bg_main)

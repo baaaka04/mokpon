@@ -2,10 +2,25 @@ import SwiftUI
 
 struct ContentView: View {
     
+    let authManager: AuthenticationManager
+    let userManager: UserManager
+    let directoriesManager: DirectoriesManager
+    
     @State var currentRoute: Route = .home
     @Binding var showSignInView: Bool
-    @StateObject var globalViewModel = GlobalViewModel()
+    @StateObject var globalViewModel : GlobalViewModel
+    let currencyRatesService = CurrencyManager(completion: {})
+    let transactionManager = TransactionManager()
+    let amountManager = AmountManager()
     
+    init(authManager: AuthenticationManager, userManager: UserManager,  showSignInView: Binding<Bool>, directoriesManager: DirectoriesManager) {
+        self.authManager = authManager
+        self.userManager = userManager
+        self.directoriesManager = directoriesManager
+        _showSignInView = showSignInView
+        _globalViewModel = StateObject(wrappedValue: GlobalViewModel(directoriesManager: directoriesManager))
+    }
+        
     var body: some View {
         NavigationView {
             GeometryReader{ geo in
@@ -15,11 +30,11 @@ struct ContentView: View {
                     
                     switch currentRoute {
                     case .home:
-                        Home()
+                        Home(currencyRatesService: currencyRatesService, transactionManager: transactionManager, amountManager: amountManager, authManager: authManager, directoriesManager: directoriesManager)
                     case .charts:
-                        Charts()
+                        Charts(currencyRatesService: currencyRatesService, directoriesManager: directoriesManager)
                     case .settings:
-                        SettingsView(showSingInView: $showSignInView)
+                        SettingsView(showSingInView: $showSignInView, authManager: authManager, userManager: userManager)
                     }
                     VStack{
                         Spacer()
@@ -38,6 +53,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(showSignInView: .constant(true))
+        ContentView(authManager: AuthenticationManager(), userManager: UserManager(), showSignInView: .constant(true), directoriesManager: DirectoriesManager(completion: {}))
     }
 }

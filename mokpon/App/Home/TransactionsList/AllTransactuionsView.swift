@@ -13,7 +13,8 @@ struct AllTransactuionsView: View {
     @Binding var searchText : String
     @Binding var searchScope : String
     var setupSearching : @MainActor(_ isSearching: Bool) -> Void
-    
+    let convertCurrency : (_ value: Int, _ from: String?, _ to: String?) -> Int?
+    let directoriesManager: DirectoriesManager
     
     var body: some View {
         NavigationStack {
@@ -25,7 +26,9 @@ struct AllTransactuionsView: View {
                         getTransactions: getTransactions,
                         deleteTransaction: deleteTransaction,
                         updateUserAmounts: updateUserAmounts,
-                        setupSearching: setupSearching
+                        setupSearching: setupSearching,
+                        convertCurrency: convertCurrency,
+                        directoriesManager: directoriesManager
                     )
                     .toolbar {
                         ToolbarItem (placement: .cancellationAction) {
@@ -66,7 +69,9 @@ struct AllTransactuionsView_Previews: PreviewProvider {
             scopes: ["All", "питание", "здоровье"],
             searchText: .constant(""),
             searchScope: .constant("All"),
-            setupSearching: { isSearching in  }
+            setupSearching: { isSearching in  },
+            convertCurrency: {a, b, c in return 0},
+            directoriesManager: DirectoriesManager(completion: {})
         )
     }
 }
