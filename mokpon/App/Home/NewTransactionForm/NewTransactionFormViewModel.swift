@@ -18,19 +18,21 @@ final class NewTransactionViewModel : ObservableObject {
     @Published var prevKey : String = "="
     @Published var needToErase = false
     
-    let isExchange : Bool
-    let transactionManager: TransactionManager
-    let amountManager: AmountManager
-    let authManager: AuthenticationManager
-    let directoriesManager: DirectoriesManager
+    private(set) var isExchange : Bool
+    private let transactionManager: TransactionManager
+    private let amountManager: AmountManager
+    private let authManager: AuthenticationManager
+    private let directoriesManager: DirectoriesManager
     
-    init(isExchange: Bool, transactionManager: TransactionManager, amountManager: AmountManager, authManager: AuthenticationManager, directoriesManager: DirectoriesManager) {
+    init(appContext: AppContext, isExchange: Bool) {
         self.isExchange = isExchange
-        self.transactionManager = transactionManager
-        self.amountManager = amountManager
-        self.authManager = authManager
-        self.directoriesManager = directoriesManager
+        self.transactionManager = appContext.transactionManager
+        self.amountManager = appContext.amountManager
+        self.authManager = appContext.authManager
+        self.directoriesManager = appContext.directoriesManager
+        print("\(Date()): INIT NewTransactionViewModel")
     }
+    deinit {print("\(Date()): DEINIT NewTransactionViewModel")}
     
     // Firebase POST request
     func sendNewTransaction () async throws {

@@ -19,8 +19,8 @@
 		F7130FA12A02B55E00972B10 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130FA02A02B55E00972B10 /* BarChartView.swift */; };
 		F7130FA62A03C3BC00972B10 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130FA52A03C3BC00972B10 /* HomeModel.swift */; };
 		F715D615295B3A1100B1177F /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F715D614295B3A1100B1177F /* ColorExtension.swift */; };
-		F719DC04294F0EA600DE1B8E /* mokponApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719DC03294F0EA600DE1B8E /* mokponApp.swift */; };
-		F719DC06294F0EA600DE1B8E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719DC05294F0EA600DE1B8E /* ContentView.swift */; };
+		F719DC04294F0EA600DE1B8E /* MokponApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719DC03294F0EA600DE1B8E /* MokponApp.swift */; };
+		F719DC06294F0EA600DE1B8E /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719DC05294F0EA600DE1B8E /* RootTabView.swift */; };
 		F719DC08294F0EA700DE1B8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F719DC07294F0EA700DE1B8E /* Assets.xcassets */; };
 		F719DC0B294F0EA700DE1B8E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F719DC0A294F0EA700DE1B8E /* Preview Assets.xcassets */; };
 		F719DC14294F344600DE1B8E /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719DC13294F344600DE1B8E /* TransactionListView.swift */; };
@@ -36,7 +36,6 @@
 		F754A44A29D704D9004A61C8 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F754A44929D704D9004A61C8 /* PieChartView.swift */; };
 		F75F77502A98E35E00C658F1 /* FireStoreQueryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */; };
 		F75F77522A9A0B9100C658F1 /* TransactionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77512A9A0B9100C658F1 /* TransactionManager.swift */; };
-		F75F77542A9E3D9200C658F1 /* GlobalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77532A9E3D9200C658F1 /* GlobalViewModel.swift */; };
 		F75F77582AA4828500C658F1 /* AmountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77572AA4828500C658F1 /* AmountManager.swift */; };
 		F75F775A2AA61D3900C658F1 /* ChartsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77592AA61D3900C658F1 /* ChartsManager.swift */; };
 		F75F775C2AA721CE00C658F1 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F775B2AA721CE00C658F1 /* DateExtension.swift */; };
@@ -50,7 +49,6 @@
 		F7696C7F2A8A790D003239E0 /* SignInGoogleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7696C7E2A8A790D003239E0 /* SignInGoogleHelper.swift */; };
 		F7696C812A8F9EF1003239E0 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = F7696C802A8F9EF1003239E0 /* FirebaseFirestore */; };
 		F7696C832A8F9EF1003239E0 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F7696C822A8F9EF1003239E0 /* FirebaseFirestoreSwift */; };
-		F7696C852A8FA053003239E0 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7696C842A8FA053003239E0 /* AuthenticationViewModel.swift */; };
 		F7696C8A2A8FA144003239E0 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7696C892A8FA144003239E0 /* UserManager.swift */; };
 		F7696C8C2A8FA728003239E0 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7696C8B2A8FA728003239E0 /* SettingsViewModel.swift */; };
 		F7696C8F2A8FA768003239E0 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7696C8E2A8FA768003239E0 /* ProfileView.swift */; };
@@ -63,6 +61,8 @@
 		F79971912A2B9B0F001FEED3 /* CategoryExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79971902A2B9B0F001FEED3 /* CategoryExpensesView.swift */; };
 		F79971932A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79971922A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift */; };
 		F79971952A2D052A001FEED3 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79971942A2D052A001FEED3 /* StringExtension.swift */; };
+		F7AF33FE2ACDD13600EAC94B /* RootTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AF33FD2ACDD13600EAC94B /* RootTabViewModel.swift */; };
+		F7AF34002ACDD2E000EAC94B /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AF33FF2ACDD2E000EAC94B /* AppContext.swift */; };
 		F7E42C8A2A7A8E2E004E0BDE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F7E42C892A7A8E2E004E0BDE /* GoogleService-Info.plist */; };
 		F7E42C8D2A7A8F8C004E0BDE /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = F7E42C8C2A7A8F8C004E0BDE /* FirebaseAnalytics */; };
 		F7E42C8F2A7A8F8C004E0BDE /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F7E42C8E2A7A8F8C004E0BDE /* FirebaseAnalyticsSwift */; };
@@ -94,8 +94,8 @@
 		F7130FA52A03C3BC00972B10 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
 		F715D614295B3A1100B1177F /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		F719DC00294F0EA600DE1B8E /* mokpon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mokpon.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F719DC03294F0EA600DE1B8E /* mokponApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mokponApp.swift; sourceTree = "<group>"; };
-		F719DC05294F0EA600DE1B8E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F719DC03294F0EA600DE1B8E /* MokponApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MokponApp.swift; sourceTree = "<group>"; };
+		F719DC05294F0EA600DE1B8E /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
 		F719DC07294F0EA700DE1B8E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F719DC0A294F0EA700DE1B8E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F719DC13294F344600DE1B8E /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
@@ -112,7 +112,6 @@
 		F754A44929D704D9004A61C8 /* PieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreQueryExtension.swift; sourceTree = "<group>"; };
 		F75F77512A9A0B9100C658F1 /* TransactionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionManager.swift; sourceTree = "<group>"; };
-		F75F77532A9E3D9200C658F1 /* GlobalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalViewModel.swift; sourceTree = "<group>"; };
 		F75F77572AA4828500C658F1 /* AmountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountManager.swift; sourceTree = "<group>"; };
 		F75F77592AA61D3900C658F1 /* ChartsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsManager.swift; sourceTree = "<group>"; };
 		F75F775B2AA721CE00C658F1 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
@@ -122,7 +121,6 @@
 		F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
 		F7696C7C2A8A7192003239E0 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		F7696C7E2A8A790D003239E0 /* SignInGoogleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInGoogleHelper.swift; sourceTree = "<group>"; };
-		F7696C842A8FA053003239E0 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		F7696C892A8FA144003239E0 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		F7696C8B2A8FA728003239E0 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		F7696C8E2A8FA768003239E0 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -135,6 +133,8 @@
 		F79971902A2B9B0F001FEED3 /* CategoryExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryExpensesView.swift; sourceTree = "<group>"; };
 		F79971922A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryExpensesViewModel.swift; sourceTree = "<group>"; };
 		F79971942A2D052A001FEED3 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		F7AF33FD2ACDD13600EAC94B /* RootTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabViewModel.swift; sourceTree = "<group>"; };
+		F7AF33FF2ACDD2E000EAC94B /* AppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContext.swift; sourceTree = "<group>"; };
 		F7E42C892A7A8E2E004E0BDE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F7E42C942A7A94CE004E0BDE /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		F7E42C962A7A95E2004E0BDE /* SignInEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInEmailView.swift; sourceTree = "<group>"; };
@@ -364,10 +364,11 @@
 		F7791CD929E6D3420089E1A6 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				F719DC03294F0EA600DE1B8E /* mokponApp.swift */,
+				F719DC03294F0EA600DE1B8E /* MokponApp.swift */,
 				F7E42C9A2A7AABA3004E0BDE /* RootView.swift */,
-				F719DC05294F0EA600DE1B8E /* ContentView.swift */,
-				F75F77532A9E3D9200C658F1 /* GlobalViewModel.swift */,
+				F719DC05294F0EA600DE1B8E /* RootTabView.swift */,
+				F7AF33FD2ACDD13600EAC94B /* RootTabViewModel.swift */,
+				F7AF33FF2ACDD2E000EAC94B /* AppContext.swift */,
 				F7E42C932A7A94B9004E0BDE /* Authentication */,
 				F7791CDA29E6DBA30089E1A6 /* Home */,
 				F7791CDF29E6DE350089E1A6 /* Charts */,
@@ -423,7 +424,6 @@
 			isa = PBXGroup;
 			children = (
 				F7E42C942A7A94CE004E0BDE /* AuthenticationView.swift */,
-				F7696C842A8FA053003239E0 /* AuthenticationViewModel.swift */,
 				F7696C862A8FA081003239E0 /* Subviews */,
 			);
 			path = Authentication;
@@ -535,21 +535,21 @@
 				F7E42C992A7A9757004E0BDE /* AuthenticationManager.swift in Sources */,
 				F75F77622AADF76000C658F1 /* NumberPad.swift in Sources */,
 				F719DC14294F344600DE1B8E /* TransactionListView.swift in Sources */,
-				F7696C852A8FA053003239E0 /* AuthenticationViewModel.swift in Sources */,
 				F729732C29EC40C50007D493 /* ChartsNavBarView.swift in Sources */,
 				F754A44729D6F3E7004A61C8 /* PieSliceView.swift in Sources */,
 				F75F77642AAE588900C658F1 /* SubcategoryInput.swift in Sources */,
 				F7130FA12A02B55E00972B10 /* BarChartView.swift in Sources */,
 				F75F77522A9A0B9100C658F1 /* TransactionManager.swift in Sources */,
 				F7130F9B2A02A18900972B10 /* DictionaryExtension.swift in Sources */,
+				F7AF34002ACDD2E000EAC94B /* AppContext.swift in Sources */,
 				F7470F722ABAED8600DB4847 /* TextExtension.swift in Sources */,
 				F75F77502A98E35E00C658F1 /* FireStoreQueryExtension.swift in Sources */,
 				F75F77582AA4828500C658F1 /* AmountManager.swift in Sources */,
+				F7AF33FE2ACDD13600EAC94B /* RootTabViewModel.swift in Sources */,
 				F79971952A2D052A001FEED3 /* StringExtension.swift in Sources */,
 				F7E42C9E2A7AADAB004E0BDE /* SettingsView.swift in Sources */,
 				F754A44A29D704D9004A61C8 /* PieChartView.swift in Sources */,
-				F719DC06294F0EA600DE1B8E /* ContentView.swift in Sources */,
-				F75F77542A9E3D9200C658F1 /* GlobalViewModel.swift in Sources */,
+				F719DC06294F0EA600DE1B8E /* RootTabView.swift in Sources */,
 				F79971932A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift in Sources */,
 				F75F775A2AA61D3900C658F1 /* ChartsManager.swift in Sources */,
 				F79018C129E93FC7001C231D /* ChartsViewModel.swift in Sources */,
@@ -574,7 +574,7 @@
 				F7470F702AB9C99600DB4847 /* BackgroundCloud.swift in Sources */,
 				F79971912A2B9B0F001FEED3 /* CategoryExpensesView.swift in Sources */,
 				F78417C029DC4DE9002D1E24 /* ExpensesListView.swift in Sources */,
-				F719DC04294F0EA600DE1B8E /* mokponApp.swift in Sources */,
+				F719DC04294F0EA600DE1B8E /* MokponApp.swift in Sources */,
 				F7EF4BAD2A014C680093DA82 /* NewTransactionFormViewModel.swift in Sources */,
 				F7FE87A62A14987B005EF3D5 /* CalculatorButton.swift in Sources */,
 				F7696C7F2A8A790D003239E0 /* SignInGoogleHelper.swift in Sources */,

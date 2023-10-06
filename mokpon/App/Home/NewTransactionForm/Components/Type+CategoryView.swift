@@ -3,7 +3,7 @@ import SwiftUI
 
 struct Type_CategoryView: View {
     
-    @EnvironmentObject var viewModel : GlobalViewModel
+    @EnvironmentObject var rootViewModel : RootTabViewModel
     
     @Binding var selection: Category?
     @Binding var type: ExpensesType
@@ -18,7 +18,7 @@ struct Type_CategoryView: View {
 //Categories
             if type != .exchange {
                 Menu {
-                    ForEach(viewModel.categories ?? []) { cat in
+                    ForEach(rootViewModel.categories ?? []) { cat in
                         Button {
                             selection = cat
                             type = cat.type
@@ -86,9 +86,6 @@ struct Type_CategoryView: View {
 
 struct Type_CategoryView_Previews: PreviewProvider {
     static var previews: some View {
-        Type_CategoryView(
-            selection: .constant(nil),
-            type: .constant(ExpensesType.exchange)
-        ).environmentObject(GlobalViewModel(directoriesManager: DirectoriesManager(completion: {})))
+        Type_CategoryView(selection: .constant(Category(id: "cat-01", name: "питание", icon: "cart", type: .expense)), type: .constant(.expense)).environmentObject(RootTabViewModel(appContext: AppContext()))
     }
 }

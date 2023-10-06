@@ -2,8 +2,6 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-
-@MainActor
 final class TransactionManager {
     
     init() {print("\(Date()): INIT TransactionManager")}

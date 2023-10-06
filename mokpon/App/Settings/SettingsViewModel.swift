@@ -12,9 +12,9 @@ final class SettingsViewModel : ObservableObject {
     let authManager: AuthenticationManager
     let userManager: UserManager
     
-    init(authManager: AuthenticationManager, userManager: UserManager) {
-        self.authManager = authManager
-        self.userManager = userManager
+    init(appContext: AppContext) {
+        self.authManager = appContext.authManager
+        self.userManager = appContext.userManager
     }
 
     func signUp () async throws {
@@ -27,16 +27,7 @@ final class SettingsViewModel : ObservableObject {
         let user = DBUser(auth: authDataResult)
         try await userManager.createNewUser(user: user)
     }
-    
-    func signIn () async throws {
-        guard !email.isEmpty, !password.isEmpty else {
-            print("No email or password found.")
-            return
-        }
         
-        try await authManager.signInUser(email: email, password: password)
-    }
-    
     func signOut () throws {
         try authManager.signOut()
     }
@@ -76,6 +67,34 @@ final class SettingsViewModel : ObservableObject {
     }
     func deleteUser () async throws {
         try await authManager.deleteUser()
+    }
+    
+}
+
+//MARK: Signing in
+extension SettingsViewModel {
+    
+    func signIn () async throws {
+        guard !email.isEmpty, !password.isEmpty else {
+            print("No email or password found.")
+            return
+        }
+        
+        try await authManager.signInUser(email: email, password: password)
+    }
+    
+    func signInGoogle () async throws {
+        let helper = SignInGoogleHelper()
+        let tokens = try await helper.signIn()
+        let authDataResult = try await authManager.signInWithGoogle(tokens: tokens)
+        let user = DBUser(auth: authDataResult)
+        try await userManager.createNewUser(user: user)
+    }
+    
+    func signInAnonymous() async throws {
+        let authDataResult = try await authManager.signInAnonymous()
+        let user = DBUser(auth: authDataResult)
+        try await userManager.createNewUser(user: user)
     }
     
 }

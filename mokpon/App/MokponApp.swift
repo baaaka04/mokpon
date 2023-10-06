@@ -2,12 +2,14 @@ import SwiftUI
 import Firebase
 
 @main
-struct mokponApp: App {
+struct MokponApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    @StateObject private var viewModel = RootTabViewModel(appContext: AppContext())
         
     var body: some Scene {
         WindowGroup {
-            RootView()
+            RootView(viewModel: viewModel)
         }
     }
 }

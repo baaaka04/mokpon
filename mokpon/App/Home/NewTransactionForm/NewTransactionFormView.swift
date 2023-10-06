@@ -8,7 +8,7 @@ struct NewTransactionForm: View {
     
     @ObservedObject var viewModel: NewTransactionViewModel
     @ObservedObject var viewModelExchange: NewTransactionViewModel
-    @EnvironmentObject var globalViewModel : GlobalViewModel
+    @EnvironmentObject var rootViewModel : RootTabViewModel
     @AppStorage("currencyIndex") private var currencyIndex : Int = 0
     
     @State private var isExchange : Bool = false
@@ -16,9 +16,11 @@ struct NewTransactionForm: View {
     
     @Environment(\.presentationMode) var presentationMode
     
-    init(transactionManager: TransactionManager, amountManager: AmountManager, authManager: AuthenticationManager, directoriesManager: DirectoriesManager) {
-        self.viewModel = NewTransactionViewModel(isExchange: false, transactionManager: transactionManager, amountManager: amountManager, authManager: authManager, directoriesManager: directoriesManager)
-        self.viewModelExchange = NewTransactionViewModel(isExchange: true, transactionManager: transactionManager, amountManager: amountManager, authManager: authManager, directoriesManager: directoriesManager)
+    init() {
+        let appContext = AppContext()
+        _viewModel = ObservedObject(wrappedValue: NewTransactionViewModel(appContext: appContext, isExchange: false))
+        _viewModelExchange = ObservedObject(wrappedValue: NewTransactionViewModel(appContext: appContext, isExchange: true))
+        print("\(Date()): INIT NewTransactionForm")
     }
     
     var body: some View {
@@ -49,7 +51,7 @@ struct NewTransactionForm: View {
                 //  Sum & Desciption
                 NumberPad(sum: viewModel.sum, type: viewModel.type, currency: viewModel.currency, switchCurrency: {switchCurrency(isExchange: false)}, onSwipeRight: {viewModel.onPressBackspace(btn: "")}, isExchange: viewModel.isExchange)
                     .onAppear {
-                        viewModel.currency = globalViewModel.currencies?[currencyIndex]
+                        viewModel.currency = rootViewModel.currencies?[currencyIndex]
                         viewModel.currentCurrencyInd = currencyIndex
                     }
                     .foregroundColor( selectedNumberPad == .original && isExchange ? Color.accentColor : nil )
@@ -89,7 +91,7 @@ struct NewTransactionForm: View {
 
 struct NewTransactionForm_Previews: PreviewProvider {
     static var previews: some View {
-        NewTransactionForm(transactionManager: TransactionManager(), amountManager: AmountManager(), authManager: AuthenticationManager(), directoriesManager: DirectoriesManager(completion: {})).environmentObject(GlobalViewModel(directoriesManager: DirectoriesManager(completion: {})))
+        NewTransactionForm().environmentObject(RootTabViewModel(appContext: AppContext()))
     }
 }
 
@@ -109,9 +111,9 @@ extension NewTransactionForm {
     }
     private func switchCurrency (isExchange: Bool) {
         if isExchange {
-            viewModelExchange.switchCurrency(currencies: globalViewModel.currencies)
+            viewModelExchange.switchCurrency(currencies: rootViewModel.currencies)
         } else {
-            currencyIndex = viewModel.switchCurrency(currencies: globalViewModel.currencies)
+            currencyIndex = viewModel.switchCurrency(currencies: rootViewModel.currencies)
         }
     }
     private func onPressExchange () {
@@ -122,13 +124,13 @@ extension NewTransactionForm {
             viewModel.subCategory = ""
         } else {
             viewModel.type = .exchange
-            viewModel.category = globalViewModel.categories?.first { $0.type == .exchange }
+            viewModel.category = rootViewModel.categories?.first { $0.type == .exchange }
             viewModel.subCategory = "обмен"
         }
         viewModelExchange.currency = viewModel.currency
         viewModelExchange.currentCurrencyInd = currencyIndex
         viewModelExchange.type = .exchange
-        viewModelExchange.category = globalViewModel.categories?.first { $0.type == .exchange }
+        viewModelExchange.category = rootViewModel.categories?.first { $0.type == .exchange }
         viewModelExchange.subCategory = "обмен"
         
         if selectedNumberPad == .exchange {selectedNumberPad = .original}

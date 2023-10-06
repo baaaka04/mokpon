@@ -3,28 +3,26 @@ import SwiftUI
 struct RootView: View {
     
     @State private var showSignInView: Bool = false
-    let authManager = AuthenticationManager()
-    let userManager = UserManager()
-    let directoriesManager = DirectoriesManager(completion: {})
+    @StateObject var viewModel: RootTabViewModel
         
     var body: some View {
         ZStack {
             if !showSignInView {
-                ContentView(authManager: authManager, userManager: userManager, showSignInView: $showSignInView, directoriesManager: directoriesManager)
+                RootTabView(showSignInView: $showSignInView, viewModel: viewModel)
             }
         }
         .onAppear {
-            let authUser = try? authManager.getAuthenticatedUser()
+            let authUser = try? viewModel.settingsViewModel.authManager.getAuthenticatedUser()
             self.showSignInView = authUser == nil
         }
         .fullScreenCover(isPresented: $showSignInView) {
-            AuthenticationView(authManager: authManager, userManager: userManager, showSignInView: $showSignInView)
+            AuthenticationView(settingsViewModel: viewModel.settingsViewModel, showSignInView: $showSignInView)
         }
     }
 }
 
 struct RootView_Previews: PreviewProvider {
     static var previews: some View {
-        RootView()
+        RootView(viewModel: RootTabViewModel(appContext: AppContext()))
     }
 }

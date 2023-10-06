@@ -13,11 +13,13 @@ final class ChartsViewModel : ObservableObject {
     let chartsManager: ChartsManager
     let directoriesManager: DirectoriesManager
     
-    init (currencyRatesService: CurrencyManager, chartsManager: ChartsManager, directoriesManager: DirectoriesManager) {
-        self.currencyRatesService = currencyRatesService
-        self.chartsManager = chartsManager
-        self.directoriesManager = directoriesManager
+    init (appContext: AppContext) {
+        print("\(Date()): INIT ChartsViewModel")
+        self.currencyRatesService = appContext.currencyRatesService
+        self.chartsManager = appContext.chartsManager
+        self.directoriesManager = appContext.directoriesManager
     }
+    deinit {print("\(Date()): DEINIT ChartsViewModel")}
     
     var chartDate : ChartsDate = ChartsDate(
         month: Calendar.current.component(.month, from: Date()),

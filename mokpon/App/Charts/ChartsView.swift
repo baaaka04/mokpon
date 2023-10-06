@@ -1,15 +1,13 @@
 import SwiftUI
 import Charts
 
-struct Charts: View {
+struct ChartsView: View {
     
     @StateObject private var viewModel: ChartsViewModel
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
-    let directoriesManager: DirectoriesManager
     
-    init(currencyRatesService: CurrencyManager, directoriesManager: DirectoriesManager) {
-        self.directoriesManager = directoriesManager
-        _viewModel = StateObject(wrappedValue: ChartsViewModel(currencyRatesService: currencyRatesService, chartsManager: ChartsManager(), directoriesManager: directoriesManager))
+    init(viewModel: ChartsViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
         
         UISegmentedControl.appearance().selectedSegmentTintColor = .white
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(.black.opacity(0.7))], for: .selected)
@@ -62,7 +60,7 @@ struct Charts: View {
                     selectedType: viewModel.selectedChart,
                     selectedPeriod: viewModel.chartDate,
                     isClickable: viewModel.selectedChart == .pie,
-                    directoriesManager: directoriesManager
+                    directoriesManager: viewModel.directoriesManager
                 )
                 
             }
@@ -73,7 +71,7 @@ struct Charts: View {
 
 struct Charts_Previews: PreviewProvider {
     static var previews: some View {
-        Charts(currencyRatesService: CurrencyManager(completion: {}), directoriesManager: DirectoriesManager(completion: {}))
+        ChartsView(viewModel: ChartsViewModel(appContext: AppContext()))
             .foregroundColor(.white)
             .frame(maxHeight: .infinity)
             .background(Color.bg_main)

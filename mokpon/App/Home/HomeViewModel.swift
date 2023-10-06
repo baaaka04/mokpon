@@ -16,18 +16,18 @@ final class HomeViewModel : ObservableObject {
     private var cancellable = Set<AnyCancellable>()
     var isSearching : Bool = false
     private var lastDocument : DocumentSnapshot? = nil
-    let currencyRatesService: CurrencyManager
-    let transactionManager: TransactionManager
-    let amountManager: AmountManager
-    let authManager: AuthenticationManager
-    let directoriesManager: DirectoriesManager
-    
-    init(currencyRatesService: CurrencyManager, transactionManager: TransactionManager, amountManager: AmountManager, authManager: AuthenticationManager, directoriesManager: DirectoriesManager) {
-        self.currencyRatesService = currencyRatesService
-        self.transactionManager = transactionManager
-        self.amountManager = amountManager
-        self.authManager = authManager
-        self.directoriesManager = directoriesManager
+    private(set) var currencyRatesService: CurrencyManager
+    private(set) var transactionManager: TransactionManager
+    private(set) var amountManager: AmountManager
+    private(set) var authManager: AuthenticationManager
+    private(set) var directoriesManager: DirectoriesManager
+        
+    init(appContext: AppContext) {
+        self.currencyRatesService = appContext.currencyRatesService
+        self.transactionManager = appContext.transactionManager
+        self.amountManager = appContext.amountManager
+        self.authManager = appContext.authManager
+        self.directoriesManager = appContext.directoriesManager
         addSubscribers()
         print("\(Date()): INIT HomeViewModel")
     }

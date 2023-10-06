@@ -5,17 +5,12 @@ import GoogleSignInSwift
 
 struct AuthenticationView: View {
     
-    @StateObject private var viewModel: AutheticationViewModel
+    @StateObject private var settingsViewModel: SettingsViewModel
     @Binding var showSignInView : Bool
-    
-    let authManager: AuthenticationManager
-    let userManager: UserManager
-    
-    init(authManager: AuthenticationManager, userManager: UserManager, showSignInView: Binding<Bool>) {
-        self.authManager = authManager
-        self.userManager = userManager
-        _viewModel = StateObject(wrappedValue: AutheticationViewModel(authManager: authManager, userManager: userManager))
-        self._showSignInView = showSignInView
+
+    init(settingsViewModel: SettingsViewModel, showSignInView: Binding<Bool> ) {
+        _showSignInView = showSignInView
+        _settingsViewModel = StateObject(wrappedValue:settingsViewModel)
     }
     
     var body: some View {
@@ -28,7 +23,7 @@ struct AuthenticationView: View {
                     Image("AuthLogo")
                     Spacer()
                     NavigationLink {
-                        SignInEmailView(authManager: authManager, userManager: userManager, showSignInView: $showSignInView)
+                        SignInEmailView(viewModel: settingsViewModel, showSignInView: $showSignInView)
                     } label: {
                         Text("Sign In with Email").gradient()
                     }
@@ -36,7 +31,7 @@ struct AuthenticationView: View {
                     GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .dark, style: .wide, state: .normal)) {
                         Task {
                             do {
-                                try await viewModel.signInGoogle()
+                                try await settingsViewModel.signInGoogle()
                                 showSignInView = false
                             } catch { print(error) }
                         }
@@ -48,7 +43,7 @@ struct AuthenticationView: View {
                         .onTapGesture {
                             Task {
                                 do {
-                                    try await viewModel.signInAnonymous()
+                                    try await settingsViewModel.signInAnonymous()
                                     showSignInView = false
                                 } catch { print(error) }
                             }
@@ -64,7 +59,7 @@ struct AuthenticationView: View {
 struct AuthenticationView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            AuthenticationView(authManager: AuthenticationManager(), userManager: UserManager(), showSignInView: .constant(false))
+            AuthenticationView(settingsViewModel: SettingsViewModel(appContext: AppContext()), showSignInView: .constant(true))
         }
     }
 }

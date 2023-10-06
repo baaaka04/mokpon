@@ -3,19 +3,14 @@ import SwiftUI
 struct SettingsView: View {
     
     @StateObject private var viewModel : SettingsViewModel
-    @EnvironmentObject private var globalViewModel : GlobalViewModel
+    @EnvironmentObject private var rootViewModel : RootTabViewModel
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
     @Binding var showSingInView : Bool
     @State private var showAlert : Bool = false
-    
-    let authManager: AuthenticationManager
-    let userManager: UserManager
-    
-    init(showSingInView: Binding<Bool>, authManager: AuthenticationManager, userManager: UserManager) {
-        self.authManager = authManager
-        self.userManager = userManager
+        
+    init(showSingInView: Binding<Bool>, viewModel: SettingsViewModel) {
         _showSingInView = showSingInView
-        _viewModel = StateObject(wrappedValue: SettingsViewModel(authManager: authManager, userManager: userManager))
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
@@ -63,7 +58,7 @@ struct SettingsView: View {
                     )
                 }
                 
-                if let currencies = globalViewModel.currencies {
+                if let currencies = rootViewModel.currencies {
                     Section {
                         Picker(selection: $mainCurrency) {
                             ForEach(currencies, id: \.self) { cur in
@@ -99,9 +94,8 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(authManager: AuthenticationManager(), userManager: UserManager(), showSignInView: .constant(false), directoriesManager: DirectoriesManager(completion: {}))
-//        SettingsView(showSingInView: .constant(true))
-            .environmentObject(GlobalViewModel(directoriesManager: DirectoriesManager(completion: {})))
+        SettingsView(showSingInView: .constant(false), viewModel: SettingsViewModel(appContext: AppContext()))
+            .environmentObject(RootTabViewModel(appContext: AppContext()))
             .preferredColorScheme(.dark)
     }
 }
@@ -143,7 +137,7 @@ extension SettingsView {
                 }
             }
             NavigationLink {
-                SignInEmailView(authManager: authManager, userManager: userManager,showSignInView: .constant(false))
+                SignInEmailView(viewModel: viewModel,showSignInView: .constant(false))
             } label: {
                 Text("Link Email")
             }

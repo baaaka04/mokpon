@@ -4,17 +4,8 @@ struct Home: View {
     
     @StateObject private var vm: HomeViewModel
     
-    let transactionManager: TransactionManager
-    let amountManager: AmountManager
-    let authManager: AuthenticationManager
-    let directoriesManager: DirectoriesManager
-    
-    init(currencyRatesService: CurrencyManager, transactionManager: TransactionManager, amountManager: AmountManager, authManager: AuthenticationManager, directoriesManager: DirectoriesManager) {
-        self.directoriesManager = directoriesManager
-        self.authManager = authManager
-        self.transactionManager = transactionManager
-        self.amountManager = amountManager
-        _vm = StateObject(wrappedValue: HomeViewModel(currencyRatesService: currencyRatesService, transactionManager: transactionManager, amountManager: amountManager, authManager: authManager, directoriesManager: directoriesManager))
+    init(viewModel: HomeViewModel) {
+        _vm = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
@@ -24,7 +15,7 @@ struct Home: View {
             ScrollView {
                 VStack{
                     
-                    DebitCard(amounts: vm.amounts, directoriesManager: directoriesManager)
+                    DebitCard(amounts: vm.amounts, directoriesManager: vm.directoriesManager)
                         .onAppear {
                             vm.getUserAmounts()
                         }
@@ -60,7 +51,7 @@ struct Home: View {
                                     searchScope: $vm.searchScope,
                                     setupSearching: vm.setupSearching,
                                     convertCurrency: vm.currencyRatesService.convertCurrency,
-                                    directoriesManager: directoriesManager
+                                    directoriesManager: vm.directoriesManager
                                 )
                                 .presentationDragIndicator(.visible)
                             }
@@ -74,7 +65,7 @@ struct Home: View {
                             setupSearching: { isSearching in  },
                             transactionLimit: 5, //show only last 5 transactions
                             convertCurrency: vm.currencyRatesService.convertCurrency,
-                            directoriesManager: directoriesManager
+                            directoriesManager: vm.directoriesManager
                         )
                     }
                     .padding(.horizontal)
@@ -96,26 +87,26 @@ struct Home: View {
                 
                 HStack{
                     Spacer()
-                    NavigationLink(
-                        destination:
-                            NewTransactionForm(transactionManager: transactionManager, amountManager: amountManager, authManager: authManager, directoriesManager: directoriesManager)
-                            .navigationBarHidden(true),
-                        label: {
-                            AddButton()
-                                .padding(40)
-                        }
-                    )
+
+                    NavigationLink(value: "") { // I need it only because of 'Lazyness', to prevent initializing NewTransactionViewModel every HomeView's render
+                        AddButton()
+                            .padding(40)
+                    }
                 }
                 .padding(.bottom, 35)
             }
         }
         .font(.custom("DMSans-Regular", size: 16))
+        .navigationDestination(for: String.self) { _ in
+            NewTransactionForm()
+                .navigationBarHidden(true)
+        }
     }
 }
 
 
 struct Home_Previews: PreviewProvider {
     static var previews: some View {
-        Home(currencyRatesService: CurrencyManager(completion: {}), transactionManager: TransactionManager(), amountManager: AmountManager(), authManager: AuthenticationManager(), directoriesManager: DirectoriesManager(completion: {}))
+        Home(viewModel: HomeViewModel(appContext: AppContext()))
     }
 }
