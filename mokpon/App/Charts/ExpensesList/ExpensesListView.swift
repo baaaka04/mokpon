@@ -5,24 +5,9 @@ struct ExpensesListView: View {
     var selectedType : ChartType
     var selectedPeriod : ChartsDate
     var isClickable : Bool
-    let directoriesManager : DirectoriesManager
     
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
-    
-    private func getBarchartData (chartData: [ChartData]) -> [ChartData] {
-        guard let currency = directoriesManager.getCurrency(byName: mainCurrency) else {return []}
-        let groupedByCategory : [Category : [ChartData]] = Dictionary(grouping: chartData) { $0.category }
-        let differenceByCategory = groupedByCategory.map { (key: Category, value: [ChartData]) in
-            let currentSum = value.first { $0.month == selectedPeriod.month && $0.year == selectedPeriod.year }?.sum ?? 0
-            let previousSum = value.first { $0.month != selectedPeriod.month || $0.year != selectedPeriod.year }?.sum ?? 0
-            let difference = currentSum-previousSum
-            var percent = 0
-            if previousSum != 0 { percent = Int(((Double(currentSum) / Double(previousSum)) - 1.0) * 100.0) }
-            return ChartData(category: key, currency: currency, sum: difference, month: selectedPeriod.month, year: selectedPeriod.year, percentDiff: percent)
-        }
-        return differenceByCategory.sorted { $0.sum > $1.sum }
-    }
-    
+            
     var body: some View {
         
         VStack (spacing: 10) {
@@ -32,16 +17,15 @@ struct ExpensesListView: View {
             }
             .font(.custom("DMSans-Regular", size: 20))
             .padding(20)
-            switch selectedType {
-            case .bar:
-                ForEach(getBarchartData(chartData: expenses)) { chartData in
-                    ExpenseView(expenseBarData: chartData)
-                        .padding(.horizontal)
-                }
-            case .pie:
-                ForEach(expenses) { chartData in
-                    if chartData.sum != 0 {
-                        ExpenseView(expensePieData: chartData, selectedPeriod: selectedPeriod, isClickable: isClickable, directoriesManager: directoriesManager)
+            
+            ForEach(expenses) { chartData in
+                if chartData.sum != 0 {
+                    switch selectedType {
+                    case .bar:
+                        ExpenseView(expenseBarData: chartData)
+                            .padding(.horizontal)
+                    case .pie:
+                        ExpenseView(expensePieData: chartData, selectedPeriod: selectedPeriod, isClickable: isClickable)
                             .padding(.horizontal)
                     }
                 }
@@ -61,8 +45,7 @@ struct ExpensesListView_Previews: PreviewProvider {
             expenses: [ ],
             selectedType: .pie,
             selectedPeriod: ChartsDate(month: 6, year: 2023),
-            isClickable: false,
-            directoriesManager: DirectoriesManager(completion: {})
+            isClickable: false
         )
     }
 }

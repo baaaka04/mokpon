@@ -182,8 +182,8 @@
 			isa = PBXGroup;
 			children = (
 				F78417BF29DC4DE9002D1E24 /* ExpensesListView.swift */,
-				F79971902A2B9B0F001FEED3 /* CategoryExpensesView.swift */,
-				F79971922A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift */,
+				F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */,
+				F755F3F22AD2F99E000723B3 /* CategoryExpenses */,
 			);
 			path = ExpensesList;
 			sourceTree = "<group>";
@@ -235,7 +235,6 @@
 				F709306D2956160C0071BF75 /* DebitCard.swift */,
 				F7470F6F2AB9C99600DB4847 /* BackgroundCloud.swift */,
 				F74128C4298FEA98006D2A8B /* Currencies.swift */,
-				F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -320,6 +319,15 @@
 				F7130F982A0297D600972B10 /* PieChart.swift */,
 			);
 			path = PieChart;
+			sourceTree = "<group>";
+		};
+		F755F3F22AD2F99E000723B3 /* CategoryExpenses */ = {
+			isa = PBXGroup;
+			children = (
+				F79971922A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift */,
+				F79971902A2B9B0F001FEED3 /* CategoryExpensesView.swift */,
+			);
+			path = CategoryExpenses;
 			sourceTree = "<group>";
 		};
 		F7696C7B2A8A7180003239E0 /* Utilities */ = {

@@ -2,18 +2,18 @@ import SwiftUI
 
 struct CategoryExpensesView: View {
     
-    @StateObject var viewModel: CategoryViewModel
+    @StateObject private var viewModel : CategoryViewModel
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
-
+    
     var date : ChartsDate
     var category : Category
     
-    init(currencyRatesService: CurrencyManager, chartsManager: ChartsManager, directoriesManager: DirectoriesManager, date: ChartsDate, category: Category) {
-        _viewModel = StateObject(wrappedValue: CategoryViewModel(currencyRatesService: currencyRatesService, chartsManager: chartsManager, directoriesManager: directoriesManager))
+    init(date : ChartsDate, category : Category, categoryViewModel: CategoryViewModel) {
         self.date = date
         self.category = category
+        _viewModel = StateObject(wrappedValue: categoryViewModel)
     }
-    
+        
     var body: some View {
         
         ScrollView {
@@ -32,28 +32,21 @@ struct CategoryExpensesView: View {
                         expenses: viewModel.pieChartData,
                         selectedType: .pie,
                         selectedPeriod: date,
-                        isClickable: false,
-                        directoriesManager: viewModel.directoriesManager //will never initiated
+                        isClickable: false
                     )
                 }
-            } else { ProgressView().frame(maxWidth: .infinity) }
+            } else { ProgressView().frame(maxWidth: .infinity).padding(.top, 200) }
         }
         .background(Color.bg_main)
         .task {
-            viewModel.getCategoryExpenses(category: category, currencyName: mainCurrency, date: date)
+            viewModel.getCategoryExpenses(currencyName: mainCurrency, date: date, category: category)
         }
     }
 }
 
 struct SubcategoryView_Previews: PreviewProvider {
     static var previews: some View {
-        CategoryExpensesView(
-            currencyRatesService: CurrencyManager(completion: {}),
-            chartsManager: ChartsManager(),
-            directoriesManager: DirectoriesManager(completion: {}),
-            date: ChartsDate(month: 9, year: 2023),
-            category: Category(id: "", name: "", icon: "", type: .expense)
-        )
+        CategoryExpensesView(date: ChartsDate(month: 10, year: 2023), category: Category(id: "cat01", name: "питание", icon: "cart", type: .expense), categoryViewModel: CategoryViewModel(appContext: AppContext()))
         .foregroundColor(.white)
     }
 }

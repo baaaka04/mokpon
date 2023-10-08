@@ -111,7 +111,7 @@ struct TransactionListView_Previews: PreviewProvider {
             setupSearching: {x in },
             transactionLimit: 6,
             convertCurrency: {a,b,c in return 0},
-            directoriesManager: DirectoriesManager(completion: {})
+            directoriesManager: DirectoriesManager()
         )
     }
 }

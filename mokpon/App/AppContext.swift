@@ -3,11 +3,11 @@ import Foundation
 
 final class AppContext {
     
-    let currencyRatesService = CurrencyManager(completion: {})
+    let currencyRatesService = CurrencyManager()
     let transactionManager = TransactionManager()
     let amountManager = AmountManager()
     let authManager = AuthenticationManager()
-    let directoriesManager = DirectoriesManager(completion: {})
+    let directoriesManager = DirectoriesManager()
     let userManager = UserManager()
     let authentificationManage = AuthenticationManager()
     let chartsManager = ChartsManager()

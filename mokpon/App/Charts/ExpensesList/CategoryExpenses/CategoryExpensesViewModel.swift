@@ -4,17 +4,19 @@ import Foundation
 final class CategoryViewModel : ObservableObject {
     
     @Published var pieChartData : [ChartData] = []
-    let currencyRatesService: CurrencyManager
-    let chartsManager: ChartsManager
-    let directoriesManager: DirectoriesManager
-    
-    init (currencyRatesService: CurrencyManager, chartsManager: ChartsManager, directoriesManager: DirectoriesManager) {
-        self.currencyRatesService = currencyRatesService
-        self.chartsManager = chartsManager
-        self.directoriesManager = directoriesManager
+    private(set) var currencyRatesService: CurrencyManager
+    private(set) var chartsManager: ChartsManager
+    private(set) var directoriesManager: DirectoriesManager
+        
+    init (appContext: AppContext) {
+        self.currencyRatesService = appContext.currencyRatesService
+        self.chartsManager = appContext.chartsManager
+        self.directoriesManager = appContext.directoriesManager
+        print("\(Date()): INIT CategoryViewModel")
     }
+    deinit {print("\(Date()): DEINIT CategoryViewModel")}
     
-    func getCategoryExpenses (category: Category, currencyName: String, date: ChartsDate) {
+    func getCategoryExpenses (currencyName: String, date: ChartsDate, category: Category) {
         Task {
             guard let currency = directoriesManager.getCurrency(byName: currencyName) else {return}
             let fetchedData = try await chartsManager.getTransactions(year: date.year, month: date.month, categoryId: category.id)

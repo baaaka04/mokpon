@@ -13,7 +13,7 @@ struct ChartsView: View {
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(.black.opacity(0.7))], for: .selected)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(.black.opacity(0.7))], for: .normal)
     }
-    
+        
     var body: some View {
         
         VStack{
@@ -56,11 +56,10 @@ struct ChartsView: View {
                 }
                 
                 ExpensesListView(
-                    expenses : viewModel.selectedChart == .bar ? viewModel.barChartData : viewModel.pieChartData,
+                    expenses : viewModel.selectedChart == .bar ? viewModel.getBarChartListData() : viewModel.pieChartData,
                     selectedType: viewModel.selectedChart,
                     selectedPeriod: viewModel.chartDate,
-                    isClickable: viewModel.selectedChart == .pie,
-                    directoriesManager: viewModel.directoriesManager
+                    isClickable: viewModel.selectedChart == .pie
                 )
                 
             }

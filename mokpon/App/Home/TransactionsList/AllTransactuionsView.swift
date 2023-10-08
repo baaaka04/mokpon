@@ -71,7 +71,7 @@ struct AllTransactuionsView_Previews: PreviewProvider {
             searchScope: .constant("All"),
             setupSearching: { isSearching in  },
             convertCurrency: {a, b, c in return 0},
-            directoriesManager: DirectoriesManager(completion: {})
+            directoriesManager: DirectoriesManager()
         )
     }
 }

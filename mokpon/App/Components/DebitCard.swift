@@ -72,7 +72,7 @@ struct DebitCard_Previews: PreviewProvider {
             .init(curId: "cur-01", sum: 400),
             .init(curId: "cur-02", sum: 2400),
             .init(curId: "cur-03", sum: 132400)
-        ], directoriesManager: DirectoriesManager(completion: {}))
+        ], directoriesManager: DirectoriesManager())
             .foregroundColor(.white)
             .font(.custom("DMSans-Regular", size: 18))
     }

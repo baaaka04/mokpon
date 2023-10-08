@@ -6,14 +6,12 @@ final class DirectoriesManager {
     var categories : [Category]? = nil
     var currencies : [Currency]? = nil
     
-    init (completion: @escaping () -> Void) {
+    init () {
         Task {
             self.categories = try await getAllCategories()
-            completion()//a completion handler to access methods of the class after 'async' init
         }
         Task {
             self.currencies = try await getAllCurrencies()
-            completion()//a completion handler to access methods of the class after 'async' init
         }
         print("\(Date()): INIT DirectoriesManager")
     }

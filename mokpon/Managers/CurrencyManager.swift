@@ -4,12 +4,11 @@ final class CurrencyManager {
     
     var rates : Rates? = nil
         
-    init (completion: @escaping () -> Void) {
+    init () {
+        print("\(Date()): INIT CurrencyManager")
         Task {
             self.rates = await fetchCurrencyRates()
-            completion() //a completion handler to access methods of the class after 'async' init
         }
-        print("\(Date()): INIT CurrencyManager")
     }
     deinit {print("\(Date()): DEINIT CurrencyManager")}
     
