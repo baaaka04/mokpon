@@ -21,6 +21,9 @@ final class HomeViewModel : ObservableObject {
     private(set) var amountManager: AmountManager
     private(set) var authManager: AuthenticationManager
     private(set) var directoriesManager: DirectoriesManager
+    
+    let newTransactionViewModel: NewTransactionViewModel
+    let newTransactionViewModelExchange: NewTransactionViewModel
         
     init(appContext: AppContext) {
         self.currencyRatesService = appContext.currencyRatesService
@@ -28,6 +31,8 @@ final class HomeViewModel : ObservableObject {
         self.amountManager = appContext.amountManager
         self.authManager = appContext.authManager
         self.directoriesManager = appContext.directoriesManager
+        self.newTransactionViewModel = NewTransactionViewModel(appContext: appContext, isExchange: false)
+        self.newTransactionViewModelExchange = NewTransactionViewModel(appContext: appContext, isExchange: true)
         addSubscribers()
         print("\(Date()): INIT HomeViewModel")
     }

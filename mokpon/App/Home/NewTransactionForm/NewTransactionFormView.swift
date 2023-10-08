@@ -16,11 +16,9 @@ struct NewTransactionForm: View {
     
     @Environment(\.presentationMode) var presentationMode
     
-    init() {
-        let appContext = AppContext()
-        _viewModel = ObservedObject(wrappedValue: NewTransactionViewModel(appContext: appContext, isExchange: false))
-        _viewModelExchange = ObservedObject(wrappedValue: NewTransactionViewModel(appContext: appContext, isExchange: true))
-        print("\(Date()): INIT NewTransactionForm")
+    init(viewModel: NewTransactionViewModel, viewModelExchange: NewTransactionViewModel) {
+        _viewModel = ObservedObject(wrappedValue: viewModel)
+        _viewModelExchange = ObservedObject(wrappedValue: viewModelExchange)
     }
     
     var body: some View {
@@ -91,7 +89,8 @@ struct NewTransactionForm: View {
 
 struct NewTransactionForm_Previews: PreviewProvider {
     static var previews: some View {
-        NewTransactionForm().environmentObject(RootTabViewModel(appContext: AppContext()))
+        let appContext = AppContext()
+        NewTransactionForm(viewModel: NewTransactionViewModel(appContext: appContext, isExchange: false), viewModelExchange: NewTransactionViewModel(appContext: appContext, isExchange: false))
     }
 }
 
