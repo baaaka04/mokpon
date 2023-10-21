@@ -98,7 +98,10 @@ struct Home: View {
         }
         .font(.custom("DMSans-Regular", size: 16))
         .navigationDestination(for: String.self) { _ in
-            NewTransactionForm(viewModel: vm.newTransactionViewModel, viewModelExchange: vm.newTransactionViewModelExchange)
+            NewTransactionForm(
+                viewModel: NewTransactionViewModel(appContext: AppContext(), isExchange: false),
+                viewModelExchange: NewTransactionViewModel(appContext: AppContext(), isExchange: true)
+            )
                 .navigationBarHidden(true)
         }
     }
