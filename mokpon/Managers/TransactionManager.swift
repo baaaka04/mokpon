@@ -25,13 +25,18 @@ final class TransactionManager {
         try await transactionCollection.document(documentId).updateData(["id":documentId])
     }
         
-    func getLastNTransactions(limit: Int, lastDocument: DocumentSnapshot? = nil ) async throws -> (documents: [DBTransaction], lastDocument: DocumentSnapshot?) {
-        return try await transactionCollection
-            .whereField(DBTransaction.CodingKeys.deleted.rawValue, isEqualTo: false)
-            .order(by: DBTransaction.CodingKeys.date.rawValue, descending: true)
-            .limit(to: limit)
-            .startOptionally(afterDocument: lastDocument)
-            .getDocumentsWithSnapshot(as: DBTransaction.self)
+    func getLastNTransactions(limit: Int, lastDocument: DocumentSnapshot? = nil ) async -> (documents: [DBTransaction], lastDocument: DocumentSnapshot?) {
+        do {
+            return try await transactionCollection
+                .whereField(DBTransaction.CodingKeys.deleted.rawValue, isEqualTo: false)
+                .order(by: DBTransaction.CodingKeys.date.rawValue, descending: true)
+                .limit(to: limit)
+                .startOptionally(afterDocument: lastDocument)
+                .getDocumentsWithSnapshot(as: DBTransaction.self)
+        } catch {
+            print(error)
+        }
+        return ([], nil)
     }
     
     func deleteTransaction (transactionId: String) async throws {
@@ -39,7 +44,7 @@ final class TransactionManager {
     }
     
     func getHotkeys() async throws -> [DBHotkey] {
-        let (FBTransactions, _) = try await getLastNTransactions(limit: 200)
+        let (FBTransactions, _) = await getLastNTransactions(limit: 200)
            return Dictionary(grouping: FBTransactions, by: {DBHotkey(categoryId: $0.categoryId, subcategory: $0.subcategory, count: 0)})
                 .map { (key, arr) in DBHotkey(categoryId: key.categoryId, subcategory: key.subcategory, count: arr.count) }
                 .sorted { $0.count > $1.count }

@@ -50,7 +50,7 @@ final class HomeViewModel : ObservableObject {
     // GET Request from Firebase DB
     func getTransactions () {
         Task {
-            let (newTransactions, lastDocument) = try await transactionManager.getLastNTransactions(limit: 10, lastDocument: self.lastDocument)
+            let (newTransactions, lastDocument) = await transactionManager.getLastNTransactions(limit: 10, lastDocument: self.lastDocument)
             if let lastDocument {
                 self.lastDocument = lastDocument
             }
@@ -68,7 +68,7 @@ final class HomeViewModel : ObservableObject {
     
     func getLastTransactions () {
         Task {
-            let (newTransactions, lastDocument) = try await transactionManager.getLastNTransactions(limit: 10)
+            let (newTransactions, lastDocument) = await transactionManager.getLastNTransactions(limit: 10)
             self.transactions = newTransactions.compactMap {
                 if let category = directoriesManager.getCategory(byID: $0.categoryId),
                    let currency = directoriesManager.getCurrency(byID: $0.currencyId) {
