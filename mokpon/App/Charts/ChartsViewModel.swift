@@ -63,21 +63,21 @@ final class ChartsViewModel : ObservableObject {
     
     func getPieChartData (mainCurrency: String) {
         Task {
-            self.pieChartData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.year, month: chartDate.month)
+            self.pieChartData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month)
         }
     }
     
     func getBarChartData (mainCurrency: String) {
         Task {
             var barChartData : [ChartData] = []
-            let currentMonthData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.year, month: chartDate.month)
+            let currentMonthData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month)
             
             switch compareData {
             case .monthly:
-                let previousMonthData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.year, month: chartDate.prevMonth)
+                let previousMonthData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.previousMonthPeriod.year, month: chartDate.previousMonthPeriod.month)
                 barChartData = previousMonthData + currentMonthData
             case .yearly:
-                let previousYearData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.prevYear, month: chartDate.month)
+                let previousYearData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.previousYearPeriod.year, month: chartDate.currentPeriod.year)
                 barChartData = previousYearData + currentMonthData
             }
             self.barChartData = barChartData
@@ -89,12 +89,12 @@ final class ChartsViewModel : ObservableObject {
         let currency = barChartData[0].currency
         let groupedByCategory : [Category : [ChartData]] = Dictionary(grouping: barChartData) { $0.category }
         let differenceByCategory = groupedByCategory.map { (key: Category, value: [ChartData]) in
-            let currentSum = value.first { $0.month == chartDate.month && $0.year == chartDate.year }?.sum ?? 0
-            let previousSum = value.first { $0.month != chartDate.month || $0.year != chartDate.year }?.sum ?? 0
+            let currentSum = value.first { $0.month == chartDate.currentPeriod.month && $0.year == chartDate.currentPeriod.year }?.sum ?? 0
+            let previousSum = value.first { $0.month != chartDate.currentPeriod.month || $0.year != chartDate.currentPeriod.year }?.sum ?? 0
             let difference = currentSum-previousSum
             var percent = 0
             if previousSum != 0 { percent = Int(((Double(currentSum) / Double(previousSum)) - 1.0) * 100.0) }
-            return ChartData(category: key, currency: currency, sum: difference, month: chartDate.month, year: chartDate.year, percentDiff: percent)
+            return ChartData(category: key, currency: currency, sum: difference, month: chartDate.currentPeriod.month, year: chartDate.currentPeriod.year, percentDiff: percent)
         }
         return differenceByCategory.sorted { $0.sum > $1.sum }
     }

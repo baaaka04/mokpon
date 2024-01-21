@@ -19,7 +19,7 @@ final class CategoryViewModel : ObservableObject {
     func getCategoryExpenses (currencyName: String, date: ChartsDate, category: Category) {
         Task {
             guard let currency = directoriesManager.getCurrency(byName: currencyName) else {return}
-            let fetchedData = try await chartsManager.getTransactions(year: date.year, month: date.month, categoryId: category.id)
+            let fetchedData = try await chartsManager.getTransactions(year: date.currentPeriod.year, month: date.currentPeriod.month, categoryId: category.id)
             let groupedByCategory = Dictionary(grouping: fetchedData) { $0.subcategory }
             let categoryData = groupedByCategory.map { (key: String, value: [DBTransaction]) in
                 let converted = value.compactMap { (trans : DBTransaction) -> DBTransaction? in
@@ -35,8 +35,8 @@ final class CategoryViewModel : ObservableObject {
                         Category(id: UUID().description, name: key, icon: category.icon, type: category.type),
                     currency: currency,
                     sum: -categorySum,
-                    month: date.month,
-                    year: date.year
+                    month: date.currentPeriod.month,
+                    year: date.currentPeriod.year
                 )
             }
             self.pieChartData = categoryData.sorted {$0.sum > $1.sum}

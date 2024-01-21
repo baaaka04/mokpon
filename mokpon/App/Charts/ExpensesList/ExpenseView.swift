@@ -29,7 +29,7 @@ struct ExpenseView : View {
         self.selectedPeriod = selectedPeriod
         self.viewData = ExpenseData(
             title: expensePieData.category.name,
-            subtitle: "\(DateFormatter().monthSymbols[selectedPeriod.month-1].capitalized) \(selectedPeriod.year)",
+            subtitle: "\(DateFormatter().monthSymbols[selectedPeriod.currentPeriod.month-1].capitalized) \(selectedPeriod.currentPeriod.year)",
             number: "\(expensePieData.sum.formatted())\(expensePieData.currency.symbol)",
             category: expensePieData.category
         )

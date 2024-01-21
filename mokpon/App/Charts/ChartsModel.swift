@@ -25,34 +25,56 @@ struct ChartData : Identifiable {
         self.percentDiff = percentDiff
     }
 }
+
 struct ChartsDate {
-    var month : Int
-    var year : Int
-    var prevYear : Int {
-        return year - 1
+    
+    struct ChartPeriod {
+        var year, month : Int
     }
-    var prevMonth : Int {
-        let prevMonth = self.month-1
-        return 1...12 ~= prevMonth ? prevMonth : 12
+    var currentPeriod : ChartPeriod
+    
+    init(month: Int, year: Int) {
+        self.currentPeriod = ChartPeriod(year: year, month: month)
     }
     
-    mutating func increaseMonth () -> Void {
-        if self.month == 12 {
-            self.month = 1
-            self.year += 1
+    var previousMonthPeriod : ChartPeriod {
+        let month = decreaseMonth(period: currentPeriod).month
+        let year = decreaseMonth(period: currentPeriod).year
+        
+        return ChartPeriod(year: year, month: month)
+    }
+    var previousYearPeriod : ChartPeriod {
+        return ChartPeriod(year: currentPeriod.year-1, month: currentPeriod.month)
+    }
+    
+    mutating func decreaseMonth() -> Void {
+        self.currentPeriod = decreaseMonth(period: currentPeriod)
+    }
+    
+    mutating func increaseMonth() -> Void {
+        if self.currentPeriod.month == 12 {
+            self.currentPeriod.month = 1
+            self.currentPeriod.year += 1
         } else {
-            self.month += 1
+            self.currentPeriod.month += 1
         }
     }
-    mutating func decreaseMonth () -> Void {
-        if self.month == 1 {
-            self.month = 12
-            self.year -= 1
+        
+    private func decreaseMonth(period: ChartPeriod) -> ChartPeriod {
+        var resultPeriod = ChartPeriod(year: period.year, month: period.month)
+        
+        if period.month == 1 {
+            resultPeriod.month = 12
+            resultPeriod.year -= 1
         } else {
-            self.month -= 1
+            resultPeriod.month -= 1
         }
+        return resultPeriod
     }
+
+    
 }
+
 // charts data in rows below
 struct ExpenseData {
     let title : String

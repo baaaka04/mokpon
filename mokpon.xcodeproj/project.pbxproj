@@ -61,6 +61,7 @@
 		F79971912A2B9B0F001FEED3 /* CategoryExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79971902A2B9B0F001FEED3 /* CategoryExpensesView.swift */; };
 		F79971932A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79971922A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift */; };
 		F79971952A2D052A001FEED3 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79971942A2D052A001FEED3 /* StringExtension.swift */; };
+		F7AD5F0D2B52F270003B34E7 /* mokponTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AD5F0C2B52F270003B34E7 /* mokponTests.swift */; };
 		F7AF33FE2ACDD13600EAC94B /* RootTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AF33FD2ACDD13600EAC94B /* RootTabViewModel.swift */; };
 		F7AF34002ACDD2E000EAC94B /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AF33FF2ACDD2E000EAC94B /* AppContext.swift */; };
 		F7E42C8A2A7A8E2E004E0BDE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F7E42C892A7A8E2E004E0BDE /* GoogleService-Info.plist */; };
@@ -79,6 +80,16 @@
 		F7EF4BAD2A014C680093DA82 /* NewTransactionFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EF4BAC2A014C680093DA82 /* NewTransactionFormViewModel.swift */; };
 		F7FE87A62A14987B005EF3D5 /* CalculatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FE87A52A14987B005EF3D5 /* CalculatorButton.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F7AD5F0E2B52F270003B34E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F719DBF8294F0EA600DE1B8E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F719DBFF294F0EA600DE1B8E;
+			remoteInfo = mokpon;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		F708F68E295DD09500E6E9FA /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -133,6 +144,8 @@
 		F79971902A2B9B0F001FEED3 /* CategoryExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryExpensesView.swift; sourceTree = "<group>"; };
 		F79971922A2C9FF2001FEED3 /* CategoryExpensesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryExpensesViewModel.swift; sourceTree = "<group>"; };
 		F79971942A2D052A001FEED3 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		F7AD5F0A2B52F26F003B34E7 /* mokponTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mokponTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F7AD5F0C2B52F270003B34E7 /* mokponTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mokponTests.swift; sourceTree = "<group>"; };
 		F7AF33FD2ACDD13600EAC94B /* RootTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabViewModel.swift; sourceTree = "<group>"; };
 		F7AF33FF2ACDD2E000EAC94B /* AppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContext.swift; sourceTree = "<group>"; };
 		F7E42C892A7A8E2E004E0BDE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -161,6 +174,13 @@
 				F7E42C922A7A9431004E0BDE /* FirebaseAuth in Frameworks */,
 				F7E42C8D2A7A8F8C004E0BDE /* FirebaseAnalytics in Frameworks */,
 				F7696C812A8F9EF1003239E0 /* FirebaseFirestore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F7AD5F072B52F26F003B34E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,6 +285,7 @@
 			isa = PBXGroup;
 			children = (
 				F719DC02294F0EA600DE1B8E /* mokpon */,
+				F7AD5F0B2B52F270003B34E7 /* mokponTests */,
 				F719DC01294F0EA600DE1B8E /* Products */,
 				F7E42C902A7A9431004E0BDE /* Frameworks */,
 			);
@@ -274,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				F719DC00294F0EA600DE1B8E /* mokpon.app */,
+				F7AD5F0A2B52F26F003B34E7 /* mokponTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -421,6 +443,14 @@
 			path = Charts;
 			sourceTree = "<group>";
 		};
+		F7AD5F0B2B52F270003B34E7 /* mokponTests */ = {
+			isa = PBXGroup;
+			children = (
+				F7AD5F0C2B52F270003B34E7 /* mokponTests.swift */,
+			);
+			path = mokponTests;
+			sourceTree = "<group>";
+		};
 		F7E42C902A7A9431004E0BDE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -476,6 +506,24 @@
 			productReference = F719DC00294F0EA600DE1B8E /* mokpon.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F7AD5F092B52F26F003B34E7 /* mokponTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F7AD5F122B52F270003B34E7 /* Build configuration list for PBXNativeTarget "mokponTests" */;
+			buildPhases = (
+				F7AD5F062B52F26F003B34E7 /* Sources */,
+				F7AD5F072B52F26F003B34E7 /* Frameworks */,
+				F7AD5F082B52F26F003B34E7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F7AD5F0F2B52F270003B34E7 /* PBXTargetDependency */,
+			);
+			name = mokponTests;
+			productName = mokponTests;
+			productReference = F7AD5F0A2B52F26F003B34E7 /* mokponTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -483,11 +531,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1410;
+				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					F719DBFF294F0EA600DE1B8E = {
 						CreatedOnToolsVersion = 14.1;
+					};
+					F7AD5F092B52F26F003B34E7 = {
+						CreatedOnToolsVersion = 15.2;
+						TestTargetID = F719DBFF294F0EA600DE1B8E;
 					};
 				};
 			};
@@ -509,6 +561,7 @@
 			projectRoot = "";
 			targets = (
 				F719DBFF294F0EA600DE1B8E /* mokpon */,
+				F7AD5F092B52F26F003B34E7 /* mokponTests */,
 			);
 		};
 /* End PBXProject section */
@@ -523,6 +576,13 @@
 				F735AB2D29549274007DFBDA /* DMSans-Regular.ttf in Resources */,
 				F719DC0B294F0EA700DE1B8E /* Preview Assets.xcassets in Resources */,
 				F719DC08294F0EA700DE1B8E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F7AD5F082B52F26F003B34E7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,7 +655,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F7AD5F062B52F26F003B34E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F7AD5F0D2B52F270003B34E7 /* mokponTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F7AD5F0F2B52F270003B34E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F719DBFF294F0EA600DE1B8E /* mokpon */;
+			targetProxy = F7AD5F0E2B52F270003B34E7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F719DC0C294F0EA700DE1B8E /* Debug */ = {
@@ -780,6 +856,49 @@
 			};
 			name = Release;
 		};
+		F7AD5F102B52F270003B34E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P4JWM35345;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ab.mokponTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mokpon.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/mokpon";
+			};
+			name = Debug;
+		};
+		F7AD5F112B52F270003B34E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P4JWM35345;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ab.mokponTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mokpon.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/mokpon";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -797,6 +916,15 @@
 			buildConfigurations = (
 				F719DC0F294F0EA700DE1B8E /* Debug */,
 				F719DC10294F0EA700DE1B8E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F7AD5F122B52F270003B34E7 /* Build configuration list for PBXNativeTarget "mokponTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F7AD5F102B52F270003B34E7 /* Debug */,
+				F7AD5F112B52F270003B34E7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

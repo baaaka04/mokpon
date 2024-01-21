@@ -12,7 +12,7 @@ struct ChartsHeaderView: View {
             VStack (alignment: .leading) {
                 Text("Expenses")
                     .font(.custom("DMSans-Regular", size: 20))
-                Text(getChartMonthName(year: chartDate.year, month: chartDate.month))
+                Text(getChartMonthName(year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month))
             }
             
             Spacer()
