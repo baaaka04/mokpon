@@ -50,14 +50,19 @@ struct Hotkey {
 
 // CurrencyModel ----------------
 struct Rates: Codable {
-    let KGS : Double
-    let RUB : Double
+    let RUBKGS : Double
+    let USDKGS : Double
 }
 struct Rate : Decodable {
     let bid : String
 }
 struct DTOcur : Decodable {
-    let USDKGS : Rate
-    let USDRUB : Rate
+        let id: Int
+        let created_at: String
+        let updated_at: String
+        let is_current: Int
+        let usd: String
+        let eur: String
+        let rub: String
 }
 // CurrencyModel ----------------

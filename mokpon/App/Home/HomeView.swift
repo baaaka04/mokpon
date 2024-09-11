@@ -22,8 +22,8 @@ struct Home: View {
                     
                     Currencies(
                         fetchCurrencyRates: vm.fetchCurrencyRates,
-                        usdrub: vm.currencyRates?.RUB,
-                        usdkgs: vm.currencyRates?.KGS
+                        RUBKGS: vm.currencyRates?.RUBKGS,
+                        USDKGS: vm.currencyRates?.USDKGS
                     )
                     .padding(.horizontal, 40)
                     .padding(.vertical, 10)

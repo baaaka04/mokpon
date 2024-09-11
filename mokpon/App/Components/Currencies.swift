@@ -3,13 +3,13 @@ import SwiftUI
 struct Currencies: View {
     
     var fetchCurrencyRates : @MainActor() -> Void
-    var usdrub : Double?
-    var usdkgs : Double?
+    var RUBKGS : Double?
+    var USDKGS : Double?
     
     var body: some View {
         HStack {
-            if let usdrub, let usdkgs {
-                Text("USD/RUB \(usdrub, specifier: "%.2f")  RUB/KGS \(usdkgs/usdrub, specifier: "%.2f")")
+            if let RUBKGS, let USDKGS {
+                Text("USD/RUB \(USDKGS / RUBKGS, specifier: "%.2f")  RUB/KGS \(RUBKGS, specifier: "%.2f")")
                 Spacer()
             } else {
                 ProgressView("Loading currencies...")
@@ -23,6 +23,6 @@ struct Currencies: View {
 
 struct Currencies_Previews: PreviewProvider {
     static var previews: some View {
-        Currencies(fetchCurrencyRates: {}, usdrub: 75.23, usdkgs: 88.52)
+        Currencies(fetchCurrencyRates: {}, RUBKGS: 75.23, USDKGS: 88.52)
     }
 }
