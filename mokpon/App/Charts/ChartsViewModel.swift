@@ -77,7 +77,7 @@ final class ChartsViewModel : ObservableObject {
                 let previousMonthData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.previousMonthPeriod.year, month: chartDate.previousMonthPeriod.month)
                 barChartData = previousMonthData + currentMonthData
             case .yearly:
-                let previousYearData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.previousYearPeriod.year, month: chartDate.currentPeriod.year)
+                let previousYearData = try await getMonthData(mainCurrency: mainCurrency, year: chartDate.previousYearPeriod.year, month: chartDate.currentPeriod.month)
                 barChartData = previousYearData + currentMonthData
             }
             self.barChartData = barChartData
