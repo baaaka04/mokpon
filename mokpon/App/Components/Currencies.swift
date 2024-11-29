@@ -5,16 +5,20 @@ struct Currencies: View {
     var fetchCurrencyRates : @MainActor() -> Void
     var RUBKGS : Double?
     var USDKGS : Double?
-    
+    var EURKGS : Double?
+
     var body: some View {
-        HStack {
-            if let RUBKGS, let USDKGS {
-                Text("USD/RUB \(USDKGS / RUBKGS, specifier: "%.2f")  RUB/KGS \(RUBKGS, specifier: "%.2f")")
-                Spacer()
+        ScrollView (.horizontal, showsIndicators: false) {
+            if let RUBKGS, let USDKGS, let EURKGS {
+                let usdrub = "USD/RUB \(String(format: "%.2f", USDKGS / RUBKGS))  "
+                let rubkgs = "RUB/KGS \(String(format: "%.2f", RUBKGS))  "
+                let eurrub = "EUR/RUB \(String(format: "%.2f", EURKGS / RUBKGS))"
+                Text(usdrub + rubkgs + eurrub)
             } else {
                 ProgressView("Loading currencies...")
             }
         }
+        .frame(height: 30)
         .task {
             fetchCurrencyRates()
         }

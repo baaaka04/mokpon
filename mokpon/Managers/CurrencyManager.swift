@@ -26,8 +26,13 @@ final class CurrencyManager {
 
             let RUBKGS : String = try JSONDecoder().decode(DTOcur.self, from: data).rub
             let USDKGS : String = try JSONDecoder().decode(DTOcur.self, from: data).usd
+            let EURKGS : String = try JSONDecoder().decode(DTOcur.self, from: data).eur
 
-            return Rates(RUBKGS: Double(RUBKGS) ?? 0, USDKGS: Double(USDKGS) ?? 0 )
+            return Rates(
+                RUBKGS: Double(RUBKGS) ?? 0,
+                USDKGS: Double(USDKGS) ?? 0,
+                EURKGS: Double(EURKGS) ?? 0
+            )
         }
         catch {
             print("Fetching currnecies error: \(error)")

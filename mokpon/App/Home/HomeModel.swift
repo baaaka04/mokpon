@@ -52,6 +52,7 @@ struct Hotkey {
 struct Rates: Codable {
     let RUBKGS : Double
     let USDKGS : Double
+    let EURKGS : Double
 }
 struct Rate : Decodable {
     let bid : String
