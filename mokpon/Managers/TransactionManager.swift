@@ -44,7 +44,7 @@ final class TransactionManager {
     }
     
     func getHotkeys() async throws -> [DBHotkey] {
-        let (FBTransactions, _) = await getLastNTransactions(limit: 200)
+        let (FBTransactions, _) = await getLastNTransactions(limit: 300)
            return Dictionary(grouping: FBTransactions, by: {DBHotkey(categoryId: $0.categoryId, subcategory: $0.subcategory, count: 0)})
                 .map { (key, arr) in DBHotkey(categoryId: key.categoryId, subcategory: key.subcategory, count: arr.count) }
                 .sorted { $0.count > $1.count }

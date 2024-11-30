@@ -61,7 +61,7 @@ final class NewTransactionViewModel : ObservableObject {
         Task {
             let DBHotkeys = try await transactionManager.getHotkeys()
             self.hotkeys = DBHotkeys
-                .prefix(8)
+                .prefix(16)
                 .compactMap {
                     if let category = directoriesManager.getCategory(byID: $0.categoryId) {
                         return Hotkey(category: category, subcategory: $0.subcategory)

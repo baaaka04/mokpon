@@ -17,27 +17,35 @@ struct SliderPad: View {
     
     var body: some View {
         VStack {
-            TabView (selection: $selectedTabIndex) {
-                CalculatorView(onPressOperationButton: onPressOperationButton)
-                    .tag(0)
-                HotkeysView(
-                    onPressHotkey: onPressHotkey,
-                    hotkeys: hotkeys,
-                    fetchHotkeys: fetchHotkeys
-                )
-                .tag(1)
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .local)
-                .onEnded { value in
-                    if value.translation.width > 0 { switchTabToHotkeys() }
-                    if value.translation.width < 0 { switchTabToCalculator () }
+            if let chunks = hotkeys?.chunked(into: 8) {
+                TabView (selection: $selectedTabIndex) {
+                    CalculatorView(onPressOperationButton: onPressOperationButton)
+                        .tag(0)
+                    ForEach(chunks.indices, id: \.self) { index in
+                        HotkeysView(
+                            onPressHotkey: onPressHotkey,
+                            hotkeys: chunks[index]
+                        )
+                        .tag(index+1)
+                    }
                 }
-            )
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .local)
+                    .onEnded { value in
+                        if value.translation.width > 0 { switchTabToHotkeys() }
+                        if value.translation.width < 0 { switchTabToCalculator () }
+                    }
+                )
+            } else {
+                ProgressView("Loading...").tint(.white).frame(maxWidth: .infinity)
+            }
         }
         .frame(height: 60)
         .padding(.bottom, 10)
         .overlay(Rectangle().frame(width: nil, height: 1, alignment: .bottom).foregroundColor(.yellow), alignment: .bottom)
+        .task {
+            fetchHotkeys()
+        }
     }
 }
 
