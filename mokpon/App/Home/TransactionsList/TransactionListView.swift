@@ -4,13 +4,13 @@ struct TransactionListView: View {
     
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
     
-    let transactions : [Transaction]
-    let getTransactions : @MainActor() -> ()
-    let deleteTransaction : @MainActor(_ transactionId: String) -> ()
-    let updateUserAmounts : (_ curId: String, _ sumDiff : Int) async throws -> ()
-    var setupSearching : @MainActor(_ isSearching: Bool) -> Void
-    var transactionLimit : Int? = nil
-    let convertCurrency : (_ value: Int, _ from: String?, _ to: String?) -> Int?
+    let transactions: [Transaction]
+    let getTransactions: @MainActor() -> ()
+    let deleteTransaction: @MainActor(_ transactionId: String) -> ()
+    let updateUserAmounts: (_ curId: String, _ sumDiff : Int) async throws -> ()
+    var setupSearching: @MainActor(_ isSearching: Bool) -> Void
+    var transactionLimit: Int? = nil
+    let convertCurrency: (_ value: Int, _ from: String?, _ to: String?) -> Int?
     let directoriesManager: DirectoriesManager
     
     @Environment(\.isSearching) private var isSearching
@@ -49,7 +49,7 @@ struct TransactionListView: View {
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Rectangle().background(.clear).padding())
-                            if item == transactions.last {
+                            if item == transactions[transactions.count - 5] {
                                 ProgressView()
                                     .frame(maxWidth: .infinity)
                                     .onAppear {
@@ -93,10 +93,12 @@ struct TransactionListView: View {
                 }
                 .frame(maxHeight: .infinity)
             }
-            
+
         }
         .task {
-            getTransactions()
+            if self.transactions.isEmpty {
+                getTransactions()
+            }
         }
     }
 }

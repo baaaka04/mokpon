@@ -60,8 +60,8 @@ struct Home: View {
                         .padding(.top)
                         TransactionListView(
                             transactions: vm.transactions,
-                            getTransactions: vm.getLastTransactions,
-                            deleteTransaction : vm.deleteTransaction,
+                            getTransactions: vm.getTransactions,
+                            deleteTransaction: vm.deleteTransaction,
                             updateUserAmounts: vm.updateUserAmount,
                             setupSearching: { isSearching in  },
                             transactionLimit: 5, //show only last 5 transactions
@@ -77,7 +77,7 @@ struct Home: View {
                 .frame(minHeight: 1100)
             }
             .refreshable {
-                vm.getLastTransactions()
+                vm.getTransactions()
                 vm.fetchCurrencyRates()
                 vm.getUserAmounts()
             }
