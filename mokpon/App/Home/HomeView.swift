@@ -44,6 +44,7 @@ struct Home: View {
                                 AllTransactuionsView (
                                     transactions: vm.isSearching ? vm.filteredTransactions : vm.transactions,
                                     getTransactions: vm.getTransactions,
+                                    updateTransactions: vm.updateTransactions,
                                     deleteTransaction: vm.deleteTransaction,
                                     updateUserAmounts: vm.updateUserAmount,
                                     showView: $vm.showAllTransactions,
@@ -61,6 +62,7 @@ struct Home: View {
                         TransactionListView(
                             transactions: vm.transactions,
                             getTransactions: vm.getTransactions,
+                            updateTransactions: vm.updateTransactions,
                             deleteTransaction: vm.deleteTransaction,
                             updateUserAmounts: vm.updateUserAmount,
                             setupSearching: { isSearching in  },
@@ -77,7 +79,7 @@ struct Home: View {
                 .frame(minHeight: 1100)
             }
             .refreshable {
-                vm.getTransactions()
+                vm.updateTransactions()
                 vm.fetchCurrencyRates()
                 vm.getUserAmounts()
             }

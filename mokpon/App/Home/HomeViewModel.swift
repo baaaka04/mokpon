@@ -69,9 +69,20 @@ final class HomeViewModel : ObservableObject {
         }
     }
 
-    func deleteTransaction(transactionId: String) {
+    func updateTransactions() {
+        self.transactions = []
+        self.lastDocument = nil
+        getTransactions()
+    }
+
+    func deleteTransaction(transaction: Transaction) {
         Task {
-            try await transactionManager.deleteTransaction(transactionId: transactionId)
+            do {
+                try await transactionManager.deleteTransaction(transactionId: transaction.id)
+                self.transactions.remove(object: transaction)
+            } catch {
+                print(error)
+            }
         }
     }
     

@@ -6,7 +6,8 @@ struct TransactionListView: View {
     
     let transactions: [Transaction]
     let getTransactions: @MainActor() -> ()
-    let deleteTransaction: @MainActor(_ transactionId: String) -> ()
+    let updateTransactions: @MainActor() -> ()
+    let deleteTransaction: @MainActor(_ transaction: Transaction) -> ()
     let updateUserAmounts: (_ curId: String, _ sumDiff : Int) async throws -> ()
     var setupSearching: @MainActor(_ isSearching: Bool) -> Void
     var transactionLimit: Int? = nil
@@ -49,21 +50,18 @@ struct TransactionListView: View {
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Rectangle().background(.clear).padding())
-                            if item == transactions[transactions.count - 5] {
-                                ProgressView()
-                                    .frame(maxWidth: .infinity)
-                                    .onAppear {
+                                .onAppear {
+                                    if item == transactions[transactions.count - 5] {
                                         getTransactions()
                                     }
-                            }
+                                }
                         }
                         .onDelete { indexSet in
                             for i in indexSet.makeIterator() {
                                 let theItem = transGrouped.value[i]
                                 Task {
-                                    deleteTransaction(theItem.id)
+                                    deleteTransaction(theItem)
                                     try await updateUserAmounts(theItem.currency.id, -theItem.sum)
-                                    getTransactions()
                                 }
                             }
                         }
@@ -96,9 +94,7 @@ struct TransactionListView: View {
 
         }
         .task {
-            if self.transactions.isEmpty {
-                getTransactions()
-            }
+            updateTransactions()
         }
     }
 }
@@ -108,6 +104,7 @@ struct TransactionListView_Previews: PreviewProvider {
         TransactionListView(
             transactions: [],
             getTransactions: {},
+            updateTransactions: {},
             deleteTransaction: {a in },
             updateUserAmounts: { curId, sumDiff in  },
             setupSearching: {x in },

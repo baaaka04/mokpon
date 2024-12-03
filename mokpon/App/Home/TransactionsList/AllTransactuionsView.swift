@@ -2,11 +2,12 @@ import SwiftUI
 
 struct AllTransactuionsView: View {
     
-    let transactions : [Transaction]
-    let getTransactions : @MainActor() -> ()
-    let deleteTransaction : @MainActor(_ transactionId: String) -> ()
-    let updateUserAmounts : (_ curId: String, _ sumDiff : Int) async throws -> ()
-    @Binding var showView : Bool
+    let transactions: [Transaction]
+    let getTransactions: @MainActor() -> ()
+    let updateTransactions: @MainActor() -> ()
+    let deleteTransaction: @MainActor(_ transaction: Transaction) -> ()
+    let updateUserAmounts: (_ curId: String, _ sumDiff : Int) async throws -> ()
+    @Binding var showView: Bool
     
     //searching
     let scopes : [String]
@@ -24,6 +25,7 @@ struct AllTransactuionsView: View {
                     TransactionListView(
                         transactions: transactions,
                         getTransactions: getTransactions,
+                        updateTransactions: updateTransactions,
                         deleteTransaction: deleteTransaction,
                         updateUserAmounts: updateUserAmounts,
                         setupSearching: setupSearching,
@@ -63,6 +65,7 @@ struct AllTransactuionsView_Previews: PreviewProvider {
         AllTransactuionsView(
             transactions: [],
             getTransactions: {},
+            updateTransactions: {},
             deleteTransaction: {a in },
             updateUserAmounts: { curId, sumDiff in  },
             showView: .constant(true),
