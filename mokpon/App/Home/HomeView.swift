@@ -42,18 +42,17 @@ struct Home: View {
                             .foregroundColor(Color.accentColor)
                             .popover(isPresented: $vm.showAllTransactions) {
                                 AllTransactuionsView (
-                                    transactions: vm.isSearching ? vm.filteredTransactions : vm.transactions,
+                                    transactions: vm.transactions,
                                     getTransactions: vm.getTransactions,
                                     updateTransactions: vm.updateTransactions,
                                     deleteTransaction: vm.deleteTransaction,
                                     updateUserAmounts: vm.updateUserAmount,
                                     showView: $vm.showAllTransactions,
-                                    scopes: vm.allSearchScopes,
-                                    searchText: $vm.searchtext,
-                                    searchScope: $vm.searchScope,
-                                    setupSearching: vm.setupSearching,
                                     convertCurrency: vm.currencyRatesService.convertCurrency,
-                                    directoriesManager: vm.directoriesManager
+                                    directoriesManager: vm.directoriesManager,
+                                    searchText: $vm.searchtext,
+                                    selectedScope: $vm.selectedScope,
+                                    searchScopes: vm.searchScopes
                                 )
                                 .presentationDragIndicator(.visible)
                             }
@@ -65,7 +64,6 @@ struct Home: View {
                             updateTransactions: vm.updateTransactions,
                             deleteTransaction: vm.deleteTransaction,
                             updateUserAmounts: vm.updateUserAmount,
-                            setupSearching: { isSearching in  },
                             transactionLimit: 5, //show only last 5 transactions
                             convertCurrency: vm.currencyRatesService.convertCurrency,
                             directoriesManager: vm.directoriesManager

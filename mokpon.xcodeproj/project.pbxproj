@@ -65,6 +65,7 @@
 		F7AF33FE2ACDD13600EAC94B /* RootTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AF33FD2ACDD13600EAC94B /* RootTabViewModel.swift */; };
 		F7AF34002ACDD2E000EAC94B /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AF33FF2ACDD2E000EAC94B /* AppContext.swift */; };
 		F7B7B60E2CFB5E5800834F3F /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B7B60D2CFB5E5300834F3F /* ArrayExtension.swift */; };
+		F7B7B6102D05EA2600834F3F /* CategorySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B7B60F2D05EA1F00834F3F /* CategorySelector.swift */; };
 		F7E42C8A2A7A8E2E004E0BDE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F7E42C892A7A8E2E004E0BDE /* GoogleService-Info.plist */; };
 		F7E42C8D2A7A8F8C004E0BDE /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = F7E42C8C2A7A8F8C004E0BDE /* FirebaseAnalytics */; };
 		F7E42C8F2A7A8F8C004E0BDE /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F7E42C8E2A7A8F8C004E0BDE /* FirebaseAnalyticsSwift */; };
@@ -150,6 +151,7 @@
 		F7AF33FD2ACDD13600EAC94B /* RootTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabViewModel.swift; sourceTree = "<group>"; };
 		F7AF33FF2ACDD2E000EAC94B /* AppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContext.swift; sourceTree = "<group>"; };
 		F7B7B60D2CFB5E5300834F3F /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
+		F7B7B60F2D05EA1F00834F3F /* CategorySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelector.swift; sourceTree = "<group>"; };
 		F7E42C892A7A8E2E004E0BDE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F7E42C942A7A94CE004E0BDE /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		F7E42C962A7A95E2004E0BDE /* SignInEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInEmailView.swift; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 			children = (
 				F708F690295DDB5900E6E9FA /* AddButton.swift */,
 				F709306D2956160C0071BF75 /* DebitCard.swift */,
+				F7B7B60F2D05EA1F00834F3F /* CategorySelector.swift */,
 				F7470F6F2AB9C99600DB4847 /* BackgroundCloud.swift */,
 				F74128C4298FEA98006D2A8B /* Currencies.swift */,
 			);
@@ -644,6 +647,7 @@
 				F715D615295B3A1100B1177F /* ColorExtension.swift in Sources */,
 				F7E42C9B2A7AABA3004E0BDE /* RootView.swift in Sources */,
 				F7470F702AB9C99600DB4847 /* BackgroundCloud.swift in Sources */,
+				F7B7B6102D05EA2600834F3F /* CategorySelector.swift in Sources */,
 				F79971912A2B9B0F001FEED3 /* CategoryExpensesView.swift in Sources */,
 				F78417C029DC4DE9002D1E24 /* ExpensesListView.swift in Sources */,
 				F719DC04294F0EA600DE1B8E /* MokponApp.swift in Sources */,

@@ -9,7 +9,6 @@ struct TransactionListView: View {
     let updateTransactions: @MainActor() -> ()
     let deleteTransaction: @MainActor(_ transaction: Transaction) -> ()
     let updateUserAmounts: (_ curId: String, _ sumDiff : Int) async throws -> ()
-    var setupSearching: @MainActor(_ isSearching: Bool) -> Void
     var transactionLimit: Int? = nil
     let convertCurrency: (_ value: Int, _ from: String?, _ to: String?) -> Int?
     let directoriesManager: DirectoriesManager
@@ -51,7 +50,8 @@ struct TransactionListView: View {
                                 .listRowInsets(EdgeInsets())
                                 .listRowBackground(Rectangle().background(.clear).padding())
                                 .onAppear {
-                                    if item == transactions[transactions.count - 5] {
+                                    let count = transactions.count
+                                    if count < 5 || item == transactions[count - 5] {
                                         getTransactions()
                                     }
                                 }
@@ -80,10 +80,6 @@ struct TransactionListView: View {
                 }
                 .environment(\.defaultMinListRowHeight, 100)
                 .listStyle(.plain)
-                //pass child's searching status to viewModel
-                .onChange(of: isSearching, perform: { newValue in
-                    setupSearching(newValue)
-                })
             } else {
                 VStack (alignment: .center) {
                     ProgressView()
@@ -107,7 +103,6 @@ struct TransactionListView_Previews: PreviewProvider {
             updateTransactions: {},
             deleteTransaction: {a in },
             updateUserAmounts: { curId, sumDiff in  },
-            setupSearching: {x in },
             transactionLimit: 6,
             convertCurrency: {a,b,c in return 0},
             directoriesManager: DirectoriesManager()

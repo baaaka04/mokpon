@@ -3,20 +3,25 @@ import Combine
 import FirebaseFirestore
 
 @MainActor
-final class HomeViewModel : ObservableObject {
-    
+final class HomeViewModel: ObservableObject {
+
     @Published var transactions: [Transaction] = []
     @Published var filteredTransactions: [Transaction] = []
     @Published var currencyRates: Rates? = nil
     @Published var showAllTransactions = false
-    @Published var searchtext: String = ""
-    @Published var searchScope: String = "All"
-    @Published var allSearchScopes: [String] = []
     @Published var amounts: [Amount]? = nil
+
+    //Search bar
+    @Published var searchtext: String = ""
+    @Published var selectedScope: Category?
+    var searchScopes: [Category] = []
+
+    //Pagination
     private var cancellable = Set<AnyCancellable>()
     var isLoading: Bool = false
-    var isSearching: Bool = false
     private var lastDocument: DocumentSnapshot? = nil
+
+    //Managers
     private(set) var currencyRatesService: CurrencyManager
     private(set) var transactionManager: TransactionManager
     private(set) var amountManager: AmountManager
@@ -33,17 +38,12 @@ final class HomeViewModel : ObservableObject {
         print("\(Date()): INIT HomeViewModel")
     }
     deinit {print("\(Date()): DEINIT HomeViewModel")}
-    
-    func setupSearching (isSearching : Bool) {
-        self.isSearching = isSearching
-    }
-    
+        
     private func addSubscribers() {
         $searchtext
-            .combineLatest($searchScope)
-            .debounce(for: 0.3, scheduler: DispatchQueue.main)
-            .sink { [weak self] (searchText, searchScope) in
-                self?.filterTransactions(searchText: searchText, currentSearchScope: searchScope)
+            .debounce(for: 1.0, scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateTransactions()
             }
             .store(in: &cancellable)
     }
@@ -53,7 +53,12 @@ final class HomeViewModel : ObservableObject {
         Task {
             if !self.isLoading {
                 self.isLoading = true
-                let (newTransactions, lastDocument) = await transactionManager.getLastNTransactions(limit: 20, lastDocument: self.lastDocument)
+                let (newTransactions, lastDocument) = await transactionManager.getLastNTransactions(
+                    limit: 20,
+                    lastDocument: self.lastDocument,
+                    searchText: searchtext.lowercased(),
+                    selectedCategoryId: selectedScope?.id
+                )
                 self.lastDocument = lastDocument
                 // append for pagination
                 self.transactions.append(contentsOf: newTransactions.compactMap {
@@ -62,7 +67,8 @@ final class HomeViewModel : ObservableObject {
                         return Transaction(DBTransaction: $0, category: category , currency: currency)
                     } else { return nil } // if couldn't find a category/currency, then skip
                 })
-                self.allSearchScopes = ["All"] + Set(self.transactions.map{ $0.category.name })
+                let newScopes = [] + Set(searchScopes + self.transactions.map{ $0.category })
+                self.searchScopes = newScopes.sorted(by: { $0.name < $1.name })
                 print("\(Date()): HomeViewModel - New transactions have been loaded!")
                 self.isLoading = false
             }
@@ -85,27 +91,7 @@ final class HomeViewModel : ObservableObject {
             }
         }
     }
-    
-    private func filterTransactions (searchText: String, currentSearchScope: String) {
-        var transactionsInScope = transactions
-        switch currentSearchScope {
-        case "All":
-            break
-        default:
-            transactionsInScope = transactions.filter({ trans in
-                trans.category.name.lowercased() == currentSearchScope.lowercased()
-            })
-        }
-        
-        let search = searchText.lowercased()
-        filteredTransactions = transactionsInScope.filter({ transaction in
-            guard !searchText.isEmpty else { return true }
-            let categoryContainsSearch = transaction.category.name.lowercased().contains(search)
-            let subCategoryContainsSearch = transaction.subcategory.lowercased().contains(search)
-            return categoryContainsSearch || subCategoryContainsSearch
-        })
-    }
-        
+
     func getUserAmounts() {
         Task {
             let user = try authManager.getAuthenticatedUser()

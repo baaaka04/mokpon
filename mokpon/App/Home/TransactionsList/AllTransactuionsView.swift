@@ -1,41 +1,48 @@
 import SwiftUI
 
 struct AllTransactuionsView: View {
-    
+
     let transactions: [Transaction]
     let getTransactions: @MainActor() -> ()
     let updateTransactions: @MainActor() -> ()
     let deleteTransaction: @MainActor(_ transaction: Transaction) -> ()
     let updateUserAmounts: (_ curId: String, _ sumDiff : Int) async throws -> ()
     @Binding var showView: Bool
-    
-    //searching
-    let scopes : [String]
-    @Binding var searchText : String
-    @Binding var searchScope : String
-    var setupSearching : @MainActor(_ isSearching: Bool) -> Void
+
     let convertCurrency : (_ value: Int, _ from: String?, _ to: String?) -> Int?
     let directoriesManager: DirectoriesManager
-    
+
+    // Searching
+    @Binding var searchText: String
+    @Binding var selectedScope: Category?
+    var searchScopes: [Category]
+
     var body: some View {
         NavigationStack {
             ZStack {
                 Color.bg_main
                 VStack {
+                    CategorySelector(
+                        searchText: $searchText,
+                        selectedScope: $selectedScope,
+                        searchScopes: searchScopes,
+                        updateTransactions: updateTransactions
+                    )
                     TransactionListView(
                         transactions: transactions,
                         getTransactions: getTransactions,
                         updateTransactions: updateTransactions,
                         deleteTransaction: deleteTransaction,
                         updateUserAmounts: updateUserAmounts,
-                        setupSearching: setupSearching,
                         convertCurrency: convertCurrency,
                         directoriesManager: directoriesManager
                     )
                     .toolbar {
                         ToolbarItem (placement: .cancellationAction) {
                             Button("Close") {
+                                selectedScope = nil
                                 showView = false
+                                updateTransactions()
                             }.foregroundColor(Color.accentColor)
                         }
                         ToolbarItem (placement: .principal) {
@@ -46,15 +53,10 @@ struct AllTransactuionsView: View {
                     .toolbarBackground(Color(#colorLiteral(red: 0.1137254902, green: 0.1098039216, blue: 0.2235294118, alpha: 1)), for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
                     .searchable(text: $searchText, placement: .automatic)
-                    .searchScopes($searchScope, activation: .onSearchPresentation, {
-                        ForEach(scopes, id: \.self) { scope in
-                            Text(scope.capitalized)
-                        }
-                    })
                 }
-                    .padding()
-                    .foregroundColor(.init(white: 0.87))
-                    .background(Color.bg_transactions)
+                .padding()
+                .foregroundColor(.init(white: 0.87))
+                .background(Color.bg_transactions)
             }
         }
     }
@@ -69,12 +71,11 @@ struct AllTransactuionsView_Previews: PreviewProvider {
             deleteTransaction: {a in },
             updateUserAmounts: { curId, sumDiff in  },
             showView: .constant(true),
-            scopes: ["All", "питание", "здоровье"],
-            searchText: .constant(""),
-            searchScope: .constant("All"),
-            setupSearching: { isSearching in  },
             convertCurrency: {a, b, c in return 0},
-            directoriesManager: DirectoriesManager()
+            directoriesManager: DirectoriesManager(),
+            searchText: .constant(""),
+            selectedScope: .constant(Category(id: "", name: "", icon: "", type: .expense)),
+            searchScopes: []
         )
     }
 }

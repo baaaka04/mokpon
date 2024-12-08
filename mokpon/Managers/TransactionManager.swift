@@ -25,18 +25,26 @@ final class TransactionManager {
         try await transactionCollection.document(documentId).updateData(["id":documentId])
     }
         
-    func getLastNTransactions(limit: Int, lastDocument: DocumentSnapshot? = nil ) async -> (documents: [DBTransaction], lastDocument: DocumentSnapshot?) {
+    func getLastNTransactions(limit: Int, lastDocument: DocumentSnapshot? = nil, searchText: String = "", selectedCategoryId: String? = nil) async -> (documents: [DBTransaction], lastDocument: DocumentSnapshot?) {
         do {
-            return try await transactionCollection
+            var query = transactionCollection
+                .whereField(DBTransaction.CodingKeys.subcategory.rawValue, isGreaterThanOrEqualTo: searchText)
+                .whereField(DBTransaction.CodingKeys.subcategory.rawValue, isLessThanOrEqualTo: searchText + "\u{f8ff}")
                 .whereField(DBTransaction.CodingKeys.deleted.rawValue, isEqualTo: false)
                 .order(by: DBTransaction.CodingKeys.date.rawValue, descending: true)
                 .limit(to: limit)
                 .startOptionally(afterDocument: lastDocument)
-                .getDocumentsWithSnapshot(as: DBTransaction.self)
+
+            // Add category filter if selectedCategoryId is not nil
+            if let selectedCategoryId {
+                query = query.whereField(DBTransaction.CodingKeys.categoryId.rawValue, isEqualTo: selectedCategoryId)
+            }
+            print("Transactions has been downloaded")
+            return try await query.getDocumentsWithSnapshot(as: DBTransaction.self)
         } catch {
             print(error)
+            return ([], nil)
         }
-        return ([], nil)
     }
     
     func deleteTransaction (transactionId: String) async throws {
