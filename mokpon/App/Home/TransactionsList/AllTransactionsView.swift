@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AllTransactuionsView: View {
+struct AllTransactionsView: View {
 
     let transactions: [Transaction]
     let getTransactions: @MainActor() -> ()
@@ -40,9 +40,7 @@ struct AllTransactuionsView: View {
                     .toolbar {
                         ToolbarItem (placement: .cancellationAction) {
                             Button("Close") {
-                                selectedScope = nil
-                                showView = false
-                                updateTransactions()
+                                onDissmiss()
                             }.foregroundColor(Color.accentColor)
                         }
                         ToolbarItem (placement: .principal) {
@@ -59,12 +57,21 @@ struct AllTransactuionsView: View {
                 .background(Color.bg_transactions)
             }
         }
+        .onDisappear {
+            onDissmiss()
+        }
+    }
+
+    private func onDissmiss() {
+        selectedScope = nil
+        searchText = ""
+        showView = false
     }
 }
 
-struct AllTransactuionsView_Previews: PreviewProvider {
+struct AllTransactionsView_Previews: PreviewProvider {
     static var previews: some View {
-        AllTransactuionsView(
+        AllTransactionsView(
             transactions: [],
             getTransactions: {},
             updateTransactions: {},

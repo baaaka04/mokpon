@@ -41,7 +41,7 @@ struct Home: View {
                             .font(.custom("DMSans-Regular", size: 14))
                             .foregroundColor(Color.accentColor)
                             .popover(isPresented: $vm.showAllTransactions) {
-                                AllTransactuionsView (
+                                AllTransactionsView (
                                     transactions: vm.transactions,
                                     getTransactions: vm.getTransactions,
                                     updateTransactions: vm.updateTransactions,
@@ -76,6 +76,7 @@ struct Home: View {
                 }
                 .frame(minHeight: 1100)
             }
+            .scrollIndicators(.hidden)
             .refreshable {
                 vm.updateTransactions()
                 vm.fetchCurrencyRates()

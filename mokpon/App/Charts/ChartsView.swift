@@ -63,6 +63,7 @@ struct ChartsView: View {
                 )
                 
             }
+            .scrollIndicators(.hidden)
         }
         .font(.custom("DMSans-Regular", size: 16))
     }

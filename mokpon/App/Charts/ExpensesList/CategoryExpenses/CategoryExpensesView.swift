@@ -37,6 +37,7 @@ struct CategoryExpensesView: View {
                 }
             } else { ProgressView().frame(maxWidth: .infinity).padding(.top, 200) }
         }
+        .scrollIndicators(.hidden)
         .background(Color.bg_main)
         .task {
             viewModel.getCategoryExpenses(currencyName: mainCurrency, date: date, category: category)
