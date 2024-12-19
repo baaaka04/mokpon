@@ -18,43 +18,15 @@ final class NewTransactionViewModel : ObservableObject {
     @Published var prevKey : String = "="
     @Published var needToErase = false
     
-    private(set) var isExchange : Bool
     private let transactionManager: TransactionManager
-    private let amountManager: AmountManager
-    private let authManager: AuthenticationManager
     private let directoriesManager: DirectoriesManager
     
-    init(appContext: AppContext, isExchange: Bool) {
-        self.isExchange = isExchange
+    init(appContext: AppContext) {
         self.transactionManager = appContext.transactionManager
-        self.amountManager = appContext.amountManager
-        self.authManager = appContext.authManager
         self.directoriesManager = appContext.directoriesManager
         print("\(Date()): INIT NewTransactionViewModel")
     }
     deinit {print("\(Date()): DEINIT NewTransactionViewModel")}
-    
-    // Firebase POST request
-    func sendNewTransaction () async throws {
-        let user = try authManager.getAuthenticatedUser()
-        guard let currencyId = currency?.id else {return}
-        try await transactionManager.createNewTransaction(
-            categoryId: category?.id ?? "n/a",
-            subcategory: subCategory,
-            type: type,
-            date: Date(),
-            sum: type == .income || isExchange ? sum : -sum,
-            currencyId: currencyId,
-            userId: user.uid
-        )
-        print("\(Date()): Transaction has been sent")
-    }
-    
-    func updateUserAmounts () async throws {
-        let user = try authManager.getAuthenticatedUser()
-        guard let currency else {return}
-        try await amountManager.updateUserAmounts(userId: user.uid, curId: currency.id, sumDiff: type == .income || isExchange ? sum : -sum)
-    }
     
     // GET Request from Firebase DB for hotkeys
     func getHotkeys() {

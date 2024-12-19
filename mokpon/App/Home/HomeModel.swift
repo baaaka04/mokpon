@@ -2,14 +2,24 @@ import Foundation
 import SwiftUI
 
 struct Transaction : Equatable {
-    let id : String
+    var id : String
     let category : Category
     let subcategory : String
     let date : Date
     let sum : Int
     let currency : Currency
     let type : ExpensesType
-    
+
+    init(id: String, category: Category, subcategory: String, date: Date, sum: Int, currency: Currency, type: ExpensesType) {
+        self.id = id
+        self.category = category
+        self.subcategory = subcategory
+        self.date = date
+        self.sum = sum
+        self.currency = currency
+        self.type = type
+    }
+
     init(DBTransaction: DBTransaction, category: Category, currency: Currency) {
         self.id = DBTransaction.id
         self.subcategory = DBTransaction.subcategory

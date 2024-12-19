@@ -16,8 +16,11 @@ struct Home: View {
                 VStack{
                     
                     DebitCard(amounts: vm.amounts, directoriesManager: vm.directoriesManager)
-                        .onAppear {
-                            vm.getUserAmounts()
+                        .task {
+                            guard vm.amounts != nil else {
+                                vm.getUserAmounts()
+                                return
+                            }
                         }
                     
                     Currencies(
@@ -101,10 +104,13 @@ struct Home: View {
         .font(.custom("DMSans-Regular", size: 16))
         .navigationDestination(for: String.self) { _ in
             NewTransactionForm(
-                viewModel: NewTransactionViewModel(appContext: AppContext(), isExchange: false),
-                viewModelExchange: NewTransactionViewModel(appContext: AppContext(), isExchange: true)
+                viewModel: NewTransactionViewModel(appContext: AppContext()),
+                viewModelExchange: NewTransactionViewModel(appContext: AppContext()),
+                onPressSend: { (trans) in
+                    try await vm.sendNewTransaction(transaction: trans)
+                }
             )
-                .navigationBarHidden(true)
+            .navigationBarHidden(true)
         }
     }
 }

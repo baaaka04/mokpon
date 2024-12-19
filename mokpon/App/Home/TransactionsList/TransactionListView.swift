@@ -4,7 +4,7 @@ struct TransactionListView: View {
     
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
     
-    let transactions: [Transaction]
+    let transactions: [Transaction]?
     let getTransactions: @MainActor() -> ()
     let updateTransactions: @MainActor() -> ()
     let deleteTransaction: @MainActor(_ transaction: Transaction) -> ()
@@ -12,9 +12,7 @@ struct TransactionListView: View {
     var transactionLimit: Int? = nil
     let convertCurrency: (_ value: Int, _ from: String?, _ to: String?) -> Int?
     let directoriesManager: DirectoriesManager
-    
-    @Environment(\.isSearching) private var isSearching
-    
+
     func transformTransactions (trans: [Transaction], limit: Int?) -> [EnumeratedSequence<Array<Dictionary<Date, [Transaction]>.Element>>.Element] {
         var arr = trans
         if let limit, trans.count > limit {arr = Array(trans[0..<limit])}
@@ -40,8 +38,8 @@ struct TransactionListView: View {
     var body: some View {
         
         VStack {
-            if transactions.count != 0 {
-                
+            if let transactions, transactions.count != 0 {
+
                 List (transformTransactions(trans: transactions, limit: transactionLimit), id: \.element.key) { (index, transGrouped) in
                     Section {
                         ForEach (transGrouped.value, id: \.self.id) { item in
@@ -90,7 +88,10 @@ struct TransactionListView: View {
 
         }
         .task {
-            updateTransactions()
+            guard transactions != nil else {
+                getTransactions()
+                return
+            }
         }
     }
 }

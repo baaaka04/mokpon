@@ -66,6 +66,8 @@ struct CalculatorButton: View {
                 }
             }
         )
+        .font(.system(size: 32))
+        .frame(height: 64)
     }
 }
 

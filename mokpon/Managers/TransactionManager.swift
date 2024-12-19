@@ -7,22 +7,23 @@ final class TransactionManager {
     init() {print("\(Date()): INIT TransactionManager")}
     deinit {print("\(Date()): DEINIT TransactionManager")}
     
-    private let transactionCollection = Firestore.firestore().collection("transactions") //if there's no collection in db, it will be created
+    private let transactionCollection = Firestore.firestore().collection("transactions") //if there's no collection in db, it will create it
     
-    //use a dictionary instead of a struct because we need Document ID generated on Firebase
-    func createNewTransaction(categoryId: String, subcategory: String, type: ExpensesType, date: Date, sum: Int, currencyId: String, userId: String) async throws {
+    // Use a dictionary instead of a struct because we need Document ID generated on Firebase
+    func createNewTransaction(transaction: Transaction, userId: String) async throws -> String {
         let documentRef = try await transactionCollection.addDocument(data: [
-            "category_id" : categoryId,
-            "subcategory" : subcategory.lowercased(),
-            "type" : type.rawValue,
-            "date" : date,
-            "sum" : sum,
-            "currency_id" : currencyId,
+            "category_id" : transaction.category.id,
+            "subcategory" : transaction.subcategory.lowercased(),
+            "type" : transaction.type.rawValue,
+            "date" : transaction.date,
+            "sum" : transaction.sum,
+            "currency_id" : transaction.currency.id,
             "deleted" : false,
             "user_id" : userId
         ])
         let documentId = documentRef.documentID
         try await transactionCollection.document(documentId).updateData(["id":documentId])
+        return documentId
     }
         
     func getLastNTransactions(limit: Int, lastDocument: DocumentSnapshot? = nil, searchText: String = "", selectedCategoryId: String? = nil) async -> (documents: [DBTransaction], lastDocument: DocumentSnapshot?) {

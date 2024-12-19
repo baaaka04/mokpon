@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AllTransactionsView: View {
 
-    let transactions: [Transaction]
+    let transactions: [Transaction]?
     let getTransactions: @MainActor() -> ()
     let updateTransactions: @MainActor() -> ()
     let deleteTransaction: @MainActor(_ transaction: Transaction) -> ()

@@ -5,22 +5,24 @@ enum NumberPadType {
 }
 
 struct NewTransactionForm: View {
-    
+
     @ObservedObject var viewModel: NewTransactionViewModel
     @ObservedObject var viewModelExchange: NewTransactionViewModel
-    @EnvironmentObject var rootViewModel : RootTabViewModel
-    @AppStorage("currencyIndex") private var currencyIndex : Int = 0
-    
-    @State private var isExchange : Bool = false
-    @State private var selectedNumberPad : NumberPadType = .original
-    
+    @EnvironmentObject var rootViewModel: RootTabViewModel
+    @AppStorage("currencyIndex") private var currencyIndex: Int = 0
+    var onPressSend: ((_ trans: Transaction) async throws -> Void)? = nil
+
+    @State private var isExchange: Bool = false // The state for keyboards and number bars
+    @State private var selectedNumberPad: NumberPadType = .original
+
     @Environment(\.presentationMode) var presentationMode
-    
-    init(viewModel: NewTransactionViewModel, viewModelExchange: NewTransactionViewModel) {
+
+    init(viewModel: NewTransactionViewModel, viewModelExchange: NewTransactionViewModel, onPressSend: ((_ trans: Transaction) async throws -> Void)?) {
         _viewModel = ObservedObject(wrappedValue: viewModel)
         _viewModelExchange = ObservedObject(wrappedValue: viewModelExchange)
+        self.onPressSend = onPressSend
     }
-    
+
     var body: some View {
         VStack {
             HStack{
@@ -39,7 +41,7 @@ struct NewTransactionForm: View {
             .font(.custom("DMSans-Regular", size: 14))
             .foregroundColor(.yellow)
             .padding(.horizontal, 10)
-            
+
             Type_CategoryView(
                 selection: $viewModel.category,
                 type: $viewModel.type
@@ -47,18 +49,32 @@ struct NewTransactionForm: View {
             VStack {
                 Spacer(minLength: 0)
                 //  Sum & Desciption
-                NumberPad(sum: viewModel.sum, type: viewModel.type, currency: viewModel.currency, switchCurrency: {switchCurrency(isExchange: false)}, onSwipeRight: {viewModel.onPressBackspace(btn: "")}, isExchange: viewModel.isExchange)
-                    .onAppear {
-                        viewModel.currency = rootViewModel.currencies?[currencyIndex]
-                        viewModel.currentCurrencyInd = currencyIndex
-                    }
-                    .foregroundColor( selectedNumberPad == .original && isExchange ? Color.accentColor : nil )
-                    .onTapGesture { selectedNumberPad = .original }
-                
+                NumberPad(
+                    sum: viewModel.sum,
+                    type: viewModel.type,
+                    currency: viewModel.currency,
+                    switchCurrency: { switchCurrency(isExchange: false) },
+                    onSwipeRight: { viewModel.onPressBackspace(btn: "") },
+                    isExchange: false
+                )
+                .onAppear {
+                    viewModel.currency = rootViewModel.currencies?[currencyIndex]
+                    viewModel.currentCurrencyInd = currencyIndex
+                }
+                .foregroundColor( selectedNumberPad == .original && isExchange ? Color.accentColor : nil )
+                .onTapGesture { selectedNumberPad = .original }
+
                 if isExchange {
-                    NumberPad(sum: viewModelExchange.sum, type: viewModelExchange.type, currency: viewModelExchange.currency, switchCurrency: {switchCurrency(isExchange: true)}, onSwipeRight: {viewModelExchange.onPressBackspace(btn: "")}, isExchange: true)
-                        .foregroundColor( selectedNumberPad == .exchange ? Color.accentColor : nil )
-                        .onTapGesture { selectedNumberPad = .exchange }
+                    NumberPad(
+                        sum: viewModelExchange.sum,
+                        type: viewModelExchange.type,
+                        currency: viewModelExchange.currency,
+                        switchCurrency: { switchCurrency(isExchange: true) },
+                        onSwipeRight: { viewModelExchange.onPressBackspace(btn: "") },
+                        isExchange: true
+                    )
+                    .foregroundColor( selectedNumberPad == .exchange ? Color.accentColor : nil )
+                    .onTapGesture { selectedNumberPad = .exchange }
                 } else {
                     SubcategoryInput(subcategory: $viewModel.subCategory)
                         .frame(height: 30)
@@ -72,13 +88,25 @@ struct NewTransactionForm: View {
                 Spacer(minLength: 0)
             }
             .padding(.horizontal)
-            
-            Group {
-                switch selectedNumberPad {
-                case .exchange: Keyboard(viewModel: viewModelExchange, onSwipeUp: sendTransaction)
-                case .original: Keyboard(viewModel: viewModel, onSwipeUp: sendTransaction)
-                }
-            }.font(.system(size: 32))
+
+            switch selectedNumberPad {
+            case .exchange:
+                Keyboard(
+                    viewModel: viewModelExchange,
+                    onSwipeUp: {
+                        presentationMode.wrappedValue.dismiss()
+                        try await sendTransaction()
+                    }
+                )
+            case .original:
+                Keyboard(
+                    viewModel: viewModel,
+                    onSwipeUp: {
+                        presentationMode.wrappedValue.dismiss()
+                        try await sendTransaction()
+                    }
+                )
+            }
         }
         .foregroundColor(.white)
         .background(BackgroundCloud(height: 1500).offset(y:700))
@@ -90,32 +118,51 @@ struct NewTransactionForm: View {
 struct NewTransactionForm_Previews: PreviewProvider {
     static var previews: some View {
         let appContext = AppContext()
-        NewTransactionForm(viewModel: NewTransactionViewModel(appContext: appContext, isExchange: false), viewModelExchange: NewTransactionViewModel(appContext: appContext, isExchange: false))
+        NewTransactionForm(viewModel: NewTransactionViewModel(appContext: appContext), viewModelExchange: NewTransactionViewModel(appContext: appContext), onPressSend: {(trans) in } )
     }
 }
 
 extension NewTransactionForm {
-    
-    func sendTransaction () {
-        Task {
-            try await viewModel.sendNewTransaction()
-            try await viewModel.updateUserAmounts()
-            
-            if isExchange {
-                try await viewModelExchange.sendNewTransaction()
-                try await viewModelExchange.updateUserAmounts()
+
+    private func sendTransaction() async throws -> Void {
+        if let category = viewModel.category, let currency = viewModel.currency {
+            let transaction = Transaction(
+                id: UUID().uuidString,
+                category: category,
+                subcategory: viewModel.subCategory,
+                date: Date(),
+                sum: viewModel.type == .income ? viewModel.sum : -viewModel.sum,
+                currency: currency,
+                type: viewModel.type
+            )
+            try await onPressSend?(transaction)
+        }
+        // Send the second transaction only if the exchange mode is ON
+        if isExchange {
+            if let category = viewModelExchange.category, let currency = viewModelExchange.currency {
+                let transaction = Transaction(
+                    id: UUID().uuidString,
+                    category: category,
+                    subcategory: viewModelExchange.subCategory,
+                    date: Date(),
+                    sum: viewModelExchange.sum,
+                    currency: currency,
+                    type: viewModelExchange.type
+                )
+                try await onPressSend?(transaction)
             }
-            presentationMode.wrappedValue.dismiss()
         }
     }
-    private func switchCurrency (isExchange: Bool) {
+
+    private func switchCurrency(isExchange: Bool) {
         if isExchange {
             viewModelExchange.switchCurrency(currencies: rootViewModel.currencies)
         } else {
             currencyIndex = viewModel.switchCurrency(currencies: rootViewModel.currencies)
         }
     }
-    private func onPressExchange () {
+
+    private func onPressExchange() {
         isExchange.toggle()
         if viewModel.type == .exchange {
             viewModel.type = .expense
@@ -131,7 +178,7 @@ extension NewTransactionForm {
         viewModelExchange.type = .exchange
         viewModelExchange.category = rootViewModel.categories?.first { $0.type == .exchange }
         viewModelExchange.subCategory = "обмен"
-        
+
         if selectedNumberPad == .exchange {selectedNumberPad = .original}
     }
 }

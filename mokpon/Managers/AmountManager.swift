@@ -33,7 +33,7 @@ final class AmountManager {
     }()
 
     
-    func updateUserAmounts (userId: String, curId: String, sumDiff: Int) async throws {
+    func updateUserAmounts (userId: String, curId: String, sumDiff: Int) async throws -> [Amount] {
         let lastAmounts = try await getUserAmounts(userId: userId)
         
         let newAmounts = lastAmounts.map { am in
@@ -45,6 +45,7 @@ final class AmountManager {
             throw URLError(.badURL)
         }
         try await amountsCollection.document(userId).setData(encodedAmounts)
+        return try await amountsCollection.document(userId).getDocument().data(as:UserAmounts.self, decoder: decoder).amounts
     }
     
     func getUserAmounts (userId: String) async throws -> [Amount] {
