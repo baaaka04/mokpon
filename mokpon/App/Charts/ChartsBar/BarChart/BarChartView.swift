@@ -1,63 +1,110 @@
 import SwiftUI
-import Charts
+
 
 struct BarChartView: View {
-    
-    var barChartData : [ChartData]
-    
-    private func getTotals (_ barChartData: [ChartData]) -> [Int] {
-        let getStringPeriod : (Int, Int) -> String = { (year, month) in
-            "\(year)"+String(format: "%02d",month)
+
+    let chartData: [ChartData]
+
+    private var maxHeight: CGFloat {
+        let dict = Dictionary(grouping: chartData) { "\($0.month)" + "\($0.year)" }
+        let totalByMonth = dict.mapValues { chartDataForMonth in
+            chartDataForMonth.reduce(0) { $0 + $1.sum }
         }
-        
-        let groupedByPeriod = Dictionary(grouping: barChartData) { getStringPeriod($0.year, $0.month) }
-        let sumByPeriod = groupedByPeriod.mapValues { chartData in
-            chartData.reduce(0) {$0 + $1.sum}
-        }
-        let uniquePeriods = Set( barChartData.map{ getStringPeriod($0.year, $0.month) } ).sorted {$0 < $1}
-        
-        return uniquePeriods.compactMap { sumByPeriod[$0] }
+        let maxValue = totalByMonth.map{$0.value}.max()
+
+        return CGFloat(maxValue ?? 0)
     }
-    
+
+    private var periods: [ChartsDate] {
+        return Array(Set(chartData.map {
+            ChartsDate(month: $0.month, year: $0.year)
+        })
+            .sorted { $0.currentPeriod.month < $1.currentPeriod.month}
+            .sorted {$0.currentPeriod.year < $1.currentPeriod.year}
+        )
+    }
+
+    private var currency: String {
+        Set(chartData.map {$0.currency.symbol}).first ?? ""
+    }
+
+    private var categories: [Category] {
+        Array(Set(chartData.map { $0.category })).sorted{ $0.id < $1.id }
+    }
+
+
     var body: some View {
-        if barChartData.count == 0 {
-            ProgressView().padding(100)
-        } else {
-            Chart {
-                ForEach (barChartData) {barData in
-                    BarMark(
-                        x: .value("Month", getChartMonthName(year: barData.year, month: barData.month)),
-                        y: .value("Value", barData.sum)
-                    )
-                    .foregroundStyle(by: .value("Category", barData.category.name))
+
+        VStack {
+            HStack(alignment: .bottom) {
+                ForEach(periods, id: \.self) { period in
+                    snackBar(period: period, columnCount: periods.count)
                 }
-                .annotation(content: {
-                    HStack {
-                        ForEach(getTotals(barChartData), id: \.self) { sum in
-                            Text("\(sum) \(barChartData[0].currency.symbol)")
-                                .frame(width: 150)
-                                .frame(maxWidth: .infinity)
+            }
+            legend
+        }
+        .font(.custom("DMSans-Regular", size: 10))
+        .foregroundStyle(.white)
+        .padding()
+
+    }
+
+    private func snackBar(period: ChartsDate, columnCount: Int) -> some View {
+        VStack {
+            let periodData = chartData
+                .filter { $0.month == period.currentPeriod.month && $0.year == period.currentPeriod.year }
+            let periodTotal = periodData.reduce(0) { $0 + $1.sum }
+            Text("\(periodTotal) \(currency)")
+                .font(.custom("DMSans-Regular", size: 12))
+
+
+            VStack(spacing: 0) {
+                let sortedData = periodData.sorted {$0.sum < $1.sum }
+                ForEach(sortedData, id: \.id) { chartData in
+                    ZStack {
+                        let barHeight = CGFloat(chartData.sum)/maxHeight * 130
+                        Rectangle()
+                            .frame(maxWidth: CGFloat(300/columnCount), maxHeight: barHeight)
+                            .foregroundColor(chartData.category.color)
+                        if barHeight > 20 {
+                            Text("\(chartData.sum) \(currency)")
                         }
                     }
-                    .foregroundColor(.white)
-                })
+                }
+                let monthAndYear = getChartMonthName(year: period.currentPeriod.year, month: period.currentPeriod.month)
+                Text(monthAndYear)
+                    .lineLimit(1)
+                    .padding(.vertical, 5)
             }
-            .chartYAxis(.hidden)
-            .chartYAxis {
-                AxisMarks(position: .leading) { AxisValueLabel() }
-            }
-            .chartXAxis {
-                AxisMarks(position: .bottom) { AxisValueLabel().foregroundStyle(.white) }
+            .frame(maxWidth: .infinity)
+        }
+    }
+
+    private var legend: some View {
+        Group {
+            let columns = [GridItem(.adaptive(minimum: 60))]
+
+            LazyVGrid(columns: columns) {
+                ForEach(categories, id: \.self) { category in
+                    Text("\(category.name)")
+                        .frame(width: 60)
+                        .lineLimit(1)
+                        .padding(3)
+                        .background(category.color)
+                        .cornerRadius(5)
+                }
             }
         }
     }
+
+
 }
 
-struct BarChartView_Previews: PreviewProvider {
-    static var previews: some View {
-        BarChartView(
-            barChartData: []
-        )
-        .background(.gray)
+#Preview {
+    ZStack {
+        Color.gray.ignoresSafeArea()
+        BarChartView(chartData: [
+            // data
+        ])
     }
 }

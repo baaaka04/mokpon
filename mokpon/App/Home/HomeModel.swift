@@ -1,14 +1,14 @@
 import Foundation
 import SwiftUI
 
-struct Transaction : Equatable {
-    var id : String
-    let category : Category
-    let subcategory : String
-    let date : Date
-    let sum : Int
-    let currency : Currency
-    let type : ExpensesType
+struct Transaction: Equatable {
+    var id: String
+    let category: Category
+    let subcategory: String
+    let date: Date
+    let sum: Int
+    let currency: Currency
+    let type: ExpensesType
 
     init(id: String, category: Category, subcategory: String, date: Date, sum: Int, currency: Currency, type: ExpensesType) {
         self.id = id
@@ -35,39 +35,44 @@ struct Transaction : Equatable {
         return lhs.id == rhs.id
     }
 }
-enum ExpensesType : String, Codable {
+enum ExpensesType: String, Codable {
     case income = "доход"
     case expense = "опер"
     case invest = "инвест"
     case exchange
 }
-struct Category : Codable, Identifiable, Hashable {
-    let id : String
-    let name : String
-    let icon : String
-    let type : ExpensesType
+struct Category: Codable, Identifiable, Hashable {
+    let id: String
+    let name: String
+    let icon: String
+    let type: ExpensesType
+
+    var color: Color {
+        let index = (Int(id.suffix(2)) ?? 1) - 1
+        return Color.palette[index]
+    }
 }
 
-struct Currency : Codable, Identifiable, Hashable {
-    let id : String
-    let name : String
-    let symbol : String
+struct Currency: Codable, Identifiable, Hashable {
+    let id: String
+    let name: String
+    let symbol: String
 }
 struct Hotkey {
-    let category : Category
-    let subcategory : String
+    let category: Category
+    let subcategory: String
 }
 
 // CurrencyModel ----------------
 struct Rates: Codable {
-    let RUBKGS : Double
-    let USDKGS : Double
-    let EURKGS : Double
+    let RUBKGS: Double
+    let USDKGS: Double
+    let EURKGS: Double
 }
-struct Rate : Decodable {
-    let bid : String
+struct Rate: Decodable {
+    let bid: String
 }
-struct DTOcur : Decodable {
+struct DTOcur: Decodable {
         let id: Int
         let created_at: String
         let updated_at: String

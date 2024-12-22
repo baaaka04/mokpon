@@ -1,20 +1,20 @@
 import SwiftUI
 
 struct Home: View {
-    
+
     @StateObject private var vm: HomeViewModel
-    
+
     init(viewModel: HomeViewModel) {
         _vm = StateObject(wrappedValue: viewModel)
     }
-    
+
     var body: some View {
-        
-        ZStack {
-            
+
+        ZStack(alignment: .bottomTrailing) {
+
             ScrollView {
                 VStack{
-                    
+
                     DebitCard(amounts: vm.amounts, directoriesManager: vm.directoriesManager)
                         .task {
                             guard vm.amounts != nil else {
@@ -22,7 +22,7 @@ struct Home: View {
                                 return
                             }
                         }
-                    
+
                     Currencies(
                         fetchCurrencyRates: vm.fetchCurrencyRates,
                         RUBKGS: vm.currencyRates?.RUBKGS,
@@ -31,7 +31,7 @@ struct Home: View {
                     )
                     .padding(.horizontal, 40)
                     .padding(.vertical, 10)
-                    //GroupBy for dates
+
                     VStack {
                         HStack{
                             Text("My transactions")
@@ -85,21 +85,12 @@ struct Home: View {
                 vm.fetchCurrencyRates()
                 vm.getUserAmounts()
             }
-            
-            
-            VStack {
-                Spacer()
-                
-                HStack{
-                    Spacer()
 
-                    NavigationLink(value: "") { // I need it only because of 'Lazyness', to prevent initializing NewTransactionViewModel every HomeView's render
-                        AddButton()
-                            .padding(40)
-                    }
-                }
-                .padding(.bottom, 35)
+            NavigationLink(value: "") { // I need it only because of 'Lazyness', to prevent initializing NewTransactionViewModel every HomeView's render
+                AddButton()
+                    .padding(30)
             }
+            .padding(.bottom, 40)
         }
         .font(.custom("DMSans-Regular", size: 16))
         .navigationDestination(for: String.self) { _ in

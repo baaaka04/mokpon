@@ -36,16 +36,21 @@ struct ChartsView: View {
                     )
                     
                     Spacer()
-                    
-                    switch viewModel.selectedChart {
-                    case .bar:
-                        BarChartView(barChartData: viewModel.barChartData)
-                    case .pie:
-                        PieChartView(chartData: viewModel.pieChartData)
-                            .frame(width: 230, height: 230)
+
+                    if viewModel.pieChartData.count == 0 {
+                        ProgressView()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        switch viewModel.selectedChart {
+                        case .bar:
+                            BarChartView(chartData: viewModel.barChartData)
+                        case .pie:
+                            PieChartView(chartData: viewModel.pieChartData)
+                                .frame(width: 230, height: 230)
+                        }
                     }
                 }
-                .frame(height: 350)
+                .frame(minHeight: 350, maxHeight: 500)
                 .padding()
                 .background(.gray.opacity(0.7))
                 .cornerRadius(10)

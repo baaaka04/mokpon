@@ -26,9 +26,9 @@ struct ChartData : Identifiable {
     }
 }
 
-struct ChartsDate {
-    
-    struct ChartPeriod {
+struct ChartsDate: Hashable, Equatable {
+
+    struct ChartPeriod: Hashable, Equatable {
         var year, month : Int
     }
     var currentPeriod : ChartPeriod

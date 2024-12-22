@@ -36,9 +36,6 @@ struct PieChartView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            if values.reduce(0, +) == 0 {
-                ProgressView().padding(100)
-            } else {
                 ZStack{
                     ForEach(0..<self.values.count, id: \.self){ i in
                         PieSliceView(pieSliceData: self.slices[i])
@@ -58,7 +55,6 @@ struct PieChartView: View {
                     }
                 }
                 .background(.white.opacity(0))
-            }
         }
     }
 }

@@ -16,7 +16,6 @@
 		F709306E2956160C0071BF75 /* DebitCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F709306D2956160C0071BF75 /* DebitCard.swift */; };
 		F7130F992A0297D600972B10 /* PieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130F982A0297D600972B10 /* PieChart.swift */; };
 		F7130F9B2A02A18900972B10 /* DictionaryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */; };
-		F7130FA12A02B55E00972B10 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130FA02A02B55E00972B10 /* BarChartView.swift */; };
 		F7130FA62A03C3BC00972B10 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130FA52A03C3BC00972B10 /* HomeModel.swift */; };
 		F715D615295B3A1100B1177F /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F715D614295B3A1100B1177F /* ColorExtension.swift */; };
 		F719DC04294F0EA600DE1B8E /* MokponApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719DC03294F0EA600DE1B8E /* MokponApp.swift */; };
@@ -66,6 +65,7 @@
 		F7AF34002ACDD2E000EAC94B /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AF33FF2ACDD2E000EAC94B /* AppContext.swift */; };
 		F7B7B60E2CFB5E5800834F3F /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B7B60D2CFB5E5300834F3F /* ArrayExtension.swift */; };
 		F7B7B6102D05EA2600834F3F /* CategorySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B7B60F2D05EA1F00834F3F /* CategorySelector.swift */; };
+		F7C1589E2D1603E300F52D86 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C1589D2D1603E300F52D86 /* BarChartView.swift */; };
 		F7E42C8A2A7A8E2E004E0BDE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F7E42C892A7A8E2E004E0BDE /* GoogleService-Info.plist */; };
 		F7E42C8D2A7A8F8C004E0BDE /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = F7E42C8C2A7A8F8C004E0BDE /* FirebaseAnalytics */; };
 		F7E42C8F2A7A8F8C004E0BDE /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F7E42C8E2A7A8F8C004E0BDE /* FirebaseAnalyticsSwift */; };
@@ -103,7 +103,6 @@
 		F709306D2956160C0071BF75 /* DebitCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebitCard.swift; sourceTree = "<group>"; };
 		F7130F982A0297D600972B10 /* PieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChart.swift; sourceTree = "<group>"; };
 		F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryExtension.swift; sourceTree = "<group>"; };
-		F7130FA02A02B55E00972B10 /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
 		F7130FA52A03C3BC00972B10 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
 		F715D614295B3A1100B1177F /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		F719DC00294F0EA600DE1B8E /* mokpon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mokpon.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -152,6 +151,7 @@
 		F7AF33FF2ACDD2E000EAC94B /* AppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContext.swift; sourceTree = "<group>"; };
 		F7B7B60D2CFB5E5300834F3F /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		F7B7B60F2D05EA1F00834F3F /* CategorySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelector.swift; sourceTree = "<group>"; };
+		F7C1589D2D1603E300F52D86 /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
 		F7E42C892A7A8E2E004E0BDE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F7E42C942A7A94CE004E0BDE /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		F7E42C962A7A95E2004E0BDE /* SignInEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInEmailView.swift; sourceTree = "<group>"; };
@@ -215,7 +215,7 @@
 		F7130FA22A02B93200972B10 /* BarChart */ = {
 			isa = PBXGroup;
 			children = (
-				F7130FA02A02B55E00972B10 /* BarChartView.swift */,
+				F7C1589D2D1603E300F52D86 /* BarChartView.swift */,
 			);
 			path = BarChart;
 			sourceTree = "<group>";
@@ -607,12 +607,12 @@
 				F73DD5E52A0A78B8001BCDAC /* AllTransactionsView.swift in Sources */,
 				F708F6A329645E1B00E6E9FA /* Type+CategoryView.swift in Sources */,
 				F7E42C992A7A9757004E0BDE /* AuthenticationManager.swift in Sources */,
+				F7C1589E2D1603E300F52D86 /* BarChartView.swift in Sources */,
 				F75F77622AADF76000C658F1 /* NumberPad.swift in Sources */,
 				F719DC14294F344600DE1B8E /* TransactionListView.swift in Sources */,
 				F729732C29EC40C50007D493 /* ChartsNavBarView.swift in Sources */,
 				F754A44729D6F3E7004A61C8 /* PieSliceView.swift in Sources */,
 				F75F77642AAE588900C658F1 /* SubcategoryInput.swift in Sources */,
-				F7130FA12A02B55E00972B10 /* BarChartView.swift in Sources */,
 				F75F77522A9A0B9100C658F1 /* TransactionManager.swift in Sources */,
 				F7B7B60E2CFB5E5800834F3F /* ArrayExtension.swift in Sources */,
 				F7130F9B2A02A18900972B10 /* DictionaryExtension.swift in Sources */,
