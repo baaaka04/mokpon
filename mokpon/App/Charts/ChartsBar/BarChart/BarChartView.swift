@@ -55,8 +55,6 @@ struct BarChartView: View {
                 .filter { $0.month == period.currentPeriod.month && $0.year == period.currentPeriod.year }
             let periodTotal = periodData.reduce(0) { $0 + $1.sum }
             Text("\(periodTotal) \(currency)")
-                .font(.custom("DMSans-Regular", size: 12))
-
 
             VStack(spacing: 0) {
                 let sortedData = periodData.sorted {$0.sum < $1.sum }

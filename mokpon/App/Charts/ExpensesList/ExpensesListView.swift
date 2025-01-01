@@ -1,16 +1,16 @@
 import SwiftUI
 
 struct ExpensesListView: View {
-    var expenses : [ChartData]
-    var selectedType : ChartType
-    var selectedPeriod : ChartsDate
-    var isClickable : Bool
+    var expenses: [ChartData]
+    var selectedType: ChartType
+    var selectedPeriod: ChartsDate
+    var isClickable: Bool
     
-    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
+    @AppStorage("mainCurrency") private var mainCurrency: String = "USD"
             
     var body: some View {
         
-        VStack (spacing: 10) {
+        VStack(spacing: 10) {
             HStack {
                 Text(self.selectedType == .bar ? "Differences" : "Expenses")
                 Spacer()
@@ -23,14 +23,17 @@ struct ExpensesListView: View {
                     switch selectedType {
                     case .bar:
                         ExpenseView(expenseBarData: chartData)
-                            .padding(.horizontal)
                     case .pie:
-                        ExpenseView(expensePieData: chartData, selectedPeriod: selectedPeriod, isClickable: isClickable)
-                            .padding(.horizontal)
+                        ExpenseView(
+                            expensePieData: chartData,
+                            selectedPeriod: selectedPeriod,
+                            isClickable: isClickable
+                        )
                     }
                 }
             }
         }
+        .padding(.horizontal)
         .frame(maxWidth: .infinity)
         .padding(.bottom, 140)
         .background(Color.bg_transactions)

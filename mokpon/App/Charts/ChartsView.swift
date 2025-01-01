@@ -4,7 +4,7 @@ import Charts
 struct ChartsView: View {
     
     @StateObject private var viewModel: ChartsViewModel
-    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
+    @AppStorage("mainCurrency") private var mainCurrency: String = "USD"
     
     init(viewModel: ChartsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -30,8 +30,8 @@ struct ChartsView: View {
                         compareData: $viewModel.compareData,
                         selectedChart: viewModel.selectedChart,
                         fetchData: {
-                            viewModel.getPieChartData(mainCurrency: mainCurrency)
-                            viewModel.getBarChartData(mainCurrency: mainCurrency)
+                            viewModel.getPieChartData(currencyName: mainCurrency)
+                            viewModel.getBarChartData(currencyName: mainCurrency)
                         }
                     )
                     
@@ -56,12 +56,12 @@ struct ChartsView: View {
                 .cornerRadius(10)
                 .padding(.horizontal, 20)
                 .task {
-                    viewModel.getPieChartData(mainCurrency: mainCurrency)
-                    viewModel.getBarChartData(mainCurrency: mainCurrency)
+                    viewModel.getPieChartData(currencyName: mainCurrency)
+                    viewModel.getBarChartData(currencyName: mainCurrency)
                 }
                 
                 ExpensesListView(
-                    expenses : viewModel.selectedChart == .bar ? viewModel.getBarChartListData() : viewModel.pieChartData,
+                    expenses: viewModel.selectedChart == .bar ? viewModel.getBarChartListData() : viewModel.pieChartData,
                     selectedType: viewModel.selectedChart,
                     selectedPeriod: viewModel.chartDate,
                     isClickable: viewModel.selectedChart == .pie
