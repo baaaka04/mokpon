@@ -3,7 +3,8 @@ import SwiftUI
 
 struct BarChartView: View {
 
-    let chartData: [ChartData]
+    private var chartData: [ChartData]
+    @State private var excludedCategories: Set<Category> = []
 
     private var maxHeight: CGFloat {
         let dict = Dictionary(grouping: chartData) { "\($0.month)" + "\($0.year)" }
@@ -32,37 +33,45 @@ struct BarChartView: View {
         Array(Set(chartData.map { $0.category })).sorted{ $0.id < $1.id }
     }
 
+    init(chartData: [ChartData]) {
+        self.chartData = chartData.sorted {$0.sum < $1.sum }
+    }
 
     var body: some View {
 
         VStack {
             HStack(alignment: .bottom) {
                 ForEach(periods, id: \.self) { period in
-                    snackBar(period: period, columnCount: periods.count)
+                    snackBar(period: period, columnCount: CGFloat(periods.count))
                 }
             }
             legend
         }
+        .animation(.default, value: excludedCategories)
         .font(.custom("DMSans-Regular", size: 10))
         .foregroundStyle(.white)
         .padding()
 
     }
 
-    private func snackBar(period: ChartsDate, columnCount: Int) -> some View {
-        VStack {
-            let periodData = chartData
-                .filter { $0.month == period.currentPeriod.month && $0.year == period.currentPeriod.year }
-            let periodTotal = periodData.reduce(0) { $0 + $1.sum }
+    private func snackBar(period: ChartsDate, columnCount: CGFloat) -> some View {
+        let maxColumnWidth: CGFloat = 300
+        let maxColumnHeight: CGFloat = 130
+        let periodData = self.chartData
+            .filter { $0.month == period.currentPeriod.month && $0.year == period.currentPeriod.year }
+            .filter { !excludedCategories.contains($0.category) }
+        let periodTotal = periodData.reduce(0) { $0 + $1.sum }
+
+        return VStack {
             Text("\(periodTotal) \(currency)")
 
             VStack(spacing: 0) {
-                let sortedData = periodData.sorted {$0.sum < $1.sum }
-                ForEach(sortedData, id: \.id) { chartData in
+                ForEach(periodData, id: \.id) { chartData in
                     ZStack {
-                        let barHeight = CGFloat(chartData.sum)/maxHeight * 130
+                        let barHeight: CGFloat = CGFloat(chartData.sum)/self.maxHeight * maxColumnHeight
+                        let barWidth: CGFloat = maxColumnWidth/columnCount
                         Rectangle()
-                            .frame(maxWidth: CGFloat(300/columnCount), maxHeight: barHeight)
+                            .frame(maxWidth: barWidth, maxHeight: barHeight)
                             .foregroundColor(chartData.category.color)
                         if barHeight > 20 {
                             Text("\(chartData.sum) \(currency)")
@@ -79,22 +88,35 @@ struct BarChartView: View {
     }
 
     private var legend: some View {
-        Group {
-            let columns = [GridItem(.adaptive(minimum: 60))]
+        let columns = [GridItem(.adaptive(minimum: 60))]
 
-            LazyVGrid(columns: columns) {
-                ForEach(categories, id: \.self) { category in
-                    Text("\(category.name)")
-                        .frame(width: 60)
-                        .lineLimit(1)
-                        .padding(3)
-                        .background(category.color)
-                        .cornerRadius(5)
-                }
+        return LazyVGrid(columns: columns) {
+            ForEach(categories, id: \.self) { category in
+
+                Button(
+                    action: {
+                        if excludedCategories.contains(category) {
+                            excludedCategories.remove(category)
+                        } else {
+                            excludedCategories.insert(category)
+                        }
+                    },
+                    label: {
+                        Text("\(category.name)")
+                            .frame(width: 60)
+                            .lineLimit(1)
+                            .padding(3)
+                            .background(
+                                category.color
+                                    .opacity(excludedCategories.contains(category) ? 0.3 : 1)
+                            )
+                            .cornerRadius(5)
+                    }
+                )
+
             }
         }
     }
-
 
 }
 
