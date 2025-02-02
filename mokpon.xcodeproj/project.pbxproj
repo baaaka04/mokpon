@@ -14,6 +14,7 @@
 		F708F6A12964520100E6E9FA /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F708F6A02964520100E6E9FA /* Keyboard.swift */; };
 		F708F6A329645E1B00E6E9FA /* Type+CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F708F6A229645E1B00E6E9FA /* Type+CategoryView.swift */; };
 		F709306E2956160C0071BF75 /* DebitCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F709306D2956160C0071BF75 /* DebitCard.swift */; };
+		F70ED55F2D4D05DB00C97893 /* CustomRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70ED55E2D4D05DB00C97893 /* CustomRefreshView.swift */; };
 		F7130F992A0297D600972B10 /* PieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130F982A0297D600972B10 /* PieChart.swift */; };
 		F7130F9B2A02A18900972B10 /* DictionaryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */; };
 		F7130FA62A03C3BC00972B10 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7130FA52A03C3BC00972B10 /* HomeModel.swift */; };
@@ -101,6 +102,7 @@
 		F708F6A02964520100E6E9FA /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
 		F708F6A229645E1B00E6E9FA /* Type+CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Type+CategoryView.swift"; sourceTree = "<group>"; };
 		F709306D2956160C0071BF75 /* DebitCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebitCard.swift; sourceTree = "<group>"; };
+		F70ED55E2D4D05DB00C97893 /* CustomRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRefreshView.swift; sourceTree = "<group>"; };
 		F7130F982A0297D600972B10 /* PieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChart.swift; sourceTree = "<group>"; };
 		F7130F9A2A02A18900972B10 /* DictionaryExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryExtension.swift; sourceTree = "<group>"; };
 		F7130FA52A03C3BC00972B10 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				F708F690295DDB5900E6E9FA /* AddButton.swift */,
+				F70ED55E2D4D05DB00C97893 /* CustomRefreshView.swift */,
 				F709306D2956160C0071BF75 /* DebitCard.swift */,
 				F7B7B60F2D05EA1F00834F3F /* CategorySelector.swift */,
 				F7470F6F2AB9C99600DB4847 /* BackgroundCloud.swift */,
@@ -658,6 +661,7 @@
 				F729732E29EC44090007D493 /* ChartsHeaderView.swift in Sources */,
 				F708F69329607D0200E6E9FA /* NewTransactionFormView.swift in Sources */,
 				F7696C8A2A8FA144003239E0 /* UserManager.swift in Sources */,
+				F70ED55F2D4D05DB00C97893 /* CustomRefreshView.swift in Sources */,
 				F7470F6E2AB98B0F00DB4847 /* SliderPad.swift in Sources */,
 				F7696C8C2A8FA728003239E0 /* SettingsViewModel.swift in Sources */,
 			);

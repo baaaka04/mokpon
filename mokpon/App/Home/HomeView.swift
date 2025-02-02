@@ -12,9 +12,8 @@ struct Home: View {
 
         ZStack(alignment: .bottomTrailing) {
 
-            ScrollView {
+            CustomRefreshView {
                 VStack{
-
                     DebitCard(amounts: vm.amounts, directoriesManager: vm.directoriesManager)
                         .task {
                             guard vm.amounts != nil else {
@@ -37,7 +36,7 @@ struct Home: View {
                             Text("My transactions")
                                 .font(.custom("DMSans-Regular", size: 20))
                             Spacer()
-                            
+
                             Button("Show all") {
                                 vm.showAllTransactions = true
                             }
@@ -78,9 +77,7 @@ struct Home: View {
                     Spacer()
                 }
                 .frame(minHeight: 1100)
-            }
-            .scrollIndicators(.hidden)
-            .refreshable {
+            } onRefresh: {
                 vm.updateTransactions()
                 vm.fetchCurrencyRates()
                 vm.getUserAmounts()
