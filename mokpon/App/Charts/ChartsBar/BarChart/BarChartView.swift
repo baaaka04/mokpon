@@ -7,7 +7,8 @@ struct BarChartView: View {
     @State private var excludedCategories: Set<Category> = []
 
     private var maxHeight: CGFloat {
-        let dict = Dictionary(grouping: chartData) { "\($0.month)" + "\($0.year)" }
+        let filteredChartData = chartData.filter { !excludedCategories.contains($0.category) }
+        let dict = Dictionary(grouping: filteredChartData) { "\($0.month)" + "\($0.year)" }
         let totalByMonth = dict.mapValues { chartDataForMonth in
             chartDataForMonth.reduce(0) { $0 + $1.sum }
         }
