@@ -4,23 +4,30 @@ enum NumberPadType {
     case exchange, original
 }
 
-struct NewTransactionForm: View {
+@MainActor
+protocol TransactionSendable {
+    var hotkeys: [Hotkey]? { get }
 
-    @ObservedObject var viewModel: NewTransactionViewModel
-    @ObservedObject var viewModelExchange: NewTransactionViewModel
-    @EnvironmentObject var rootViewModel: RootTabViewModel
-    @AppStorage("currencyIndex") private var currencyIndex: Int = 0
-    var onPressSend: ((_ trans: Transaction) async throws -> Void)? = nil
+    func sendNewTransaction(transaction: Transaction) async throws -> Void
+}
+
+struct NewTransactionForm: View {
 
     @State private var isExchange: Bool = false // The state for keyboards and number bars
     @State private var selectedNumberPad: NumberPadType = .original
 
+    @ObservedObject var viewModel: NewTransactionViewModel
+    @ObservedObject var viewModelExchange: NewTransactionViewModel
+    var homeVM: any TransactionSendable
+    @EnvironmentObject var rootViewModel: RootTabViewModel
+    @AppStorage("currencyIndex") private var currencyIndex: Int = 0
+
     @Environment(\.presentationMode) var presentationMode
 
-    init(viewModel: NewTransactionViewModel, viewModelExchange: NewTransactionViewModel, onPressSend: ((_ trans: Transaction) async throws -> Void)?) {
+    init(viewModel: NewTransactionViewModel, viewModelExchange: NewTransactionViewModel, homeVM: any TransactionSendable) {
         _viewModel = ObservedObject(wrappedValue: viewModel)
         _viewModelExchange = ObservedObject(wrappedValue: viewModelExchange)
-        self.onPressSend = onPressSend
+        self.homeVM = homeVM
     }
 
     var body: some View {
@@ -81,8 +88,7 @@ struct NewTransactionForm: View {
                     SliderPad(
                         onPressOperationButton: viewModel.calcualte,
                         onPressHotkey: viewModel.onPressHotkey,
-                        hotkeys: viewModel.hotkeys,
-                        fetchHotkeys: viewModel.getHotkeys
+                        homeVM: homeVM
                     )
                 }
                 Spacer(minLength: 0)
@@ -117,8 +123,8 @@ struct NewTransactionForm: View {
 
 struct NewTransactionForm_Previews: PreviewProvider {
     static var previews: some View {
-        let appContext = AppContext()
-        NewTransactionForm(viewModel: NewTransactionViewModel(appContext: appContext), viewModelExchange: NewTransactionViewModel(appContext: appContext), onPressSend: {(trans) in } )
+        let mockHomeVM = MockHomeViewModel()
+        NewTransactionForm(viewModel: NewTransactionViewModel(), viewModelExchange: NewTransactionViewModel(), homeVM: mockHomeVM)
     }
 }
 
@@ -135,7 +141,7 @@ extension NewTransactionForm {
                 currency: currency,
                 type: viewModel.type
             )
-            try await onPressSend?(transaction)
+            try await homeVM.sendNewTransaction(transaction: transaction)
         }
         // Send the second transaction only if the exchange mode is ON
         if isExchange {
@@ -149,7 +155,7 @@ extension NewTransactionForm {
                     currency: currency,
                     type: viewModelExchange.type
                 )
-                try await onPressSend?(transaction)
+                try await homeVM.sendNewTransaction(transaction: transaction)
             }
         }
     }

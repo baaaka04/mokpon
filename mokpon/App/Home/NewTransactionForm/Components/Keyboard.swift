@@ -2,19 +2,19 @@ import SwiftUI
 
 struct Keyboard: View {
     
-    let onPressDigit: @MainActor(_ number: String) -> Void
-    let onPressClear: @MainActor(_ btn: String) -> Void
-    let onPressBackspace: @MainActor(_ btn: String) -> Void
-    let onSwipeUp: () async throws -> Void
+    private let onPressDigit: @MainActor(_ number: String) -> Void
+    private let onPressClear: @MainActor(_ btn: String) -> Void
+    private let onPressBackspace: @MainActor(_ btn: String) -> Void
+    private let onSwipeUp: () async throws -> Void
 
-    init(viewModel : NewTransactionViewModel, onSwipeUp: @escaping () async throws -> Void) {
+    init(viewModel: NewTransactionViewModel, onSwipeUp: @escaping () async throws -> Void) {
         self.onPressDigit = viewModel.onPressDigit
         self.onPressClear = viewModel.onPressClear
         self.onPressBackspace = viewModel.onPressBackspace
         self.onSwipeUp = onSwipeUp
     }
     
-    let columns: [GridItem] = [
+    private let columns: [GridItem] = [
         GridItem(.flexible(), spacing: nil, alignment: nil),
         GridItem(.flexible(), spacing: nil, alignment: nil),
         GridItem(.flexible(), spacing: nil, alignment: nil),
@@ -48,7 +48,7 @@ struct Keyboard: View {
 struct Keyboard_Previews: PreviewProvider {
     static var previews: some View {
         Keyboard(
-            viewModel: NewTransactionViewModel(appContext: AppContext()),
+            viewModel: NewTransactionViewModel(),
             onSwipeUp: {}
         )
         .background(.black)

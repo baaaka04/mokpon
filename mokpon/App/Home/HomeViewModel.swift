@@ -3,13 +3,14 @@ import Combine
 import FirebaseFirestore
 
 @MainActor
-final class HomeViewModel: ObservableObject {
+final class HomeViewModel: ObservableObject, TransactionSendable {
 
     @Published var transactions: [Transaction]?
     @Published var filteredTransactions: [Transaction] = []
     @Published var currencyRates: Rates? = nil
     @Published var showAllTransactions = false
     @Published var amounts: [Amount]? = nil
+    @Published var hotkeys: [Hotkey]? = nil
 
     //Search bar
     @Published var searchtext: String = ""
@@ -47,7 +48,7 @@ final class HomeViewModel: ObservableObject {
             }
             .store(in: &cancellable)
     }
-    
+
     // GET Request from Firebase DB
     func getTransactions() {
         Task {
@@ -113,7 +114,9 @@ final class HomeViewModel: ObservableObject {
     func updateTransactions() {
         self.transactions = nil
         self.lastDocument = nil
+        self.hotkeys = nil
         getTransactions()
+        getHotkeys()
     }
 
     func deleteTransaction(transaction: Transaction) {
@@ -146,6 +149,30 @@ final class HomeViewModel: ObservableObject {
             self.currencyRates = fetchedData
         }
     }
-    
+
+    func getHotkeys() -> Void {
+        Task {
+            do {
+                if self.hotkeys != nil { throw AppError.noNeedToExecute }
+
+                let (FBTransactions, _) = await transactionManager.getLastNTransactions(limit: 300)
+                let DBHotkeys = Dictionary(grouping: FBTransactions, by: {DBHotkey(categoryId: $0.categoryId, subcategory: $0.subcategory, count: 0)})
+                    .map { (key, arr) in DBHotkey(categoryId: key.categoryId, subcategory: key.subcategory, count: arr.count) }
+                    .sorted { $0.count > $1.count }
+
+                self.hotkeys = DBHotkeys
+                    .prefix(16)
+                    .compactMap {
+                        if let category = directoriesManager.getCategory(byID: $0.categoryId) {
+                            return Hotkey(category: category, subcategory: $0.subcategory)
+                        } else { return nil } //if couldn't find a category, then skip
+                    }
+            } catch {
+                print(error)
+            }
+        }
+
+    }
+
 }
 

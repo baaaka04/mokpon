@@ -53,6 +53,8 @@
 		F7696C8C2A8FA728003239E0 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7696C8B2A8FA728003239E0 /* SettingsViewModel.swift */; };
 		F7696C8F2A8FA768003239E0 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7696C8E2A8FA768003239E0 /* ProfileView.swift */; };
 		F7696C912A924D09003239E0 /* DirectoriesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7696C902A924D09003239E0 /* DirectoriesManager.swift */; };
+		F76D0BC32D526958001C6A6B /* MockHomeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76D0BC22D52694A001C6A6B /* MockHomeSection.swift */; };
+		F76D0BC52D563901001C6A6B /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76D0BC42D5638FC001C6A6B /* AppError.swift */; };
 		F78417C029DC4DE9002D1E24 /* ExpensesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78417BF29DC4DE9002D1E24 /* ExpensesListView.swift */; };
 		F78780502A0E6E4300244B91 /* CurrencyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F787804F2A0E6E4300244B91 /* CurrencyManager.swift */; };
 		F789C06529BA12F7002FBBF7 /* HotkeysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F789C06429BA12F7002FBBF7 /* HotkeysView.swift */; };
@@ -139,6 +141,8 @@
 		F7696C8B2A8FA728003239E0 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		F7696C8E2A8FA768003239E0 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		F7696C902A924D09003239E0 /* DirectoriesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoriesManager.swift; sourceTree = "<group>"; };
+		F76D0BC22D52694A001C6A6B /* MockHomeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHomeSection.swift; sourceTree = "<group>"; };
+		F76D0BC42D5638FC001C6A6B /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		F78417BF29DC4DE9002D1E24 /* ExpensesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesListView.swift; sourceTree = "<group>"; };
 		F787804F2A0E6E4300244B91 /* CurrencyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyManager.swift; sourceTree = "<group>"; };
 		F789C06429BA12F7002FBBF7 /* HotkeysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeysView.swift; sourceTree = "<group>"; };
@@ -315,6 +319,7 @@
 				F7791CD929E6D3420089E1A6 /* App */,
 				F7696C7B2A8A7180003239E0 /* Utilities */,
 				F7696C872A8FA0CD003239E0 /* Managers */,
+				F76D0BC12D52693B001C6A6B /* Mock */,
 				F735AB2F2954928C007DFBDA /* Fonts */,
 				F715D616295B3A1C00B1177F /* Extensions */,
 				F735AB30295494B9007DFBDA /* Info.plist */,
@@ -364,6 +369,7 @@
 		F7696C7B2A8A7180003239E0 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				F76D0BC42D5638FC001C6A6B /* AppError.swift */,
 				F7696C7C2A8A7192003239E0 /* Utilities.swift */,
 			);
 			path = Utilities;
@@ -398,6 +404,14 @@
 				F7696C8E2A8FA768003239E0 /* ProfileView.swift */,
 			);
 			path = Subviews;
+			sourceTree = "<group>";
+		};
+		F76D0BC12D52693B001C6A6B /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				F76D0BC22D52694A001C6A6B /* MockHomeSection.swift */,
+			);
+			path = Mock;
 			sourceTree = "<group>";
 		};
 		F7791CD929E6D3420089E1A6 /* App */ = {
@@ -622,8 +636,10 @@
 				F7AF34002ACDD2E000EAC94B /* AppContext.swift in Sources */,
 				F7470F722ABAED8600DB4847 /* TextExtension.swift in Sources */,
 				F75F77502A98E35E00C658F1 /* FireStoreQueryExtension.swift in Sources */,
+				F76D0BC52D563901001C6A6B /* AppError.swift in Sources */,
 				F75F77582AA4828500C658F1 /* AmountManager.swift in Sources */,
 				F7AF33FE2ACDD13600EAC94B /* RootTabViewModel.swift in Sources */,
+				F76D0BC32D526958001C6A6B /* MockHomeSection.swift in Sources */,
 				F79971952A2D052A001FEED3 /* StringExtension.swift in Sources */,
 				F7E42C9E2A7AADAB004E0BDE /* SettingsView.swift in Sources */,
 				F754A44A29D704D9004A61C8 /* PieChartView.swift in Sources */,

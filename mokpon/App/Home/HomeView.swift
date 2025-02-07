@@ -86,17 +86,18 @@ struct Home: View {
             NavigationLink(value: "") { // I need it only because of 'Lazyness', to prevent initializing NewTransactionViewModel every HomeView's render
                 AddButton()
                     .padding(30)
+                    .onAppear {
+                        vm.getHotkeys()
+                    }
             }
             .padding(.bottom, 40)
         }
         .font(.custom("DMSans-Regular", size: 16))
         .navigationDestination(for: String.self) { _ in
             NewTransactionForm(
-                viewModel: NewTransactionViewModel(appContext: AppContext()),
-                viewModelExchange: NewTransactionViewModel(appContext: AppContext()),
-                onPressSend: { (trans) in
-                    try await vm.sendNewTransaction(transaction: trans)
-                }
+                viewModel: NewTransactionViewModel(),
+                viewModelExchange: NewTransactionViewModel(),
+                homeVM: vm
             )
             .navigationBarHidden(true)
         }
