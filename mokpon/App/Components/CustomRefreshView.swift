@@ -26,14 +26,14 @@ struct CustomRefreshView<Content: View>: View {
             }
             .offset(coordinateSpace: "SCROLL") { offset in
                 // MARK: Storing Content Offset
-                scrollDelegate.contentOffset = offset
-                
+                scrollDelegate.contentOffset = offset.minY
+
                 // MARK: Stopping The Progress When Its Eligible For Refresh
                 if !scrollDelegate.isEligible{
-                    var progress = offset / 100
+                    var progress = offset.minY / 100
                     progress = (progress < 0 ? 0 : progress)
                     progress = (progress > 1 ? 1 : progress)
-                    scrollDelegate.scrollOffset = offset
+                    scrollDelegate.scrollOffset = offset.minY
                     scrollDelegate.progress = progress
                 }
                 
@@ -248,12 +248,12 @@ class ScrollViewModel: NSObject,ObservableObject,UIGestureRecognizerDelegate{
 // MARK: Offset Modifier
 extension View{
     @ViewBuilder
-    func offset(coordinateSpace: String,offset: @escaping (CGFloat)->())->some View{
+    func offset(coordinateSpace: String,offset: @escaping (CGRect)->())->some View{
         self
             .overlay {
-                GeometryReader{proxy in
-                    let minY = proxy.frame(in: .named(coordinateSpace)).minY
-                    
+                GeometryReader{ proxy in
+                    let minY = proxy.frame(in: .named(coordinateSpace))//.minY
+
                     Color.clear
                         .preference(key: OffsetKey.self, value: minY)
                         .onPreferenceChange(OffsetKey.self) { value in
@@ -266,9 +266,9 @@ extension View{
 
 // MARK: Offset Preference Key
 struct OffsetKey: PreferenceKey{
-    static var defaultValue: CGFloat = 0
-    
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+    static var defaultValue: CGRect = .zero
+
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
         value = nextValue()
     }
 }

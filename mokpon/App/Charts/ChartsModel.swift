@@ -1,14 +1,14 @@
 import Foundation
 
-enum ChartType {
-    case bar, pie
+enum ChartType: String, CaseIterable {
+    case pie, bar
 }
 enum Comparation: String, CaseIterable {
     case fiveMonth = "5-month"
     case monthly = "Month"
     case yearly = "Year"
 }
-struct ChartData : Identifiable {
+struct ChartData: Identifiable {
     let id: String
     let category: Category
     let currency: Currency

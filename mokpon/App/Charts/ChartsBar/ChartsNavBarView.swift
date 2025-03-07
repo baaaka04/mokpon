@@ -1,35 +1,23 @@
 import SwiftUI
 
 struct ChartsNavBarView: View {
-    
-    @Binding var chartType : ChartType
-    
+
+    @Binding var chartType: ChartType
+
     var body: some View {
-        
+
         VStack {
-            
+
             HStack (alignment: .center) {
-                Button {
-                    withAnimation(.spring(response: 0.3)) {
-                        if chartType == .bar { chartType = .pie }
+                ForEach(ChartType.allCases, id: \.self) { type in
+                    Button {
+                        chartType = type
+                    } label: {
+                        Text(type.rawValue.capitalized)
+                            .foregroundColor(chartType == type ? .yellow : .white)
+                            .frame(maxWidth: .infinity)
                     }
-                } label: {
-                    Text("Pie")
-                        .foregroundColor(chartType == .bar ? .white : .yellow)
-                        .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
-                
-                Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        if chartType == .pie { chartType = .bar }
-                    }
-                } label: {
-                    Text("Bar")
-                        .foregroundColor(chartType == .bar ? .yellow : .white)
-                        .frame(maxWidth: .infinity)
-                }
-                
             }
             .frame(maxWidth: 400)
             .overlay(
@@ -40,6 +28,7 @@ struct ChartsNavBarView: View {
                         .foregroundColor(.yellow)
                         .shadow(color: .yellow, radius: 1)
                         .shadow(color: .yellow, radius: 1)
+                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: chartType)
                     if chartType == .pie { Spacer() }
                 }
                 ,
