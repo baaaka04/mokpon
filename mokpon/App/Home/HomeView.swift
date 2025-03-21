@@ -100,6 +100,7 @@ struct Home: View {
                 homeVM: vm
             )
             .navigationBarHidden(true)
+            .id(UUID()) // Recreate the view every render to initiate onAppear method inside. 
         }
     }
 }
