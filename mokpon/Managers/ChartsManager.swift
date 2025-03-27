@@ -24,22 +24,23 @@ final class ChartsManager {
         return (startDate, endDate)
     }
     
-    private func getTransactionsQuery(year: Int, month: Int, forMonths: Int = 1) throws -> Query {
+    private func getTransactionsQuery(userId: String, year: Int, month: Int, forMonths: Int = 1) throws -> Query {
         let (startDate, endDate) = try getQueryPeriod(year: year, month: month, forMonths: forMonths)
         return transactionsCollection
+            .whereField(DBTransaction.CodingKeys.userId.rawValue, isEqualTo: userId)
             .whereField(DBTransaction.CodingKeys.deleted.rawValue, isEqualTo: false)
             .whereField(DBTransaction.CodingKeys.date.rawValue, isGreaterThanOrEqualTo: startDate)
             .whereField(DBTransaction.CodingKeys.date.rawValue, isLessThanOrEqualTo: endDate)
     }
-    private func getTransactionsOfCategoryQuery(year: Int, month: Int, categoryId: String) throws -> Query {
-        return try getTransactionsQuery(year: year, month: month)
+    private func getTransactionsOfCategoryQuery(userId: String, year: Int, month: Int, categoryId: String) throws -> Query {
+        return try getTransactionsQuery(userId: userId, year: year, month: month)
             .whereField(DBTransaction.CodingKeys.categoryId.rawValue, isEqualTo: categoryId)
     }
     
-    func getTransactions(year: Int, month: Int, categoryId: String? = nil, forMonths: Int = 1) async throws -> [DBTransaction] {
-        var query : Query = try getTransactionsQuery(year: year, month: month, forMonths: forMonths)
+    func getTransactions(userId: String, year: Int, month: Int, categoryId: String? = nil, forMonths: Int = 1) async throws -> [DBTransaction] {
+        var query : Query = try getTransactionsQuery(userId: userId, year: year, month: month, forMonths: forMonths)
         if let categoryId {
-            query = try getTransactionsOfCategoryQuery(year: year, month: month, categoryId: categoryId)
+            query = try getTransactionsOfCategoryQuery(userId: userId, year: year, month: month, categoryId: categoryId)
         }
         return try await query
             .getDocuments(as: DBTransaction.self)

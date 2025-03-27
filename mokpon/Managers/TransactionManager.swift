@@ -26,9 +26,10 @@ final class TransactionManager {
         return documentId
     }
         
-    func getLastNTransactions(limit: Int, lastDocument: DocumentSnapshot? = nil, searchText: String = "", selectedCategoryId: String? = nil) async -> (documents: [DBTransaction], lastDocument: DocumentSnapshot?) {
+    func getLastNTransactions(limit: Int, userId: String, lastDocument: DocumentSnapshot? = nil, searchText: String = "", selectedCategoryId: String? = nil) async -> (documents: [DBTransaction], lastDocument: DocumentSnapshot?) {
         do {
             var query = transactionCollection
+                .whereField(DBTransaction.CodingKeys.userId.rawValue, isEqualTo: userId)
                 .whereField(DBTransaction.CodingKeys.subcategory.rawValue, isGreaterThanOrEqualTo: searchText)
                 .whereField(DBTransaction.CodingKeys.subcategory.rawValue, isLessThanOrEqualTo: searchText + "\u{f8ff}")
                 .whereField(DBTransaction.CodingKeys.deleted.rawValue, isEqualTo: false)

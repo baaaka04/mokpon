@@ -7,11 +7,13 @@ final class CategoryViewModel : ObservableObject {
     private(set) var currencyRatesService: CurrencyManager
     private(set) var chartsManager: ChartsManager
     private(set) var directoriesManager: DirectoriesManager
-        
+    private(set) var authManager: AuthenticationManager
+
     init (appContext: AppContext) {
         self.currencyRatesService = appContext.currencyRatesService
         self.chartsManager = appContext.chartsManager
         self.directoriesManager = appContext.directoriesManager
+        self.authManager = appContext.authManager
         print("\(Date()): INIT CategoryViewModel")
     }
     deinit {print("\(Date()): DEINIT CategoryViewModel")}
@@ -19,7 +21,8 @@ final class CategoryViewModel : ObservableObject {
     func getCategoryExpenses (currencyName: String, date: ChartsDate, category: Category) {
         Task {
             guard let currency = directoriesManager.getCurrency(byName: currencyName) else {return}
-            let fetchedData = try await chartsManager.getTransactions(year: date.currentPeriod.year, month: date.currentPeriod.month, categoryId: category.id)
+            let user = try authManager.getAuthenticatedUser()
+            let fetchedData = try await chartsManager.getTransactions(userId: user.uid, year: date.currentPeriod.year, month: date.currentPeriod.month, categoryId: category.id)
             let groupedByCategory = Dictionary(grouping: fetchedData) { $0.subcategory }
             let categoryData = groupedByCategory.map { (key: String, value: [DBTransaction]) in
                 let converted = value.compactMap { (trans : DBTransaction) -> DBTransaction? in

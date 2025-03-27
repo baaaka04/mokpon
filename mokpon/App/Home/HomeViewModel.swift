@@ -54,8 +54,10 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
         Task {
             if !self.isLoading {
                 self.isLoading = true
+                let user = try authManager.getAuthenticatedUser()
                 let (DBTransactions, lastDocument) = await transactionManager.getLastNTransactions(
                     limit: 20,
+                    userId: user.uid,
                     lastDocument: self.lastDocument,
                     searchText: searchtext.lowercased(),
                     selectedCategoryId: selectedScope?.id
@@ -155,7 +157,8 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
             do {
                 if self.hotkeys != nil { throw AppError.noNeedToExecute }
 
-                let (FBTransactions, _) = await transactionManager.getLastNTransactions(limit: 300)
+                let user = try authManager.getAuthenticatedUser()
+                let (FBTransactions, _) = await transactionManager.getLastNTransactions(limit: 300, userId: user.uid)
                 let DBHotkeys = Dictionary(grouping: FBTransactions, by: {DBHotkey(categoryId: $0.categoryId, subcategory: $0.subcategory, count: 0)})
                     .map { (key, arr) in DBHotkey(categoryId: key.categoryId, subcategory: key.subcategory, count: arr.count) }
                     .sorted { $0.count > $1.count }

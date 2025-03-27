@@ -11,10 +11,11 @@ final class ChartsViewModel : ObservableObject {
     
     let categoryViewModel: CategoryViewModel
     
-    let currencyRatesService: CurrencyManager
-    let chartsManager: ChartsManager
-    let directoriesManager: DirectoriesManager
-    
+    private(set) var currencyRatesService: CurrencyManager
+    private(set) var chartsManager: ChartsManager
+    private(set) var directoriesManager: DirectoriesManager
+    private(set) var authManager: AuthenticationManager
+
     var chartDate: ChartsDate = ChartsDate(
         month: Calendar.current.component(.month, from: Date()),
         year: Calendar.current.component(.year, from: Date())
@@ -24,6 +25,7 @@ final class ChartsViewModel : ObservableObject {
         self.currencyRatesService = appContext.currencyRatesService
         self.chartsManager = appContext.chartsManager
         self.directoriesManager = appContext.directoriesManager
+        self.authManager = appContext.authManager
         self.categoryViewModel = CategoryViewModel(appContext: appContext)
         print("\(Date()): INIT ChartsViewModel")
     }
@@ -42,7 +44,8 @@ final class ChartsViewModel : ObservableObject {
     
     private func getMonthData(currencyName: String, year: Int, month: Int, forMonths: Int = 1) async throws -> [ChartData] {
         guard let currency = directoriesManager.getCurrency(byName: currencyName) else {return []}
-        let transactions: [DBTransaction] = try await chartsManager.getTransactions(year: year, month: month, forMonths: forMonths)
+        let user = try authManager.getAuthenticatedUser()
+        let transactions: [DBTransaction] = try await chartsManager.getTransactions(userId: user.uid, year: year, month: month, forMonths: forMonths)
         //convert expenses into main currency
         let transInMainCurrency = convertTransactionsCurrency(transactions: transactions, currency: currency)
         //groupBy category
