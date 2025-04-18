@@ -1,6 +1,5 @@
 import Foundation
 import FirebaseFirestore
-import FirebaseFirestoreSwift
 
 final class DirectoriesManager {
     var categories : [Category]? = nil

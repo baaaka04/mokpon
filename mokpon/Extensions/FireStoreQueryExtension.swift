@@ -1,6 +1,5 @@
 import Foundation
 import FirebaseFirestore
-import FirebaseFirestoreSwift
 
 extension Query {
     // extend Firebase query with function to download ALL documents as an array in a collection and decode it to any type
