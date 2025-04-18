@@ -17,7 +17,7 @@ struct SliderPad: View {
     var body: some View {
         VStack {
             if let chunks = homeVM.hotkeys?.chunked(into: 8) {
-                TabView (selection: $selectedTabIndex) {
+                TabView(selection: $selectedTabIndex) {
                     CalculatorView(onPressOperationButton: onPressOperationButton)
                         .tag(0)
                     ForEach(chunks.indices, id: \.self) { index in
@@ -29,12 +29,6 @@ struct SliderPad: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .local)
-                    .onEnded { value in
-                        if value.translation.width > 0 { switchTabToHotkeys() }
-                        if value.translation.width < 0 { switchTabToCalculator() }
-                    }
-                )
             } else {
                 ProgressView("Loading...").tint(.white).frame(maxWidth: .infinity)
             }
