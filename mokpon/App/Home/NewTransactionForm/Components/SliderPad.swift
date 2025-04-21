@@ -6,13 +6,6 @@ struct SliderPad: View {
     let onPressOperationButton: @MainActor(_ key: String) -> Void
     let onPressHotkey: @MainActor(_ category: Category, _ subcategory: String) -> Void
     var homeVM: TransactionSendable
-
-    private func switchTabToCalculator() {
-        if selectedTabIndex == 0 { withAnimation{ selectedTabIndex = 1 } }
-    }
-    private func switchTabToHotkeys() {
-        if selectedTabIndex == 1 { withAnimation{ selectedTabIndex = 0 } }
-    }
     
     var body: some View {
         VStack {
