@@ -78,19 +78,13 @@ final class ChartsViewModel: ObservableObject {
         return result
     }
 
-    func getPieChartData(currencyName: String) {
+    func getChartsData(currencyName: String) {
         guard !self.isLoading else { return }
         self.isLoading = true
         Task {
+            // PieChart
             self.pieChartData = try await getMonthData(currencyName: currencyName, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month)
-            self.isLoading = false
-        }
-    }
-    
-    func getBarChartData(currencyName: String) {
-        guard !self.isLoading else { return }
-        self.isLoading = true
-        Task {
+            // BarChart
             var barChartData: [ChartData] = []
             let currentMonthData = try await getMonthData(currencyName: currencyName, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month)
 

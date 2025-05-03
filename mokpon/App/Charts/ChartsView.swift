@@ -32,8 +32,7 @@ struct ChartsView: View {
                             compareData: $viewModel.compareData,
                             selectedChart: viewModel.selectedChart,
                             fetchData: {
-                                viewModel.getPieChartData(currencyName: mainCurrency)
-                                viewModel.getBarChartData(currencyName: mainCurrency)
+                                viewModel.getChartsData(currencyName: mainCurrency)
                             }
                         )
 
@@ -65,8 +64,7 @@ struct ChartsView: View {
         }
         .font(.custom("DMSans-Regular", size: 16))
         .task {
-            viewModel.getPieChartData(currencyName: mainCurrency)
-            viewModel.getBarChartData(currencyName: mainCurrency)
+            viewModel.getChartsData(currencyName: mainCurrency)
         }
     }
 
