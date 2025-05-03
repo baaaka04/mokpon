@@ -1,14 +1,15 @@
 import Foundation
 
 @MainActor
-final class ChartsViewModel : ObservableObject {
+final class ChartsViewModel: ObservableObject {
     
     @Published var selectedChart: ChartType = .bar
     @Published var compareData: Comparation = .monthly
     
     @Published var pieChartData: [ChartData] = []
     @Published var barChartData: [ChartData] = []
-    
+
+    private var isLoading: Bool = false
     let categoryViewModel: CategoryViewModel
     
     private(set) var currencyRatesService: CurrencyManager
@@ -56,7 +57,6 @@ final class ChartsViewModel : ObservableObject {
     }
 
     func getTotalsByCategory(transactions: [DBTransaction], currency: Currency) -> [ChartData] {
-
         var aggregation: [String: Int] = [:]
 
         for item in transactions {
@@ -79,12 +79,17 @@ final class ChartsViewModel : ObservableObject {
     }
 
     func getPieChartData(currencyName: String) {
+        guard !self.isLoading else { return }
+        self.isLoading = true
         Task {
             self.pieChartData = try await getMonthData(currencyName: currencyName, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month)
+            self.isLoading = false
         }
     }
     
     func getBarChartData(currencyName: String) {
+        guard !self.isLoading else { return }
+        self.isLoading = true
         Task {
             var barChartData: [ChartData] = []
             let currentMonthData = try await getMonthData(currencyName: currencyName, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month)
@@ -100,6 +105,7 @@ final class ChartsViewModel : ObservableObject {
                 barChartData = try await getMonthData(currencyName: currencyName, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month, forMonths: 5)
             }
             self.barChartData = barChartData
+            self.isLoading = false
         }
     }
 
