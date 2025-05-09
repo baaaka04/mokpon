@@ -9,7 +9,6 @@ final class AppContext {
     let authManager = AuthenticationManager()
     let directoriesManager = DirectoriesManager()
     let userManager = UserManager()
-    let authentificationManage = AuthenticationManager()
     let chartsManager = ChartsManager()
     
     init() {print("\(Date()): INIT AppContext")}

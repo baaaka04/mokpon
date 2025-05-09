@@ -50,6 +50,7 @@ struct NewTransactionForm: View {
             .padding(.horizontal, 10)
 
             Type_CategoryView(
+                categories: rootViewModel.categories,
                 selection: $viewModel.category,
                 type: $viewModel.type
             )

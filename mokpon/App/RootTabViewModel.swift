@@ -2,44 +2,35 @@ import Foundation
 
 
 @MainActor
-final class RootTabViewModel : ObservableObject {
+final class RootTabViewModel: ObservableObject {
     
-    let homeViewModel : HomeViewModel
-    let chartsViewModel : ChartsViewModel
-    let settingsViewModel : SettingsViewModel
-    
-    @Published var categories : [Category]? = nil
-    @Published var currencies : [Currency]? = nil
-    
-    init(appContext: AppContext) {
+    private let appContext = AppContext()
+    let homeViewModel: HomeViewModel
+    let chartsViewModel: ChartsViewModel
+    let settingsViewModel: SettingsViewModel
+
+    @Published var categories: [Category]? = nil
+    @Published var currencies: [Currency]? = nil
+    @Published var isLoading: Bool = true
+
+    init() {
         self.homeViewModel = HomeViewModel(appContext: appContext)
         self.chartsViewModel = ChartsViewModel(appContext: appContext)
         self.settingsViewModel = SettingsViewModel(appContext: appContext)
+    }
+
+    func loadRequirements() {
         Task {
-            self.categories = try await appContext.directoriesManager.getAllCategories()
+            let categories = try await appContext.directoriesManager.getAllCategories()
+            self.categories = categories
+            appContext.directoriesManager.categories = categories
+
+            let currencies = try await appContext.directoriesManager.getAllCurrencies()
+            self.currencies = currencies
+            appContext.directoriesManager.currencies = currencies
+            print("Requirements has been loaded")
+            self.isLoading = false
         }
-        Task {
-            self.currencies = try await appContext.directoriesManager.getAllCurrencies()
-        }
     }
-    
-    func getCategory(byName name: String) -> Category? {
-        guard let categories else {return nil}
-        return categories.first { $0.name == name }
-    }
-    
-    func getCategory (byID id: String) -> Category? {
-        guard let categories else {return nil}
-        return categories.first { $0.id == id }
-    }
-    
-    func getCurrency(byID id: String) -> Currency? {
-        guard let currencies else {return nil}
-        return currencies.first { $0.id == id }
-    }
-    
-    func getCurrency(byName name: String) -> Currency? {
-        guard let currencies else {return nil}
-        return currencies.first { $0.name == name }
-    }
+
 }

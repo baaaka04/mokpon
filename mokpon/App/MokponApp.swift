@@ -4,9 +4,9 @@ import Firebase
 @main
 struct MokponApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
-    @StateObject private var viewModel = RootTabViewModel(appContext: AppContext())
-        
+
+    @StateObject private var viewModel = RootTabViewModel()
+
     var body: some Scene {
         WindowGroup {
             RootView(viewModel: viewModel)

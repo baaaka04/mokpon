@@ -30,7 +30,7 @@ struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView(showSingInView: .constant(false), viewModel: SettingsViewModel(appContext: AppContext()))
             .background(Color.bg_main)
-            .environmentObject(RootTabViewModel(appContext: AppContext()))
+            .environmentObject(RootTabViewModel())
             .preferredColorScheme(.dark)
     }
 }

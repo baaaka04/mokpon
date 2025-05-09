@@ -95,7 +95,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView(showSingInView: .constant(false), viewModel: SettingsViewModel(appContext: AppContext()))
-            .environmentObject(RootTabViewModel(appContext: AppContext()))
+            .environmentObject(RootTabViewModel())
             .preferredColorScheme(.dark)
     }
 }

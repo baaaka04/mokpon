@@ -47,6 +47,6 @@ struct RootTabView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        RootTabView(showSignInView: .constant(false), viewModel: RootTabViewModel(appContext: AppContext()))
+        RootTabView(showSignInView: .constant(false), viewModel: RootTabViewModel())
     }
 }

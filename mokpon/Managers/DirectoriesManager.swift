@@ -6,12 +6,6 @@ final class DirectoriesManager {
     var currencies : [Currency]? = nil
     
     init () {
-        Task {
-            self.categories = try await getAllCategories()
-        }
-        Task {
-            self.currencies = try await getAllCurrencies()
-        }
         print("\(Date()): INIT DirectoriesManager")
     }
     
