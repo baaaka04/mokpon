@@ -2,31 +2,23 @@ import SwiftUI
 
 struct SettingsView: View {
     
-    @StateObject private var viewModel : SettingsViewModel
-    @EnvironmentObject private var rootViewModel : RootTabViewModel
-    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
-    @Binding var showSingInView : Bool
-    @State private var showAlert : Bool = false
-        
-    init(showSingInView: Binding<Bool>, viewModel: SettingsViewModel) {
-        _showSingInView = showSingInView
-        _viewModel = StateObject(wrappedValue: viewModel)
-    }
-    
+    @EnvironmentObject private var authViewModel: AuthViewModel
+    @AppStorage("mainCurrency") private var mainCurrency: String = "USD"
+    @State private var showAlert: Bool = false
+
     var body: some View {
         VStack {
             Text("Settings")
                 .font(.title3.width(.expanded))
                 .foregroundColor(.white)
-            ProfileView(user: viewModel.user)
+            ProfileView(user: authViewModel.user)
                 .padding()
             List {
                 Button {
                     Task {
                         do {
-                            try viewModel.signOut()
+                            try authViewModel.signOut()
                             mainCurrency = "USD"
-                            showSingInView = true
                         } catch {
                             print(error)
                         }
@@ -47,8 +39,7 @@ struct SettingsView: View {
                         primaryButton: .destructive(Text("Delete")) {
                             Task {
                                 do {
-                                    try await viewModel.deleteUser()
-                                    showSingInView = true
+                                    try await authViewModel.deleteUser()
                                 } catch {
                                     print(error)
                                 }
@@ -58,7 +49,7 @@ struct SettingsView: View {
                     )
                 }
                 
-                if let currencies = rootViewModel.currencies {
+                if let currencies = authViewModel.directoriesManager.currencies {
                     Section {
                         Picker(selection: $mainCurrency) {
                             ForEach(currencies, id: \.self) { cur in
@@ -74,11 +65,11 @@ struct SettingsView: View {
                     }
                 }
                 
-                if viewModel.authProviders.contains(.email) {
+                if authViewModel.authProviders.contains(.email) {
                     emailSection
                 }
                 
-                if let user = viewModel.user, user.isAnonymous ?? false {
+                if let user = authViewModel.user, user.isAnonymous ?? false {
                     anonymousSection
                 }
             }
@@ -86,20 +77,11 @@ struct SettingsView: View {
         }
         .foregroundColor(.accentColor)
         .task {
-            viewModel.loadAuthProviders()
-            try? await viewModel.loadAuthUser()
+            authViewModel.loadAuthProviders()
+            try? await authViewModel.loadAuthUser()
         }
     }
 }
-
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsView(showSingInView: .constant(false), viewModel: SettingsViewModel(appContext: AppContext()))
-            .environmentObject(RootTabViewModel())
-            .preferredColorScheme(.dark)
-    }
-}
-
 
 extension SettingsView {
     
@@ -108,7 +90,7 @@ extension SettingsView {
             Button {
                 Task {
                     do {
-                        try await viewModel.resetPassword()
+                        try await authViewModel.resetPassword()
                         print("PASSWORD RESET")
                     } catch {
                         print(error)
@@ -129,7 +111,7 @@ extension SettingsView {
             Button ("Link Google account") {
                 Task {
                     do {
-                        try await viewModel.linkGoogleAccount()
+                        try await authViewModel.linkGoogleAccount()
                         print("GGOGLE LINKED")
                     } catch {
                         print(error)
@@ -137,7 +119,7 @@ extension SettingsView {
                 }
             }
             NavigationLink {
-                SignInEmailView(viewModel: viewModel,showSignInView: .constant(false))
+                SignInEmailView()
             } label: {
                 Text("Link Email")
             }
@@ -145,5 +127,21 @@ extension SettingsView {
         } header: {
             Text("Create account")
         }
+    }
+}
+
+struct SettingsView_Previews: PreviewProvider {
+    struct Preview: View {
+        @StateObject private var viewModel = RootTabViewModel()
+
+        var body: some View {
+            SettingsView()
+                .environmentObject(viewModel)
+                .preferredColorScheme(.dark)
+        }
+    }
+
+    static var previews: some View {
+        Preview()
     }
 }

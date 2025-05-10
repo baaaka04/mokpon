@@ -2,16 +2,9 @@ import SwiftUI
 
 struct RootTabView: View {
     
-    @State private var currentRoute: Route = .home
-    @Binding private var showSignInView: Bool
-    
-    @StateObject private var rootTabViewModel: RootTabViewModel
-    
-    init(showSignInView: Binding<Bool>, viewModel: RootTabViewModel) {
-        _showSignInView = showSignInView
-        _rootTabViewModel = StateObject(wrappedValue: viewModel)
-    }
-        
+    @State private var currentRoute: Route = .home    
+    @EnvironmentObject private var rootViewModel: RootTabViewModel
+
     var body: some View {
         NavigationStack {
             GeometryReader{ geo in
@@ -21,14 +14,11 @@ struct RootTabView: View {
                     
                     switch currentRoute {
                     case .home:
-                        Home(viewModel: rootTabViewModel.homeViewModel)
+                        Home(viewModel: rootViewModel.homeViewModel)
                     case .charts:
-                        ChartsView(viewModel: rootTabViewModel.chartsViewModel)
+                        ChartsView(viewModel: rootViewModel.chartsViewModel)
                     case .settings:
-                        SettingsView(
-                            showSingInView: $showSignInView,
-                            viewModel: rootTabViewModel.settingsViewModel
-                        )
+                        SettingsView()
                     }
                     VStack{
                         Spacer()
@@ -40,13 +30,21 @@ struct RootTabView: View {
             .background(Color.bg_main)
             .foregroundColor(.white)
         }
-        .environmentObject(rootTabViewModel)
     }
 }
 
 
 struct ContentView_Previews: PreviewProvider {
+    struct Preview: View {
+        @StateObject private var rootViewModel = RootTabViewModel()
+
+        var body: some View {
+            RootTabView()
+                .environmentObject(rootViewModel)
+        }
+    }
+
     static var previews: some View {
-        RootTabView(showSignInView: .constant(false), viewModel: RootTabViewModel())
+        Preview()
     }
 }

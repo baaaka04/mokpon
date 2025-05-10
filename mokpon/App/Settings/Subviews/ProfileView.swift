@@ -1,12 +1,11 @@
 import SwiftUI
 
 struct ProfileView: View {
-    
-    var user : DBUser? = nil
+    var user: DBUser? = nil
     
     var body: some View {
         VStack {
-            HStack (spacing: 20) {
+            HStack(spacing: 20) {
                 Image(systemName: "person")
                     .resizable()
                     .padding()
@@ -27,10 +26,18 @@ struct ProfileView: View {
 }
 
 struct ProfileView_Previews: PreviewProvider {
+    struct Preview: View {
+        @StateObject private var viewModel = RootTabViewModel()
+
+        var body: some View {
+            ProfileView()
+                .environmentObject(viewModel)
+                .background(Color.bg_main)
+                .preferredColorScheme(.dark)
+        }
+    }
+
     static var previews: some View {
-        SettingsView(showSingInView: .constant(false), viewModel: SettingsViewModel(appContext: AppContext()))
-            .background(Color.bg_main)
-            .environmentObject(RootTabViewModel())
-            .preferredColorScheme(.dark)
+        Preview()
     }
 }

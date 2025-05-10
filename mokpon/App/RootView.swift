@@ -1,36 +1,46 @@
 import SwiftUI
 
 struct RootView: View {
-    
-    @State private var showSignInView: Bool = false
-    @StateObject var viewModel: RootTabViewModel
+
+    @ObservedObject private var rootViewModel: RootTabViewModel
+    @ObservedObject private var authViewModel: AuthViewModel
+
+    init(viewModel: RootTabViewModel) {
+        _rootViewModel = ObservedObject(wrappedValue: viewModel)
+        _authViewModel = ObservedObject(wrappedValue: viewModel.authViewModel)
+    }
 
     var body: some View {
-
         Group {
-            if viewModel.isLoading {
+            if rootViewModel.isLoading {
                 loadingView
             } else {
                 mainView
             }
         }
+        .environmentObject(authViewModel)
         .onAppear {
-            viewModel.loadRequirements()
+            rootViewModel.loadRequirements()
         }
     }
 
     private var mainView: some View {
         ZStack {
-            if !showSignInView {
-                RootTabView(showSignInView: $showSignInView, viewModel: viewModel)
+            if authViewModel.isSignedIn {
+                RootTabView()
+                    .environmentObject(rootViewModel)
             }
         }
         .onAppear {
-            let authUser = try? viewModel.settingsViewModel.authManager.getAuthenticatedUser()
-            self.showSignInView = authUser == nil
+            let authUser = try? authViewModel.getAuthenticatedUser()
+            self.authViewModel.isSignedIn = authUser != nil
         }
-        .fullScreenCover(isPresented: $showSignInView) {
-            AuthenticationView(settingsViewModel: viewModel.settingsViewModel, showSignInView: $showSignInView)
+        /// Can't use $authViewModel.isSignedIn because of the naming
+        .fullScreenCover(isPresented: Binding(
+            get: { !authViewModel.isSignedIn },
+            set: { authViewModel.isSignedIn = !$0 }
+        )) {
+            AuthenticationView()
         }
     }
 
@@ -46,7 +56,15 @@ struct RootView: View {
 }
 
 struct RootView_Previews: PreviewProvider {
+    struct Preview: View {
+        @StateObject private var viewModel = RootTabViewModel()
+
+        var body: some View {
+            RootView(viewModel: viewModel)
+        }
+    }
+
     static var previews: some View {
-        RootView(viewModel: RootTabViewModel())
+        Preview()
     }
 }

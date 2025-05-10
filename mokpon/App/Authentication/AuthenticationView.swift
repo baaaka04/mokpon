@@ -4,38 +4,31 @@ import GoogleSignInSwift
 
 
 struct AuthenticationView: View {
-    
-    @StateObject private var settingsViewModel: SettingsViewModel
-    @Binding var showSignInView : Bool
 
-    init(settingsViewModel: SettingsViewModel, showSignInView: Binding<Bool> ) {
-        _showSignInView = showSignInView
-        _settingsViewModel = StateObject(wrappedValue:settingsViewModel)
-    }
-    
+    @EnvironmentObject private var authViewModel: AuthViewModel
+
     var body: some View {
         NavigationStack {
             ZStack {
                 BackgroundCloud(posX: 230, posY: 740, width: 600, height: 450)
-                
+
                 VStack (spacing: 15) {
-                    
+
                     Image("AuthLogo")
                     Spacer()
                     NavigationLink {
-                        SignInEmailView(viewModel: settingsViewModel, showSignInView: $showSignInView)
+                        SignInEmailView()
                     } label: {
                         Text("Sign In with Email").gradient()
                     }
-                    
+
                     GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .dark, style: .wide, state: .normal)) {
                         Task {
                             do {
-                                try await settingsViewModel.signInGoogle()
-                                showSignInView = false
+                                try await authViewModel.signInGoogle()
                             } catch { print(error) }
                         }
-                        
+
                     }
                     Text("Skip")
                         .padding()
@@ -43,8 +36,7 @@ struct AuthenticationView: View {
                         .onTapGesture {
                             Task {
                                 do {
-                                    try await settingsViewModel.signInAnonymous()
-                                    showSignInView = false
+                                    try await authViewModel.signInAnonymous()
                                 } catch { print(error) }
                             }
                         }
@@ -57,9 +49,16 @@ struct AuthenticationView: View {
 }
 
 struct AuthenticationView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            AuthenticationView(settingsViewModel: SettingsViewModel(appContext: AppContext()), showSignInView: .constant(true))
+    struct Preview: View {
+        @StateObject private var authViewModel = AuthViewModel(appContext: AppContext())
+
+        var body: some View {
+            AuthenticationView()
+                .environmentObject(authViewModel)
         }
+    }
+
+    static var previews: some View {
+        Preview()
     }
 }

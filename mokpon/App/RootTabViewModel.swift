@@ -7,7 +7,7 @@ final class RootTabViewModel: ObservableObject {
     private let appContext = AppContext()
     let homeViewModel: HomeViewModel
     let chartsViewModel: ChartsViewModel
-    let settingsViewModel: SettingsViewModel
+    let authViewModel: AuthViewModel
 
     @Published var categories: [Category]? = nil
     @Published var currencies: [Currency]? = nil
@@ -16,7 +16,7 @@ final class RootTabViewModel: ObservableObject {
     init() {
         self.homeViewModel = HomeViewModel(appContext: appContext)
         self.chartsViewModel = ChartsViewModel(appContext: appContext)
-        self.settingsViewModel = SettingsViewModel(appContext: appContext)
+        self.authViewModel = AuthViewModel(appContext: appContext)
     }
 
     func loadRequirements() {

@@ -2,28 +2,26 @@ import SwiftUI
 
 struct SignInEmailView: View {
     
-    @StateObject var viewModel: SettingsViewModel
-    @Binding var showSignInView: Bool
-        
+    @EnvironmentObject var authViewModel: AuthViewModel
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         ZStack {
             BackgroundCloud(posX: 230, posY: 740, width: 600, height: 450)
             VStack (spacing: 20) {
-                TextField("Email...", text: $viewModel.email)
+                TextField("Email...", text: $authViewModel.email)
                     .padding()
                     .background(.gray.opacity(0.4))
                     .cornerRadius(10)
-                SecureField("Password...", text: $viewModel.password)
+                SecureField("Password...", text: $authViewModel.password)
                     .padding()
                     .background(.gray.opacity(0.4))
                     .cornerRadius(10)
                 Button {
                     Task {
-                        if let user = viewModel.user, user.isAnonymous ?? false {
+                        if let user = authViewModel.user, user.isAnonymous ?? false {
                             do {
-                                try await viewModel.linkEmailAccount()
+                                try await authViewModel.linkEmailAccount()
                                 print("EMAIL LINKED")
                                 presentationMode.wrappedValue.dismiss()
                                 return
@@ -32,15 +30,13 @@ struct SignInEmailView: View {
                             }
                         } else {
                             do {
-                                try await viewModel.signUp()
-                                showSignInView = false
+                                try await authViewModel.signUp()
                                 return
                             } catch {
                                 print(error)
                             }
                             do {
-                                try await viewModel.signIn()
-                                showSignInView = false
+                                try await authViewModel.signIn()
                                 return
                             } catch {
                                 print(error)
@@ -55,7 +51,7 @@ struct SignInEmailView: View {
             .navigationTitle("Signing in with Email")
             .padding()
             .task {
-                try? await viewModel.loadAuthUser()
+                try? await authViewModel.loadAuthUser()
             }
         }
         .background(Color.bg_main.ignoresSafeArea())
@@ -63,7 +59,18 @@ struct SignInEmailView: View {
 }
 
 struct SignInEmailView_Previews: PreviewProvider {
+    struct Preview: View {
+        @StateObject private var authViewModel = AuthViewModel(appContext: AppContext())
+
+        var body: some View {
+            SignInEmailView()
+                .environmentObject(authViewModel)
+        }
+    }
+
     static var previews: some View {
-        SignInEmailView(viewModel: SettingsViewModel(appContext: AppContext()), showSignInView: .constant(true))
+        NavigationStack {
+            Preview()
+        }
     }
 }
