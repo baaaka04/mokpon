@@ -114,6 +114,7 @@ struct Rates: Codable {
     let RUBKGS: Double
     let USDKGS: Double
     let EURKGS: Double
+    let dateUpdated: Date
 }
 struct Rate: Decodable {
     let bid: String
