@@ -5,7 +5,7 @@ import FirebaseFirestore
 @MainActor
 final class HomeViewModel: ObservableObject, TransactionSendable {
 
-    @Published var transactions: [Transaction]?
+    @Published var transactions: [Transaction] = []
     @Published var filteredTransactions: [Transaction] = []
     @Published var currencyRates: Rates? = nil
     @Published var showAllTransactions = false
@@ -51,9 +51,9 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
 
     // GET Request from Firebase DB
     func getTransactions() {
-        Task {
-            if !self.isLoading {
-                self.isLoading = true
+        if !self.isLoading {
+            self.isLoading = true
+            Task {
                 let user = try authManager.getAuthenticatedUser()
                 let (DBTransactions, lastDocument) = await transactionManager.getLastNTransactions(
                     limit: 20,
@@ -69,9 +69,9 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
                         return Transaction(DBTransaction: $0, category: category , currency: currency)
                     } else { return nil } // if couldn't find a category/currency, then skip
                 }
-                if var transactions {
+                if !self.transactions.isEmpty {
                     // append for pagination
-                    self.transactions?.append(contentsOf: newTransactions)
+                    self.transactions.append(contentsOf: newTransactions)
                 } else {
                     self.transactions = newTransactions
                 }
@@ -85,14 +85,17 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     }
 
     func sendNewTransaction(transaction: Transaction) async throws {
-        guard var transactions, !transactions.isEmpty else { return }
         let deviceTransactionId = transaction.id
-        self.transactions?.insert(transaction, at: 0)
+        if !self.transactions.isEmpty {
+            self.transactions.insert(transaction, at: 0)
+        } else {
+            self.transactions = [transaction]
+        }
         let user = try authManager.getAuthenticatedUser()
         do {
             let newTransactionId = try await transactionManager.createNewTransaction(transaction: transaction, userId: user.uid)
-            if let index = self.transactions?.firstIndex(where: { $0.id == deviceTransactionId }) {
-                self.transactions?[index].id = newTransactionId
+            if let index = self.transactions.firstIndex(where: { $0.id == deviceTransactionId }) {
+                self.transactions[index].id = newTransactionId
             }
             try await self.updateUserAmounts(
                 sum: transaction.sum,
@@ -101,8 +104,8 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
             )
             print("\(Date()): Transaction has been sent")
         } catch {
-            if let index = self.transactions?.firstIndex(where: { $0.id == deviceTransactionId }) {
-                self.transactions?.remove(at: index)
+            if let index = self.transactions.firstIndex(where: { $0.id == deviceTransactionId }) {
+                self.transactions.remove(at: index)
             }
             print(error)
         }
@@ -114,7 +117,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     }
 
     func updateTransactions() {
-        self.transactions = nil
+        self.transactions = []
         self.lastDocument = nil
         self.hotkeys = nil
         getTransactions()
@@ -125,7 +128,10 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
         Task {
             do {
                 try await transactionManager.deleteTransaction(transactionId: transaction.id)
-                self.transactions?.remove(object: transaction)
+                self.transactions.remove(object: transaction)
+                if self.transactions.count < 5 { // 5 is the limit for HomeView
+                    await MainActor.run { getTransactions() }
+                }
             } catch {
                 print(error)
             }

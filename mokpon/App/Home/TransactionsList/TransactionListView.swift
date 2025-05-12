@@ -4,7 +4,7 @@ struct TransactionListView: View {
     
     @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
     
-    let transactions: [Transaction]?
+    let transactions: [Transaction]
     let getTransactions: @MainActor() -> ()
     let updateTransactions: @MainActor() -> ()
     let deleteTransaction: @MainActor(_ transaction: Transaction) -> ()
@@ -19,8 +19,8 @@ struct TransactionListView: View {
         let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: arr, by: { (element: Transaction) in
             return Calendar.current.startOfDay(for: element.date)
         })
-        //we need an array to define the last group
-        //enumerate - to be able using index
+        // We need an array to define the last group
+        // Enumerated - to be able using index
         return Array(transactionsByDate.sorted(by: {(a, b) in return b.key < a.key }))
             .enumerated()
             .sorted{$1.element.key < $0.element.key}
@@ -38,7 +38,7 @@ struct TransactionListView: View {
     var body: some View {
         
         VStack {
-            if let transactions, transactions.count != 0 {
+            if !transactions.isEmpty {
 
                 List (transformTransactions(trans: transactions, limit: transactionLimit), id: \.element.key) { (index, transGrouped) in
                     Section {
@@ -49,7 +49,9 @@ struct TransactionListView: View {
                                 .listRowBackground(Rectangle().background(.clear).padding())
                                 .onAppear {
                                     let count = transactions.count
-                                    if count < 5 || item == transactions[count - 5] {
+                        // Download new transactions only if the 5th from the end appeared
+                        // Skip loading if it's HomeView with its limit
+                                    if transactionLimit == nil && count >= 5 && item == transactions[count - 5] {
                                         getTransactions()
                                     }
                                 }
@@ -88,7 +90,7 @@ struct TransactionListView: View {
 
         }
         .task {
-            guard transactions != nil else {
+            guard !transactions.isEmpty else {
                 getTransactions()
                 return
             }
