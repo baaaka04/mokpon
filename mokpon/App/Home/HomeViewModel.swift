@@ -141,7 +141,13 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     func getUserAmounts() {
         Task {
             let user = try authManager.getAuthenticatedUser()
-            self.amounts = try await amountManager.getUserAmounts(userId: user.uid)
+            do {
+                self.amounts = try await amountManager.getUserAmounts(userId: user.uid)
+            } catch {
+                guard let currencies: [Currency] = directoriesManager.currencies else { return }
+                try await amountManager.createAmounts(userId: user.uid, currencies: currencies)
+                self.amounts = try await amountManager.getUserAmounts(userId: user.uid)
+            }
             print("\(Date()): HomeViewModel - Amounts have been updated!")
         }
     }

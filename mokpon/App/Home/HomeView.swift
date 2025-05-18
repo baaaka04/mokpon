@@ -16,10 +16,8 @@ struct Home: View {
                 VStack{
                     DebitCard(amounts: vm.amounts, directoriesManager: vm.directoriesManager)
                         .task {
-                            guard vm.amounts != nil else {
-                                vm.getUserAmounts()
-                                return
-                            }
+                            guard vm.amounts == nil else { return }
+                            vm.getUserAmounts()
                         }
 
                     Currencies(
