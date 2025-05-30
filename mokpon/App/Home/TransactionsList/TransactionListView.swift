@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TransactionListView: View {
     
-    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
+    @AppStorage("mainCurrency") private var mainCurrency: String = "USD"
     
     let transactions: [Transaction]
     let getTransactions: @MainActor() -> ()
@@ -13,7 +13,7 @@ struct TransactionListView: View {
     let convertCurrency: (_ value: Int, _ from: String?, _ to: String?) -> Int?
     let directoriesManager: DirectoriesManager
 
-    func transformTransactions (trans: [Transaction], limit: Int?) -> [EnumeratedSequence<Array<Dictionary<Date, [Transaction]>.Element>>.Element] {
+    func transformTransactions(trans: [Transaction], limit: Int?) -> [EnumeratedSequence<Array<Dictionary<Date, [Transaction]>.Element>>.Element] {
         var arr = trans
         if let limit, trans.count > limit {arr = Array(trans[0..<limit])}
         let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: arr, by: { (element: Transaction) in
@@ -27,11 +27,11 @@ struct TransactionListView: View {
     }
     
     @MainActor
-    func convertCurrency (trans: [Transaction]) -> Int {
+    func convertCurrency(trans: [Transaction]) -> Int {
         trans.reduce(0, {acc, trans in acc + (convertCurrency(trans.sum, trans.currency.name, mainCurrency) ?? 0)})
     }
     
-    func getCurrencyByName (name: String) -> Currency? {
+    func getCurrencyByName(name: String) -> Currency? {
         directoriesManager.getCurrency(byName: name)
     }
     
@@ -71,7 +71,11 @@ struct TransactionListView: View {
                             let dateCheck = Calendar.current
                             Text(dateCheck.isDateInToday(date) ? "Today" : dateCheck.isDateInYesterday(date) ? "Yesterday" : date.formatted(date: .abbreviated, time: .omitted))
                             Spacer()
-                            Text("\(convertCurrency(trans:transGrouped.value))\(getCurrencyByName(name:mainCurrency)?.symbol ?? "")")
+                            if let currencySymbol = getCurrencyByName(name:mainCurrency)?.symbol {
+                                Text("\(convertCurrency(trans:transGrouped.value))\(currencySymbol)")
+                            } else {
+                                Text("---")
+                            }
                         }
                         .font(.headline)
                         .padding(.horizontal)
