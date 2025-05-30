@@ -43,6 +43,7 @@
 		F75F77642AAE588900C658F1 /* SubcategoryInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77632AAE588900C658F1 /* SubcategoryInput.swift */; };
 		F75F90BA29C8A35400FAD621 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F90B929C8A35400FAD621 /* ChartsView.swift */; };
 		F75F90BC29CDE00A00FAD621 /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */; };
+		F762CB4E2DE446C600DB28B3 /* ChartSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F762CB4D2DE446C600DB28B3 /* ChartSkeletonView.swift */; };
 		F7696C782A8A6E61003239E0 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = F7696C772A8A6E61003239E0 /* GoogleSignIn */; };
 		F7696C7A2A8A6E61003239E0 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F7696C792A8A6E61003239E0 /* GoogleSignInSwift */; };
 		F7696C7D2A8A7192003239E0 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7696C7C2A8A7192003239E0 /* Utilities.swift */; };
@@ -133,6 +134,7 @@
 		F75F77632AAE588900C658F1 /* SubcategoryInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubcategoryInput.swift; sourceTree = "<group>"; };
 		F75F90B929C8A35400FAD621 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		F75F90BB29CDE00A00FAD621 /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
+		F762CB4D2DE446C600DB28B3 /* ChartSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartSkeletonView.swift; sourceTree = "<group>"; };
 		F7696C7C2A8A7192003239E0 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		F7696C7E2A8A790D003239E0 /* SignInGoogleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInGoogleHelper.swift; sourceTree = "<group>"; };
 		F7696C892A8FA144003239E0 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
@@ -454,6 +456,7 @@
 			isa = PBXGroup;
 			children = (
 				F75F90B929C8A35400FAD621 /* ChartsView.swift */,
+				F762CB4D2DE446C600DB28B3 /* ChartSkeletonView.swift */,
 				F79018C029E93FC7001C231D /* ChartsViewModel.swift */,
 				F79018C229E9416F001C231D /* ChartsModel.swift */,
 				F7130F9C2A02B1E900972B10 /* ChartsBar */,
@@ -668,6 +671,7 @@
 				F7FE87A62A14987B005EF3D5 /* CalculatorButton.swift in Sources */,
 				F7696C7F2A8A790D003239E0 /* SignInGoogleHelper.swift in Sources */,
 				F708F6A12964520100E6E9FA /* Keyboard.swift in Sources */,
+				F762CB4E2DE446C600DB28B3 /* ChartSkeletonView.swift in Sources */,
 				F729732E29EC44090007D493 /* ChartsHeaderView.swift in Sources */,
 				F708F69329607D0200E6E9FA /* NewTransactionFormView.swift in Sources */,
 				F7696C8A2A8FA144003239E0 /* UserManager.swift in Sources */,

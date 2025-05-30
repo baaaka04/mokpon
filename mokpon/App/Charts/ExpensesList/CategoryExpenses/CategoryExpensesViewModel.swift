@@ -1,15 +1,16 @@
 import Foundation
 
 @MainActor
-final class CategoryViewModel : ObservableObject {
+final class CategoryViewModel: ObservableObject {
     
-    @Published var pieChartData : [ChartData] = []
+    @Published var pieChartData: [ChartData] = []
     private(set) var currencyRatesService: CurrencyManager
     private(set) var chartsManager: ChartsManager
     private(set) var directoriesManager: DirectoriesManager
     private(set) var authManager: AuthenticationManager
+    private var isLoading: Bool = false
 
-    init (appContext: AppContext) {
+    init(appContext: AppContext) {
         self.currencyRatesService = appContext.currencyRatesService
         self.chartsManager = appContext.chartsManager
         self.directoriesManager = appContext.directoriesManager
@@ -18,9 +19,14 @@ final class CategoryViewModel : ObservableObject {
     }
     deinit {print("\(Date()): DEINIT CategoryViewModel")}
     
-    func getCategoryExpenses (currencyName: String, date: ChartsDate, category: Category) {
+    func getCategoryExpenses(currencyName: String, date: ChartsDate, category: Category) {
+        guard !self.isLoading else { return }
+        self.isLoading = true
         Task {
-            guard let currency = directoriesManager.getCurrency(byName: currencyName) else {return}
+            guard let currency = directoriesManager.getCurrency(byName: currencyName) else {
+                self.isLoading = false
+                return
+            }
             let user = try authManager.getAuthenticatedUser()
             let fetchedData = try await chartsManager.getTransactions(userId: user.uid, year: date.currentPeriod.year, month: date.currentPeriod.month, categoryId: category.id)
             let groupedByCategory = Dictionary(grouping: fetchedData) { $0.subcategory }
@@ -43,6 +49,7 @@ final class CategoryViewModel : ObservableObject {
                 )
             }
             self.pieChartData = categoryData.sorted {$0.sum > $1.sum}
+            self.isLoading = false
         }
     }
     

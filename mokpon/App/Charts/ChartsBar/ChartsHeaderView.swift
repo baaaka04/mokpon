@@ -5,8 +5,8 @@ struct ChartsHeaderView: View {
     @Binding var chartDate: ChartsDate
     @Binding var compareData: Comparation
     var selectedChart: ChartType
-    var fetchData: () -> Void
-    
+    var fetchData: () async -> Void
+
     var body: some View {
         HStack {
             VStack (alignment: .leading) {
@@ -28,13 +28,13 @@ struct ChartsHeaderView: View {
                 .pickerStyle(.segmented)
                 .background(.white.opacity(0.5))
                 .cornerRadius(8)
-                .onChange(of: compareData) { _ in fetchData() }
-                
+                .onChange(of: compareData) { _ in getChartsData() }
+
                 HStack {
                     
                     Button {
                         chartDate.decreaseMonth()
-                        fetchData()
+                        getChartsData()
                     } label: {
                         Image(systemName: "arrowtriangle.backward.fill")
                             .frame(maxWidth: .infinity)
@@ -46,7 +46,7 @@ struct ChartsHeaderView: View {
                     
                     Button {
                         chartDate.increaseMonth()
-                        fetchData()
+                        getChartsData()
                     } label: {
                         Image(systemName: "arrowtriangle.forward.fill")
                             .frame(maxWidth: .infinity)
@@ -61,7 +61,12 @@ struct ChartsHeaderView: View {
             .frame(width: 200)
 
         }
-        
+    }
+
+    private func getChartsData() {
+        Task {
+            await fetchData()
+        }
     }
 }
 

@@ -17,18 +17,26 @@ struct ExpensesListView: View {
             }
             .font(.custom("DMSans-Regular", size: 20))
             .padding(20)
-            
-            ForEach(expenses) { chartData in
-                if chartData.sum != 0 {
-                    switch selectedType {
-                    case .bar:
-                        ExpenseView(expenseBarData: chartData)
-                    case .pie:
-                        ExpenseView(
-                            expensePieData: chartData,
-                            selectedPeriod: selectedPeriod,
-                            isClickable: isClickable
-                        )
+
+            if expenses.isEmpty {
+                VStack {
+                    ForEach(0..<4) { _ in
+                        cell
+                    }
+                }
+            } else {
+                ForEach(expenses) { chartData in
+                    if chartData.sum != 0 {
+                        switch selectedType {
+                        case .bar:
+                            ExpenseView(expenseBarData: chartData)
+                        case .pie:
+                            ExpenseView(
+                                expensePieData: chartData,
+                                selectedPeriod: selectedPeriod,
+                                isClickable: isClickable
+                            )
+                        }
                     }
                 }
             }
@@ -39,6 +47,32 @@ struct ExpensesListView: View {
         .background(Color.bg_transactions)
         .foregroundColor(.init(white: 0.87))
         .padding(.top, 20)
+    }
+}
+
+extension ExpensesListView {
+    private var cell: some View {
+        HStack (spacing: 20) {
+            Image(systemName: "questionmark.circle")
+                .resizable()
+                .frame(width: 50, height: 50)
+            Image(systemName: "text.alignleft")
+                .resizable()
+                .frame(maxWidth: 100)
+            Spacer()
+            Text("$ ---")
+                .frame(width: 90, height: 44)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color(white: 0.2), lineWidth: 1)
+                )
+        }
+        .opacity(0.7)
+        .frame(height: 50)
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color.bg_main)
+        .cornerRadius(15)
     }
 }
 
