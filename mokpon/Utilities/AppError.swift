@@ -1,7 +1,7 @@
 import Foundation
 
 enum AppError: Error {
-    case noNeedToExecute, noDataToPresent, currency
+    case noNeedToExecute, noDataToPresent, currency, epmtyFields
 
     var description: String {
         switch self {
@@ -11,6 +11,8 @@ enum AppError: Error {
             "No data to present."
         case .currency:
             "Currency errror."
+        case .epmtyFields:
+            "Please fill out all the fields."
         }
     }
 }

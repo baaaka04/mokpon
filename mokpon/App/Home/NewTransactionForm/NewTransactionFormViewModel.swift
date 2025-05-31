@@ -38,6 +38,12 @@ final class NewTransactionViewModel: ObservableObject {
         self.currentCurrencyInd = newIndex
         return newIndex
     }
+
+    func validate() throws {
+        guard self.sum != 0 && self.category != nil && !self.subCategory.isEmpty else {
+            throw AppError.epmtyFields
+        }
+    }
 }
 
 //Calculator buttons

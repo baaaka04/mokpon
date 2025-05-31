@@ -11,8 +11,9 @@ protocol TransactionSendable {
     func sendNewTransaction(transaction: Transaction) async throws -> Void
 }
 
-struct NewTransactionForm: View {
+struct NewTransactionForm: View, ToastPresentable {
 
+    @State private var toast: ToastType?
     @State private var isExchange: Bool = false // The state for keyboards and number bars
     @State private var selectedNumberPad: NumberPadType = .original
 
@@ -31,94 +32,102 @@ struct NewTransactionForm: View {
     }
 
     var body: some View {
-        VStack {
-            HStack{
-                Button {
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    Label(title: {Text("")}, icon: {Image(systemName: "xmark")})
-                }
-                Spacer()
-                Button {
-                    onPressExchange()
-                } label: {
-                    Label(title: {Text("Exchange")}, icon: {Image(systemName: "arrow.triangle.2.circlepath")})
-                }
-            }
-            .font(.custom("DMSans-Regular", size: 14))
-            .foregroundColor(.yellow)
-            .padding(.horizontal, 10)
+        ZStack(alignment: .top) {
 
-            Type_CategoryView(
-                categories: rootViewModel.categories,
-                selection: $viewModel.category,
-                type: $viewModel.type
-            )
             VStack {
-                Spacer(minLength: 0)
-                //  Sum & Desciption
-                NumberPad(
-                    sum: viewModel.sum,
-                    type: viewModel.type,
-                    currency: viewModel.currency,
-                    switchCurrency: { switchCurrency(isExchange: false) },
-                    onSwipeRight: { viewModel.onPressBackspace(btn: "") },
-                    isExchange: false
+                TransactionFormHeaderView(
+                    onDismiss: { presentationMode.wrappedValue.dismiss() },
+                    onExchange: { onPressExchange() }
                 )
-                .onAppear {
-                    viewModel.currency = rootViewModel.currencies?[currencyIndex]
-                    viewModel.currentCurrencyInd = currencyIndex
-                }
-                .foregroundColor( selectedNumberPad == .original && isExchange ? Color.accentColor : nil )
-                .onTapGesture { selectedNumberPad = .original }
 
-                if isExchange {
+                Type_CategoryView(
+                    categories: rootViewModel.categories,
+                    selection: $viewModel.category,
+                    type: $viewModel.type
+                )
+                VStack {
+                    Spacer(minLength: 0)
+                    //  Sum & Desciption
                     NumberPad(
-                        sum: viewModelExchange.sum,
-                        type: viewModelExchange.type,
-                        currency: viewModelExchange.currency,
-                        switchCurrency: { switchCurrency(isExchange: true) },
-                        onSwipeRight: { viewModelExchange.onPressBackspace(btn: "") },
-                        isExchange: true
+                        sum: viewModel.sum,
+                        type: viewModel.type,
+                        currency: viewModel.currency,
+                        switchCurrency: { switchCurrency(isExchange: false) },
+                        onSwipeRight: { viewModel.onPressBackspace(btn: "") },
+                        isExchange: false
                     )
-                    .foregroundColor( selectedNumberPad == .exchange ? Color.accentColor : nil )
-                    .onTapGesture { selectedNumberPad = .exchange }
-                } else {
-                    SubcategoryInput(subcategory: $viewModel.subCategory)
-                        .frame(height: 30)
-                    SliderPad(
-                        onPressOperationButton: viewModel.calcualte,
-                        onPressHotkey: viewModel.onPressHotkey,
-                        homeVM: homeVM
+                    .onAppear {
+                        viewModel.currency = rootViewModel.currencies?[currencyIndex]
+                        viewModel.currentCurrencyInd = currencyIndex
+                    }
+                    .foregroundColor( selectedNumberPad == .original && isExchange ? Color.accentColor : nil )
+                    .onTapGesture { selectedNumberPad = .original }
+
+                    if isExchange {
+                        NumberPad(
+                            sum: viewModelExchange.sum,
+                            type: viewModelExchange.type,
+                            currency: viewModelExchange.currency,
+                            switchCurrency: { switchCurrency(isExchange: true) },
+                            onSwipeRight: { viewModelExchange.onPressBackspace(btn: "") },
+                            isExchange: true
+                        )
+                        .foregroundColor( selectedNumberPad == .exchange ? Color.accentColor : nil )
+                        .onTapGesture { selectedNumberPad = .exchange }
+                    } else {
+                        SubcategoryInput(subcategory: $viewModel.subCategory)
+                            .frame(height: 30)
+                        SliderPad(
+                            onPressOperationButton: viewModel.calcualte,
+                            onPressHotkey: viewModel.onPressHotkey,
+                            homeVM: homeVM
+                        )
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal)
+
+                switch selectedNumberPad {
+                case .exchange:
+                    Keyboard(
+                        viewModel: viewModelExchange,
+                        onSwipeUp: {
+                            do {
+                                try viewModel.validate()
+                                presentationMode.wrappedValue.dismiss()
+                                try await sendTransaction()
+                            } catch let error as AppError {
+                                showToast(.error(error.description), binding: $toast)
+                            }
+                        }
+                    )
+                case .original:
+                    Keyboard(
+                        viewModel: viewModel,
+                        onSwipeUp: {
+                            do {
+                                try viewModel.validate()
+                                presentationMode.wrappedValue.dismiss()
+                                try await sendTransaction()
+                            } catch let error as AppError {
+                                showToast(.error(error.description), binding: $toast)
+                            }
+                        }
                     )
                 }
-                Spacer(minLength: 0)
             }
-            .padding(.horizontal)
+            .foregroundColor(.white)
+            .background(BackgroundCloud(height: 1500).offset(y:700))
+            .background(BackgroundCloud(posX: -30, posY: -140, width: 700, height: 450))
+            .background(Color.bg_main.ignoresSafeArea())
 
-            switch selectedNumberPad {
-            case .exchange:
-                Keyboard(
-                    viewModel: viewModelExchange,
-                    onSwipeUp: {
-                        presentationMode.wrappedValue.dismiss()
-                        try await sendTransaction()
-                    }
-                )
-            case .original:
-                Keyboard(
-                    viewModel: viewModel,
-                    onSwipeUp: {
-                        presentationMode.wrappedValue.dismiss()
-                        try await sendTransaction()
-                    }
-                )
+            if let toast = toast {
+                ToastBanner(type: toast)
+                    .zIndex(1)
             }
         }
-        .foregroundColor(.white)
-        .background(BackgroundCloud(height: 1500).offset(y:700))
-        .background(BackgroundCloud(posX: -30, posY: -140, width: 700, height: 450))
-        .background(Color.bg_main.ignoresSafeArea())
+        .animation(.easeInOut, value: toast)
+
     }
 }
 
