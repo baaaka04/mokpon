@@ -13,11 +13,13 @@ final class AuthViewModel: ObservableObject {
     let authManager: AuthenticationManager
     let userManager: UserManager
     let directoriesManager: DirectoriesManager
+    let amountManager: AmountManager
 
     init(appContext: AppContext) {
         self.authManager = appContext.authManager
         self.userManager = appContext.userManager
         self.directoriesManager = appContext.directoriesManager
+        self.amountManager = appContext.amountManager
     }
 
     func signUp() async throws {
@@ -25,10 +27,16 @@ final class AuthViewModel: ObservableObject {
             print("No email or password found.")
             return
         }
-        
+
+        // Create user
         let authDataResult = try await authManager.createUser(email: email, password: password)
         let user = DBUser(auth: authDataResult)
+        self.user = user
         try await userManager.createNewUser(user: user)
+
+        // Create user amounts
+        try await createAmounts(userId: user.userId)
+
         self.isSignedIn = true
     }
         
@@ -81,7 +89,14 @@ final class AuthViewModel: ObservableObject {
         try await authManager.deleteUser()
         self.isSignedIn = false
     }
-    
+
+    private func createAmounts(userId: String) async throws {
+        guard let currencies: [Currency] = directoriesManager.currencies else {
+            throw AppError.currency
+        }
+        try await amountManager.createAmounts(userId: userId, currencies: currencies)
+    }
+
 }
 
 //MARK: Signing in
@@ -102,14 +117,24 @@ extension AuthViewModel {
         let tokens = try await helper.signIn()
         let authDataResult = try await authManager.signInWithGoogle(tokens: tokens)
         let user = DBUser(auth: authDataResult, name: tokens.name, imageUrl: tokens.imageURL)
-        try await userManager.createNewUser(user: user)
+        do {
+            self.user = try await userManager.getUser(userId: user.userId)
+        } catch {
+            try await userManager.createNewUser(user: user)
+            try await createAmounts(userId: user.userId)
+        }
         self.isSignedIn = true
     }
     
     func signInAnonymous() async throws {
         let authDataResult = try await authManager.signInAnonymous()
         let user = DBUser(auth: authDataResult)
-        try await userManager.createNewUser(user: user)
+        do {
+            self.user = try await userManager.getUser(userId: user.userId)
+        } catch {
+            try await userManager.createNewUser(user: user)
+            try await createAmounts(userId: user.userId)
+        }
         self.isSignedIn = true
     }
     

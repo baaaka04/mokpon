@@ -144,9 +144,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
             do {
                 self.amounts = try await amountManager.getUserAmounts(userId: user.uid)
             } catch {
-                guard let currencies: [Currency] = directoriesManager.currencies else { return }
-                try await amountManager.createAmounts(userId: user.uid, currencies: currencies)
-                self.amounts = try await amountManager.getUserAmounts(userId: user.uid)
+                print("\(Date()): HomeViewModel - Error while getting user amounts: \(error)")
             }
             print("\(Date()): HomeViewModel - Amounts have been updated!")
         }
