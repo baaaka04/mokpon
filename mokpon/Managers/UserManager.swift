@@ -7,13 +7,17 @@ struct DBUser: Codable {
     let email : String?
     let photoUrl : String?
     let dateCreated : Date?
-    
-    init(auth: AuthDataResultModel) {
+    let name: String?
+    let imageUrl: String?
+
+    init(auth: AuthDataResultModel, name: String? = nil, imageUrl: String? = nil) {
         self.userId = auth.uid
         self.isAnonymous = auth.isAnonymous
         self.email = auth.email
         self.photoUrl = auth.photoUrl
         self.dateCreated = Date()
+        self.name = name
+        self.imageUrl = imageUrl
     }
 }
 

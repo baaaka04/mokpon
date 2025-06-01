@@ -101,7 +101,7 @@ extension AuthViewModel {
         let helper = SignInGoogleHelper()
         let tokens = try await helper.signIn()
         let authDataResult = try await authManager.signInWithGoogle(tokens: tokens)
-        let user = DBUser(auth: authDataResult)
+        let user = DBUser(auth: authDataResult, name: tokens.name, imageUrl: tokens.imageURL)
         try await userManager.createNewUser(user: user)
         self.isSignedIn = true
     }

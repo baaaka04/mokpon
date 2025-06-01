@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct DebitCard: View {
-    
-    var amounts : [Amount]? = nil
+
+    let cardholderName: String?
+    var amounts: [Amount]? = nil
     let directoriesManager: DirectoriesManager
     
     var body: some View {
@@ -31,7 +32,7 @@ struct DebitCard: View {
                 VStack {
                     Spacer()
                     HStack (alignment: .bottom){
-                        Text("ARTEM BEREZIN")
+                        Text(cardholderName?.uppercased() ?? "CARDHOLDER")
                         Spacer()
                         ZStack{
                             Circle()
@@ -68,12 +69,14 @@ struct DebitCard: View {
 
 struct DebitCard_Previews: PreviewProvider {
     static var previews: some View {
-        DebitCard(amounts: [
-            .init(curId: "cur-01", sum: 400),
-            .init(curId: "cur-02", sum: 2400),
-            .init(curId: "cur-03", sum: 132400)
-        ], directoriesManager: DirectoriesManager())
-            .foregroundColor(.white)
-            .font(.custom("DMSans-Regular", size: 18))
+        DebitCard(
+            cardholderName: "John Smith",
+            amounts: [
+                .init(curId: "cur-01", sum: 400),
+                .init(curId: "cur-02", sum: 2400),
+                .init(curId: "cur-03", sum: 132400)
+            ], directoriesManager: DirectoriesManager())
+        .foregroundColor(.white)
+        .font(.custom("DMSans-Regular", size: 18))
     }
 }

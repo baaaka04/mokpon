@@ -3,6 +3,7 @@ import SwiftUI
 struct Home: View {
 
     @StateObject private var vm: HomeViewModel
+    @EnvironmentObject private var authViewModel: AuthViewModel
 
     init(viewModel: HomeViewModel) {
         _vm = StateObject(wrappedValue: viewModel)
@@ -14,11 +15,17 @@ struct Home: View {
 
             CustomRefreshView {
                 VStack{
-                    DebitCard(amounts: vm.amounts, directoriesManager: vm.directoriesManager)
-                        .task {
-                            guard vm.amounts == nil else { return }
-                            vm.getUserAmounts()
-                        }
+                    DebitCard(
+                        cardholderName: authViewModel.user?.name,
+                        amounts: vm.amounts,
+                        directoriesManager: vm.directoriesManager
+                    )
+                    .task {
+                        guard vm.amounts == nil else { return }
+                        vm.getUserAmounts()
+                        guard authViewModel.user == nil else { return }
+                        try? await authViewModel.loadAuthUser()
+                    }
 
                     Currencies(
                         fetchCurrencyRates: vm.fetchCurrencyRates,

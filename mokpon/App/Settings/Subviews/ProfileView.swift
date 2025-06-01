@@ -6,23 +6,37 @@ struct ProfileView: View {
     var body: some View {
         VStack {
             HStack(spacing: 20) {
-                Image(systemName: "person")
-                    .resizable()
-                    .padding()
-                    .frame(maxWidth: 80, maxHeight: 80)
-                    .foregroundColor(.bg_main)
-                    .background(Color.white.opacity(0.7))
-                    .cornerRadius(100)
-                Text("Email: \(user?.email ?? "not found")")
+                Group {
+                    if let imageUrl = user?.imageUrl,
+                       let url = URL(string: imageUrl) {
+                        AsyncImage(url: url)
+                    } else {
+                        Image(systemName: "person")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(.bg_main)
+                    }
+                }
+                .padding()
+                .frame(width: 80, height: 80)
+                .background(Color.white.opacity(0.7))
+                .cornerRadius(100)
+
+                VStack(alignment: .leading) {
+                    Text("Name: \(user?.name ?? "not found")")
+                    Text("Email: \(user?.email ?? "not found")")
+                }
+
                 Spacer()
             }
-            
         }
         .frame(maxWidth: .infinity)
+        .font(.custom("DMSans-Regular", size: 16))
         .padding(10)
         .background(.white.opacity(0.1))
         .cornerRadius(20)
     }
+
 }
 
 struct ProfileView_Previews: PreviewProvider {
