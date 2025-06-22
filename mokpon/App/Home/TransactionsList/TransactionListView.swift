@@ -6,7 +6,6 @@ struct TransactionListView: View {
     
     let transactions: [Transaction]
     let getTransactions: @MainActor() -> ()
-    let updateTransactions: @MainActor() -> ()
     let deleteTransaction: @MainActor(_ transaction: Transaction) -> ()
     let updateUserAmounts: (_ curId: String, _ sumDiff : Int) async throws -> ()
     var transactionLimit: Int? = nil
@@ -58,10 +57,10 @@ struct TransactionListView: View {
                         }
                         .onDelete { indexSet in
                             for i in indexSet.makeIterator() {
-                                let theItem = transGrouped.value[i]
+                                let item = transGrouped.value[i]
                                 Task {
-                                    deleteTransaction(theItem)
-                                    try await updateUserAmounts(theItem.currency.id, -theItem.sum)
+                                    deleteTransaction(item)
+                                    try await updateUserAmounts(item.currency.id, -item.sum)
                                 }
                             }
                         }
@@ -107,7 +106,6 @@ struct TransactionListView_Previews: PreviewProvider {
         TransactionListView(
             transactions: [],
             getTransactions: {},
-            updateTransactions: {},
             deleteTransaction: {a in },
             updateUserAmounts: { curId, sumDiff in  },
             transactionLimit: 6,

@@ -68,7 +68,6 @@ struct Home: View {
                         TransactionListView(
                             transactions: vm.transactions,
                             getTransactions: vm.getTransactions,
-                            updateTransactions: vm.updateTransactions,
                             deleteTransaction: vm.deleteTransaction,
                             updateUserAmounts: vm.updateUserAmount,
                             transactionLimit: 5, //show only last 5 transactions

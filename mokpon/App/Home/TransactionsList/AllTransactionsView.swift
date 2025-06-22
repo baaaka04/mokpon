@@ -31,7 +31,6 @@ struct AllTransactionsView: View {
                     TransactionListView(
                         transactions: transactions,
                         getTransactions: getTransactions,
-                        updateTransactions: updateTransactions,
                         deleteTransaction: deleteTransaction,
                         updateUserAmounts: updateUserAmounts,
                         convertCurrency: convertCurrency,
