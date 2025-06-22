@@ -97,23 +97,15 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
             if let index = self.transactions.firstIndex(where: { $0.id == deviceTransactionId }) {
                 self.transactions[index].id = newTransactionId
             }
-            try await self.updateUserAmounts(
-                sum: transaction.sum,
-                currencyId: transaction.currency.id,
-                type: transaction.type
-            )
+            try await self.updateUserAmount(curId: transaction.currency.id, sumDiff: transaction.sum)
             print("\(Date()): Transaction has been sent")
         } catch {
             if let index = self.transactions.firstIndex(where: { $0.id == deviceTransactionId }) {
                 self.transactions.remove(at: index)
             }
+            try? localAmountUpdate(curId: transaction.currency.id, sumDiff: -transaction.sum)
             print(error)
         }
-    }
-
-    func updateUserAmounts(sum: Int, currencyId: String, type: ExpensesType) async throws {
-        let user = try authManager.getAuthenticatedUser()
-        self.amounts = try await amountManager.updateUserAmounts(userId: user.uid, curId: currencyId, sumDiff: sum)
     }
 
     func updateTransactions() {
@@ -149,12 +141,23 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
             print("\(Date()): HomeViewModel - Amounts have been updated!")
         }
     }
-    
+
     func updateUserAmount(curId: String, sumDiff: Int) async throws {
         let user = try authManager.getAuthenticatedUser()
-        self.amounts = try await amountManager.updateUserAmounts(userId: user.uid, curId:curId, sumDiff: sumDiff)
+        try localAmountUpdate(curId: curId, sumDiff: sumDiff)
+        try await amountManager.updateUserAmounts(userId: user.uid, curId:curId, sumDiff: sumDiff)
     }
-    
+
+    private func localAmountUpdate(curId: String, sumDiff: Int) throws {
+        guard let current = self.amounts else { throw AppError.noDataToPresent }
+        self.amounts = current.map { amount in
+            if amount.curId == curId {
+                return Amount(curId: amount.curId, sum: amount.sum + sumDiff)
+            }
+            return amount
+        }
+    }
+
     func fetchCurrencyRates() -> Void {
         Task {
             let fetchedData = await currencyRatesService.fetchCurrencyRates()
