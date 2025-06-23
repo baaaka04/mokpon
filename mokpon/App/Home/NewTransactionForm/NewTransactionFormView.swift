@@ -17,19 +17,13 @@ struct NewTransactionForm: View, ToastPresentable {
     @State private var isExchange: Bool = false // The state for keyboards and number bars
     @State private var selectedNumberPad: NumberPadType = .original
 
-    @ObservedObject var viewModel: NewTransactionViewModel
-    @ObservedObject var viewModelExchange: NewTransactionViewModel
+    @ObservedObject var viewModel = NewTransactionViewModel()
+    @ObservedObject var viewModelExchange = NewTransactionViewModel()
     var homeVM: any TransactionSendable
     @EnvironmentObject var rootViewModel: RootTabViewModel
     @AppStorage("currencyIndex") private var currencyIndex: Int = 0
 
     @Environment(\.presentationMode) var presentationMode
-
-    init(viewModel: NewTransactionViewModel, viewModelExchange: NewTransactionViewModel, homeVM: any TransactionSendable) {
-        _viewModel = ObservedObject(wrappedValue: viewModel)
-        _viewModelExchange = ObservedObject(wrappedValue: viewModelExchange)
-        self.homeVM = homeVM
-    }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -134,7 +128,7 @@ struct NewTransactionForm: View, ToastPresentable {
 struct NewTransactionForm_Previews: PreviewProvider {
     static var previews: some View {
         let mockHomeVM = MockHomeViewModel()
-        NewTransactionForm(viewModel: NewTransactionViewModel(), viewModelExchange: NewTransactionViewModel(), homeVM: mockHomeVM)
+        NewTransactionForm(homeVM: mockHomeVM)
     }
 }
 
