@@ -53,7 +53,6 @@ struct Home: View {
                                     getTransactions: vm.getTransactions,
                                     updateTransactions: vm.updateTransactions,
                                     deleteTransaction: vm.deleteTransaction,
-                                    updateUserAmounts: vm.updateUserAmount,
                                     showView: $vm.showAllTransactions,
                                     convertCurrency: vm.currencyRatesService.convertCurrency,
                                     directoriesManager: vm.directoriesManager,
@@ -69,7 +68,6 @@ struct Home: View {
                             transactions: vm.transactions,
                             getTransactions: vm.getTransactions,
                             deleteTransaction: vm.deleteTransaction,
-                            updateUserAmounts: vm.updateUserAmount,
                             transactionLimit: 5, //show only last 5 transactions
                             convertCurrency: vm.currencyRatesService.convertCurrency,
                             directoriesManager: vm.directoriesManager

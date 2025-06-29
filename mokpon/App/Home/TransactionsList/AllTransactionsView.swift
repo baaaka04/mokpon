@@ -5,8 +5,7 @@ struct AllTransactionsView: View {
     let transactions: [Transaction]
     let getTransactions: @MainActor() -> ()
     let updateTransactions: @MainActor() -> ()
-    let deleteTransaction: @MainActor(_ transaction: Transaction) -> ()
-    let updateUserAmounts: (_ curId: String, _ sumDiff : Int) async throws -> ()
+    let deleteTransaction: (_ transaction: Transaction) async throws -> ()
     @Binding var showView: Bool
 
     let convertCurrency : (_ value: Int, _ from: String?, _ to: String?) -> Int?
@@ -32,7 +31,6 @@ struct AllTransactionsView: View {
                         transactions: transactions,
                         getTransactions: getTransactions,
                         deleteTransaction: deleteTransaction,
-                        updateUserAmounts: updateUserAmounts,
                         convertCurrency: convertCurrency,
                         directoriesManager: directoriesManager
                     )
@@ -75,7 +73,6 @@ struct AllTransactionsView_Previews: PreviewProvider {
             getTransactions: {},
             updateTransactions: {},
             deleteTransaction: {a in },
-            updateUserAmounts: { curId, sumDiff in  },
             showView: .constant(true),
             convertCurrency: {a, b, c in return 0},
             directoriesManager: DirectoriesManager(),

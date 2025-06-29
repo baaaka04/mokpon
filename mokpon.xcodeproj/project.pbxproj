@@ -36,7 +36,6 @@
 		F754A44A29D704D9004A61C8 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F754A44929D704D9004A61C8 /* PieChartView.swift */; };
 		F75F77502A98E35E00C658F1 /* FireStoreQueryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */; };
 		F75F77522A9A0B9100C658F1 /* TransactionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77512A9A0B9100C658F1 /* TransactionManager.swift */; };
-		F75F77582AA4828500C658F1 /* AmountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77572AA4828500C658F1 /* AmountManager.swift */; };
 		F75F775A2AA61D3900C658F1 /* ChartsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77592AA61D3900C658F1 /* ChartsManager.swift */; };
 		F75F775C2AA721CE00C658F1 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F775B2AA721CE00C658F1 /* DateExtension.swift */; };
 		F75F77622AADF76000C658F1 /* NumberPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F77612AADF76000C658F1 /* NumberPad.swift */; };
@@ -129,7 +128,6 @@
 		F754A44929D704D9004A61C8 /* PieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		F75F774F2A98E35E00C658F1 /* FireStoreQueryExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreQueryExtension.swift; sourceTree = "<group>"; };
 		F75F77512A9A0B9100C658F1 /* TransactionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionManager.swift; sourceTree = "<group>"; };
-		F75F77572AA4828500C658F1 /* AmountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountManager.swift; sourceTree = "<group>"; };
 		F75F77592AA61D3900C658F1 /* ChartsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsManager.swift; sourceTree = "<group>"; };
 		F75F775B2AA721CE00C658F1 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		F75F77612AADF76000C658F1 /* NumberPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPad.swift; sourceTree = "<group>"; };
@@ -391,7 +389,6 @@
 		F7696C872A8FA0CD003239E0 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				F75F77572AA4828500C658F1 /* AmountManager.swift */,
 				F7E42C982A7A9757004E0BDE /* AuthenticationManager.swift */,
 				F75F77592AA61D3900C658F1 /* ChartsManager.swift */,
 				F787804F2A0E6E4300244B91 /* CurrencyManager.swift */,
@@ -641,7 +638,6 @@
 				F7470F722ABAED8600DB4847 /* TextExtension.swift in Sources */,
 				F75F77502A98E35E00C658F1 /* FireStoreQueryExtension.swift in Sources */,
 				F76D0BC52D563901001C6A6B /* AppError.swift in Sources */,
-				F75F77582AA4828500C658F1 /* AmountManager.swift in Sources */,
 				F7AF33FE2ACDD13600EAC94B /* RootTabViewModel.swift in Sources */,
 				F76D0BC32D526958001C6A6B /* MockHomeSection.swift in Sources */,
 				F79971952A2D052A001FEED3 /* StringExtension.swift in Sources */,

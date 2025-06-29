@@ -3,11 +3,10 @@ import SwiftUI
 struct TransactionListView: View {
     
     @AppStorage("mainCurrency") private var mainCurrency: String = "USD"
-    
+
     let transactions: [Transaction]
     let getTransactions: @MainActor() -> ()
-    let deleteTransaction: @MainActor(_ transaction: Transaction) -> ()
-    let updateUserAmounts: (_ curId: String, _ sumDiff : Int) async throws -> ()
+    let deleteTransaction: (_ transaction: Transaction) async throws -> ()
     var transactionLimit: Int? = nil
     let convertCurrency: (_ value: Int, _ from: String?, _ to: String?) -> Int?
     let directoriesManager: DirectoriesManager
@@ -59,8 +58,7 @@ struct TransactionListView: View {
                             for i in indexSet.makeIterator() {
                                 let item = transGrouped.value[i]
                                 Task {
-                                    deleteTransaction(item)
-                                    try await updateUserAmounts(item.currency.id, -item.sum)
+                                    try await deleteTransaction(item)
                                 }
                             }
                         }
@@ -107,7 +105,6 @@ struct TransactionListView_Previews: PreviewProvider {
             transactions: [],
             getTransactions: {},
             deleteTransaction: {a in },
-            updateUserAmounts: { curId, sumDiff in  },
             transactionLimit: 6,
             convertCurrency: {a,b,c in return 0},
             directoriesManager: DirectoriesManager()

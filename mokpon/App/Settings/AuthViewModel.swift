@@ -13,13 +13,13 @@ final class AuthViewModel: ObservableObject {
     let authManager: AuthenticationManager
     let userManager: UserManager
     let directoriesManager: DirectoriesManager
-    let amountManager: AmountManager
+    let transactionManager: TransactionManager
 
     init(appContext: AppContext) {
         self.authManager = appContext.authManager
         self.userManager = appContext.userManager
         self.directoriesManager = appContext.directoriesManager
-        self.amountManager = appContext.amountManager
+        self.transactionManager = appContext.transactionManager
     }
 
     func signUp() async throws {
@@ -94,7 +94,7 @@ final class AuthViewModel: ObservableObject {
         guard let currencies: [Currency] = directoriesManager.currencies else {
             throw AppError.currency
         }
-        try await amountManager.createAmounts(userId: userId, currencies: currencies)
+        try await transactionManager.createAmounts(userId: userId, currencies: currencies)
     }
 
 }

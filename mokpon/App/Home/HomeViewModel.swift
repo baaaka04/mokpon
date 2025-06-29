@@ -25,14 +25,12 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     //Managers
     private(set) var currencyRatesService: CurrencyManager
     private(set) var transactionManager: TransactionManager
-    private(set) var amountManager: AmountManager
     private(set) var authManager: AuthenticationManager
     private(set) var directoriesManager: DirectoriesManager
             
     init(appContext: AppContext) {
         self.currencyRatesService = appContext.currencyRatesService
         self.transactionManager = appContext.transactionManager
-        self.amountManager = appContext.amountManager
         self.authManager = appContext.authManager
         self.directoriesManager = appContext.directoriesManager
         addSubscribers()
@@ -85,26 +83,31 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     }
 
     func sendNewTransaction(transaction: Transaction) async throws {
-        let deviceTransactionId = transaction.id
+        // Update local transactions and amounts
         if !self.transactions.isEmpty {
             self.transactions.insert(transaction, at: 0)
         } else {
             self.transactions = [transaction]
         }
+        try localAmountUpdate(curId: transaction.currency.id, sumDiff: transaction.sum)
+
         let user = try authManager.getAuthenticatedUser()
+        let deviceTransactionId = transaction.id
         do {
-            let newTransactionId = try await transactionManager.createNewTransaction(transaction: transaction, userId: user.uid)
+            // Use atomic operation to create transaction and update amounts together
+            let newTransactionId = try await transactionManager.createTransactionWithAmountUpdate(transaction: transaction, userId: user.uid)
             if let index = self.transactions.firstIndex(where: { $0.id == deviceTransactionId }) {
                 self.transactions[index].id = newTransactionId
             }
-            try await self.updateUserAmount(curId: transaction.currency.id, sumDiff: transaction.sum)
             print("\(Date()): Transaction has been sent")
         } catch {
+            // Rollback both UI changes on failure
             if let index = self.transactions.firstIndex(where: { $0.id == deviceTransactionId }) {
                 self.transactions.remove(at: index)
             }
             try? localAmountUpdate(curId: transaction.currency.id, sumDiff: -transaction.sum)
             print(error)
+            throw error
         }
     }
 
@@ -116,17 +119,23 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
         getHotkeys()
     }
 
-    func deleteTransaction(transaction: Transaction) {
-        Task {
-            do {
-                try await transactionManager.deleteTransaction(transactionId: transaction.id)
-                self.transactions.remove(object: transaction)
-                if self.transactions.count < 5 { // 5 is the limit for HomeView
-                    await MainActor.run { getTransactions() }
-                }
-            } catch {
-                print(error)
+    func deleteTransaction(transaction: Transaction) async throws {
+        // Update locally
+        self.transactions.remove(object: transaction)
+        try localAmountUpdate(curId: transaction.currency.id, sumDiff: -transaction.sum)
+        do {
+            // Update backend
+            let userId = try authManager.getAuthenticatedUser().uid
+            try await transactionManager.deleteTransactionWithAmountUpdate(transaction: transaction, userId: userId)
+            if self.transactions.count < 5 { // 5 is the limit for HomeView
+                getTransactions()
             }
+        } catch {
+            // Restore transactions and amounts
+            self.transactions.insert(transaction, at: 0)
+            try? localAmountUpdate(curId: transaction.currency.id, sumDiff: transaction.sum)
+            print(error)
+            throw error
         }
     }
 
@@ -134,18 +143,12 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
         Task {
             let user = try authManager.getAuthenticatedUser()
             do {
-                self.amounts = try await amountManager.getUserAmounts(userId: user.uid)
+                self.amounts = try await transactionManager.getUserAmounts(userId: user.uid)
             } catch {
                 print("\(Date()): HomeViewModel - Error while getting user amounts: \(error)")
             }
             print("\(Date()): HomeViewModel - Amounts have been updated!")
         }
-    }
-
-    func updateUserAmount(curId: String, sumDiff: Int) async throws {
-        let user = try authManager.getAuthenticatedUser()
-        try localAmountUpdate(curId: curId, sumDiff: sumDiff)
-        try await amountManager.updateUserAmounts(userId: user.uid, curId:curId, sumDiff: sumDiff)
     }
 
     private func localAmountUpdate(curId: String, sumDiff: Int) throws {
