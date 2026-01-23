@@ -11,6 +11,10 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     @Published var showAllTransactions = false
     @Published var amounts: [Amount]? = nil
     @Published var hotkeys: [Hotkey]? = nil
+    // Since the transaction's ID is generated on FireBase,
+    // And we want to avoid unnecessary UI re-render,
+    // We need a place to store IDs and be able to use it whenever needed.
+    private var transactionIdMap: [String: String] = [:] // [tempId: realId]
 
     //Search bar
     @Published var searchtext: String = ""
@@ -96,9 +100,9 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
         do {
             // Use atomic operation to create transaction and update amounts together
             let newTransactionId = try await transactionManager.createTransactionWithAmountUpdate(transaction: transaction, userId: user.uid)
-            if let index = self.transactions.firstIndex(where: { $0.id == deviceTransactionId }) {
-                self.transactions[index].id = newTransactionId
-            }
+            
+            // Get the new transaction ID from FireBase and update the device transaction's ID
+            transactionIdMap[deviceTransactionId] = newTransactionId
             print("\(Date()): Transaction has been sent")
         } catch {
             // Rollback both UI changes on failure
@@ -126,7 +130,9 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
         do {
             // Update backend
             let userId = try authManager.getAuthenticatedUser().uid
-            try await transactionManager.deleteTransactionWithAmountUpdate(transaction: transaction, userId: userId)
+            var trans = transaction
+            trans.id = transactionIdMap[trans.id] ?? trans.id // Find and use the real backend ID
+            try await transactionManager.deleteTransactionWithAmountUpdate(transaction: trans, userId: userId)
             if self.transactions.count < 5 { // 5 is the limit for HomeView
                 getTransactions()
             }
