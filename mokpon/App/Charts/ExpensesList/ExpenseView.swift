@@ -40,7 +40,7 @@ struct ExpenseView : View {
         self.isClickable = false
         self.viewData = ExpenseData(
             title: transaction.subcategory,
-            subtitle: transaction.date.formatted(.dateTime.day().month().year()),
+            subtitle: transaction.date.formatted(.dateTime.day().month().year().hour().minute()),
             number: "\(transaction.sum)\(transaction.currency.symbol)",
             category: transaction.category
         )
@@ -85,8 +85,13 @@ struct ExpenseView : View {
 
 struct ExpenseView_Previews: PreviewProvider {
     static var previews: some View {
-        ExpenseView(expensePieData: ChartData(category: Category(id: "cat-01", name: "food", icon: "cart", type: .expense), currency: Currency(id: "", name: "", symbol: ""), sum: -123, month: 8, year: 2023), selectedPeriod: ChartsDate(month: 9, year: 2023), isClickable: false)
-            .font(.custom("DMSans-Regular", size: 13))
-            .foregroundColor(.white)
+        VStack {
+            ExpenseView(expensePieData: ChartData(category: Category(id: "cat-01", name: "food", icon: "cart", type: .expense), currency: Currency(id: "", name: "", symbol: ""), sum: -123, month: 8, year: 2023), selectedPeriod: ChartsDate(month: 9, year: 2023), isClickable: false)
+            
+            ExpenseView(transaction: Transaction(id: "1", category: Category(id: "cat-01", name: "food", icon: "cart", type: .expense), subcategory: "Test", date: Date(), sum: 100, currency: Currency(id: "", name: "", symbol: ""), type: .exchange))
+        }
+        .font(.custom("DMSans-Regular", size: 13))
+        .foregroundColor(.white)
+        .padding()
     }
 }
