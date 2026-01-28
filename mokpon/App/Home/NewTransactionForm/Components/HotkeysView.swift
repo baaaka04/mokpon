@@ -25,7 +25,6 @@ struct HotkeysView: View {
                             .lineLimit(2)
                     }
                 )
-                .simultaneousGesture(DragGesture()) // allows swiping through in SliderPad's TabView
             }
         }
     }
