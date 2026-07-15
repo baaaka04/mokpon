@@ -8,7 +8,6 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     @Published var transactions: [Transaction] = []
     @Published var filteredTransactions: [Transaction] = []
     @Published var currencyRates: Rates? = nil
-    @Published var showAllTransactions = false
     @Published var amounts: [Amount]? = nil
     @Published var hotkeys: [Hotkey]? = nil
     // Since the transaction's ID is generated on FireBase,
@@ -71,15 +70,37 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
                         return Transaction(DBTransaction: $0, category: category , currency: currency)
                     } else { return nil } // if couldn't find a category/currency, then skip
                 }
-                if !self.transactions.isEmpty {
+                if !self.filteredTransactions.isEmpty {
                     // append for pagination
-                    self.transactions.append(contentsOf: newTransactions)
+                    self.filteredTransactions.append(contentsOf: newTransactions)
                 } else {
-                    self.transactions = newTransactions
+                    self.filteredTransactions = newTransactions
                 }
                 if let categories = directoriesManager.categories {
                     self.searchScopes = categories.sorted(by: { $0.name < $1.name })
                 }
+                print("\(Date()): HomeViewModel - New transactions have been loaded!")
+                self.isLoading = false
+            }
+        }
+    }
+    
+    func getHomeTransactions() {
+        if !self.isLoading {
+            self.isLoading = true
+            Task {
+                let user = try authManager.getAuthenticatedUser()
+                let (DBTransactions, _) = await transactionManager.getLastNTransactions(
+                    limit: 5,
+                    userId: user.uid
+                )
+                let newTransactions = DBTransactions.compactMap {
+                    if let category = directoriesManager.getCategory(byID: $0.categoryId),
+                       let currency = directoriesManager.getCurrency(byID: $0.currencyId) {
+                        return Transaction(DBTransaction: $0, category: category , currency: currency)
+                    } else { return nil } // if couldn't find a category/currency, then skip
+                }
+                self.transactions = newTransactions
                 print("\(Date()): HomeViewModel - New transactions have been loaded!")
                 self.isLoading = false
             }
@@ -116,7 +137,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     }
 
     func updateTransactions() {
-        self.transactions = []
+        self.filteredTransactions = []
         self.lastDocument = nil
         self.hotkeys = nil
         getTransactions()

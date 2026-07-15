@@ -6,8 +6,6 @@ struct AllTransactionsView: View {
     let getTransactions: @MainActor() -> ()
     let updateTransactions: @MainActor() -> ()
     let deleteTransaction: (_ transaction: Transaction) async throws -> ()
-    @Binding var showView: Bool
-
     let convertCurrency : (_ value: Int, _ from: String?, _ to: String?) -> Int?
     let directoriesManager: DirectoriesManager
 
@@ -17,52 +15,39 @@ struct AllTransactionsView: View {
     var searchScopes: [Category]
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             ZStack {
-                Color.bg_main
-                VStack {
-                    CategorySelector(
-                        searchText: $searchText,
-                        selectedScope: $selectedScope,
-                        searchScopes: searchScopes,
-                        updateTransactions: updateTransactions
-                    )
-                    TransactionListView(
-                        transactions: transactions,
-                        getTransactions: getTransactions,
-                        deleteTransaction: deleteTransaction,
-                        convertCurrency: convertCurrency,
-                        directoriesManager: directoriesManager
-                    )
-                    .toolbar {
-                        ToolbarItem (placement: .cancellationAction) {
-                            Button("Close") {
-                                onDissmiss()
-                            }.foregroundColor(Color.accentColor)
-                        }
-                        ToolbarItem (placement: .principal) {
-                            Text("All transactions")
-                        }
-                    }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbarBackground(Color(#colorLiteral(red: 0.1137254902, green: 0.1098039216, blue: 0.2235294118, alpha: 1)), for: .navigationBar)
-                    .toolbarBackground(.visible, for: .navigationBar)
-                    .searchable(text: $searchText, placement: .automatic)
-                }
-                .padding()
-                .foregroundColor(.init(white: 0.87))
-                .background(Color.bg_transactions)
+                TransactionListView(
+                    transactions: transactions,
+                    deleteTransaction: deleteTransaction,
+                    convertCurrency: convertCurrency,
+                    directoriesManager: directoriesManager,
+                    loadMore: getTransactions
+                )
+                .padding(.vertical)
+                .ignoresSafeArea()
+            }
+            .foregroundColor(.init(white: 0.87))
+            .background(Color.bg_transactions)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("All transactions")
+            .searchable(text: $searchText, placement: .automatic)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                CategorySelector(
+                    searchText: $searchText,
+                    selectedScope: $selectedScope,
+                    searchScopes: searchScopes,
+                    updateTransactions: updateTransactions
+                )
             }
         }
-        .onDisappear {
-            onDissmiss()
+        .onAppear {
+            getTransactions()
         }
-    }
-
-    private func onDissmiss() {
-        selectedScope = nil
-        searchText = ""
-        showView = false
+        .onDisappear {
+            selectedScope = nil
+            searchText = ""
+        }
     }
 }
 
@@ -73,7 +58,6 @@ struct AllTransactionsView_Previews: PreviewProvider {
             getTransactions: {},
             updateTransactions: {},
             deleteTransaction: {a in },
-            showView: .constant(true),
             convertCurrency: {a, b, c in return 0},
             directoriesManager: DirectoriesManager(),
             searchText: .constant(""),

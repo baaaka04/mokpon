@@ -29,7 +29,7 @@ final class CurrencyManager {
         // Setting HTTP-Request Headers
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        let token = "d7NngAgtkHJw3qSJrWNP3ShAMgsToReKqOsEGYcueb6dafae"
+        let token = "wTT35LHVGGz20yochYSbo1hDV12wLvRwsz6ql3Una51d5eb2"
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         // Sending GET request
         do {

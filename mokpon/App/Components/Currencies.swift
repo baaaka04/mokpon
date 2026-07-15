@@ -13,7 +13,7 @@ struct Currencies: View {
                 let usdrub = "USD/RUB \(String(format: "%.2f", USDKGS / RUBKGS))  "
                 let rubkgs = "RUB/KGS \(String(format: "%.2f", RUBKGS))  "
                 let eurrub = "EUR/RUB \(String(format: "%.2f", EURKGS / RUBKGS))"
-                Text(usdrub + rubkgs + eurrub)
+                Text(usdrub + rubkgs + eurrub).padding(.horizontal)
             } else {
                 ProgressView("Loading currencies...")
             }

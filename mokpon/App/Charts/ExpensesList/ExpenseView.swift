@@ -68,7 +68,8 @@ struct ExpenseView : View {
         }
         .padding()
         .background(Color.bg_main)
-        .cornerRadius(20)
+        .clipShape(RoundedRectangle(cornerRadius: 15))
+        .padding(.horizontal)
         .popover(isPresented: $showCategoryExpenses) {
             CategoryExpensesView(
                 date: selectedPeriod,

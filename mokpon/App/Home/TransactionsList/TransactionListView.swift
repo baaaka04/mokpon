@@ -5,16 +5,13 @@ struct TransactionListView: View {
     @AppStorage("mainCurrency") private var mainCurrency: String = "USD"
 
     let transactions: [Transaction]
-    let getTransactions: @MainActor() -> ()
     let deleteTransaction: (_ transaction: Transaction) async throws -> ()
-    var transactionLimit: Int? = nil
     let convertCurrency: (_ value: Int, _ from: String?, _ to: String?) -> Int?
     let directoriesManager: DirectoriesManager
+    var loadMore: (() -> Void)?
 
-    func transformTransactions(trans: [Transaction], limit: Int?) -> [EnumeratedSequence<Array<Dictionary<Date, [Transaction]>.Element>>.Element] {
-        var arr = trans
-        if let limit, trans.count > limit {arr = Array(trans[0..<limit])}
-        let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: arr, by: { (element: Transaction) in
+    func transformTransactions(trans: [Transaction]) -> [EnumeratedSequence<Array<Dictionary<Date, [Transaction]>.Element>>.Element] {
+        let transactionsByDate: Dictionary<Date,[Transaction]> = Dictionary(grouping: trans, by: { (element: Transaction) in
             return Calendar.current.startOfDay(for: element.date)
         })
         // We need an array to define the last group
@@ -37,20 +34,16 @@ struct TransactionListView: View {
         
         VStack {
             if !transactions.isEmpty {
-
-                List (transformTransactions(trans: transactions, limit: transactionLimit), id: \.element.key) { (index, transGrouped) in
+                List (transformTransactions(trans: transactions), id: \.element.key) { (index, transGrouped) in
                     Section {
                         ForEach (transGrouped.value, id: \.self.id) { item in
                             ExpenseView(transaction: item)
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(EdgeInsets())
-                                .listRowBackground(Rectangle().background(.clear).padding())
+                                .listRowBackground(Rectangle().fill(.clear))
                                 .onAppear {
-                                    let count = transactions.count
-                        // Download new transactions only if the 5th from the end appeared
-                        // Skip loading if it's HomeView with its limit
-                                    if transactionLimit == nil && count >= 5 && item == transactions[count - 5] {
-                                        getTransactions()
+                                    if item == transactions.last {
+                                        loadMore?()
                                     }
                                 }
                         }
@@ -90,12 +83,6 @@ struct TransactionListView: View {
             }
 
         }
-        .task {
-            guard !transactions.isEmpty else {
-                getTransactions()
-                return
-            }
-        }
     }
 }
 
@@ -103,9 +90,7 @@ struct TransactionListView_Previews: PreviewProvider {
     static var previews: some View {
         TransactionListView(
             transactions: [],
-            getTransactions: {},
             deleteTransaction: {a in },
-            transactionLimit: 6,
             convertCurrency: {a,b,c in return 0},
             directoriesManager: DirectoriesManager()
         )

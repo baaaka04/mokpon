@@ -50,7 +50,7 @@ struct DebitCard: View {
             }
             .padding()
         }
-        .frame(width: 320, height: 230)
+        .frame(height: 230)
         .background(
             LinearGradient(
                 gradient:
@@ -64,6 +64,7 @@ struct DebitCard: View {
             )
         )
         .cornerRadius(15)
+        .padding(.horizontal)
     }
 }
 

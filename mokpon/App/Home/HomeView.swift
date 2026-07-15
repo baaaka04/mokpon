@@ -4,6 +4,7 @@ struct Home: View {
 
     @StateObject private var vm: HomeViewModel
     @EnvironmentObject private var authViewModel: AuthViewModel
+    @State private var showTransactions: Bool = false
 
     init(viewModel: HomeViewModel) {
         _vm = StateObject(wrappedValue: viewModel)
@@ -12,20 +13,13 @@ struct Home: View {
     var body: some View {
 
         ZStack(alignment: .bottomTrailing) {
-
             CustomRefreshView {
-                VStack{
+                VStack(spacing: 10) {
                     DebitCard(
                         cardholderName: authViewModel.user?.name,
                         amounts: vm.amounts,
                         directoriesManager: vm.directoriesManager
                     )
-                    .task {
-                        guard vm.amounts == nil else { return }
-                        vm.getUserAmounts()
-                        guard authViewModel.user == nil else { return }
-                        try? await authViewModel.loadAuthUser()
-                    }
 
                     Currencies(
                         fetchCurrencyRates: vm.fetchCurrencyRates,
@@ -33,8 +27,6 @@ struct Home: View {
                         USDKGS: vm.currencyRates?.USDKGS,
                         EURKGS: vm.currencyRates?.EURKGS
                     )
-                    .padding(.horizontal, 40)
-                    .padding(.vertical, 10)
 
                     VStack {
                         HStack{
@@ -43,44 +35,28 @@ struct Home: View {
                             Spacer()
 
                             Button("Show all") {
-                                vm.showAllTransactions = true
+                                showTransactions = true
                             }
                             .font(.custom("DMSans-Regular", size: 14))
                             .foregroundColor(Color.accentColor)
-                            .popover(isPresented: $vm.showAllTransactions) {
-                                AllTransactionsView (
-                                    transactions: vm.transactions,
-                                    getTransactions: vm.getTransactions,
-                                    updateTransactions: vm.updateTransactions,
-                                    deleteTransaction: vm.deleteTransaction,
-                                    showView: $vm.showAllTransactions,
-                                    convertCurrency: vm.currencyRatesService.convertCurrency,
-                                    directoriesManager: vm.directoriesManager,
-                                    searchText: $vm.searchtext,
-                                    selectedScope: $vm.selectedScope,
-                                    searchScopes: vm.searchScopes
-                                )
-                                .presentationDragIndicator(.visible)
-                            }
                         }
-                        .padding(.top)
+                        .padding(.horizontal)
+
                         TransactionListView(
                             transactions: vm.transactions,
-                            getTransactions: vm.getTransactions,
                             deleteTransaction: vm.deleteTransaction,
-                            transactionLimit: 5, //show only last 5 transactions
                             convertCurrency: vm.currencyRatesService.convertCurrency,
                             directoriesManager: vm.directoriesManager
                         )
                     }
-                    .padding(.horizontal)
+                    .padding(.vertical)
                     .foregroundColor(.init(white: 0.87))
                     .background(Color.bg_transactions)
                     Spacer()
                 }
                 .frame(minHeight: 1100)
             } onRefresh: {
-                vm.updateTransactions()
+                vm.getHomeTransactions()
                 vm.fetchCurrencyRates()
                 vm.getUserAmounts()
             }
@@ -98,6 +74,27 @@ struct Home: View {
         .navigationDestination(for: String.self) { _ in
             NewTransactionForm(homeVM: vm)
                 .navigationBarHidden(true)
+        }
+        .popover(isPresented: $showTransactions) {
+            AllTransactionsView(
+                transactions: vm.filteredTransactions,
+                getTransactions: vm.getTransactions,
+                updateTransactions: vm.updateTransactions,
+                deleteTransaction: vm.deleteTransaction,
+                convertCurrency: vm.currencyRatesService.convertCurrency,
+                directoriesManager: vm.directoriesManager,
+                searchText: $vm.searchtext,
+                selectedScope: $vm.selectedScope,
+                searchScopes: vm.searchScopes
+            )
+            .presentationDragIndicator(.visible)
+        }
+        .task {
+            vm.getHomeTransactions()
+            guard vm.amounts == nil else { return }
+            vm.getUserAmounts()
+            guard authViewModel.user == nil else { return }
+            try? await authViewModel.loadAuthUser()
         }
     }
 }

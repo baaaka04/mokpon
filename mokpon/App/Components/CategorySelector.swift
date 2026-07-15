@@ -18,9 +18,12 @@ struct CategorySelector: View {
                     }
                     .padding(.vertical, 8)
                     .padding(.horizontal, 16)
-                    .background(selectedScope == scope ? Color.accentColor : Color.gray.opacity(0.2))
-                    .foregroundColor(selectedScope == scope ? Color.black : Color.accentColor)
-                    .cornerRadius(8)
+                    .background(selectedScope == scope ? Color.accentColor.opacity(0.3) : nil)
+                    .foregroundColor(selectedScope == scope ? Color.white : Color.accentColor)
+                    .clipShape(Capsule())
+                    .customGlassEffect(in: Capsule())
+                    .padding(.leading, scope == searchScopes.first ? 16 : 0)
+                    .padding(.trailing, scope == searchScopes.last ? 16 : 0)
                     .onTapGesture {
                         selectedScope = selectedScope == scope ? nil : scope
                         updateTransactions()
