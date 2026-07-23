@@ -9,21 +9,22 @@ enum Comparation: String, CaseIterable {
     case yearly = "Year"
 }
 struct ChartData: Identifiable {
-    let id: String
+    let id = UUID()
     let category: CategoryEnum
+    let subcategory: String?
     let currency: Currency
     let sum: Int
     let month: Int
     let year: Int
     let percentDiff: Int?
     
-    init(category: CategoryEnum, currency: Currency, sum: Int, month: Int, year: Int, percentDiff: Int? = nil) {
+    init(category: CategoryEnum, currency: Currency, subcategory: String? = nil, sum: Int, month: Int, year: Int, percentDiff: Int? = nil) {
         self.category = category
         self.currency = currency
+        self.subcategory = subcategory
         self.sum = sum
         self.month = month
         self.year = year
-        self.id = "\(month)-\(year)-\(category.id)"
         self.percentDiff = percentDiff
     }
 }

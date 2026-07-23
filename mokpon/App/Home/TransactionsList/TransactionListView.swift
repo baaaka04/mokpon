@@ -32,15 +32,22 @@ struct TransactionListView: View {
                 List(transformTransactions(trans: transactions), id: \.element.key) { (index, transGrouped) in
                     Section {
                         ForEach (transGrouped.value, id: \.self.id) { item in
-                            ExpenseView(transaction: item)
-                                .listRowSeparator(.hidden)
-                                .listRowInsets(EdgeInsets())
-                                .listRowBackground(Rectangle().fill(.clear))
-                                .onAppear {
-                                    if item == transactions.last {
-                                        loadMore?()
-                                    }
+                            let subtitle = item.date.formatted(.dateTime.day().month().year().hour().minute())
+                            let number = "\(item.sum)\(item.currency.symbol)"
+                            ExpenseView(
+                                title: item.category.name,
+                                subtitle: subtitle,
+                                icon: item.category.icon,
+                                number: number
+                            )
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Rectangle().fill(.clear))
+                            .onAppear {
+                                if item == transactions.last {
+                                    loadMore?()
                                 }
+                            }
                         }
                         .onDelete { indexSet in
                             for i in indexSet.makeIterator() {

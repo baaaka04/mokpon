@@ -5,6 +5,8 @@ struct ExpensesListView: View {
     var selectedType: ChartType
     var selectedPeriod: ChartsDate
     var isClickable: Bool
+    @State private var selectedCategory: CategoryEnum? = nil
+    @EnvironmentObject private var rootViewModel: RootTabViewModel
     
     @AppStorage("mainCurrency") private var mainCurrency: Currency = .usd
             
@@ -29,13 +31,30 @@ struct ExpensesListView: View {
                     if chartData.sum != 0 {
                         switch selectedType {
                         case .bar:
-                            ExpenseView(expenseBarData: chartData)
-                        case .pie:
+                            let percent = chartData.percentDiff ?? 0
+                            let subtitle = "Difference: \(percent > 0 ? "+" : "")\(percent)%"
+                            
+                            let rawNum = chartData.sum
+                            let difference = "\(rawNum >= 0 ? "+" : "")\(rawNum.formatted())\(chartData.currency.symbol)"
+                            
                             ExpenseView(
-                                expensePieData: chartData,
-                                selectedPeriod: selectedPeriod,
-                                isClickable: isClickable
+                                title: chartData.category.name,
+                                subtitle: subtitle,
+                                icon: chartData.category.icon,
+                                number: difference
                             )
+                        case .pie:
+                            let title = isClickable ? chartData.category.name : (chartData.subcategory ?? "")
+                            let subtitle = "\(DateFormatter().monthSymbols[selectedPeriod.currentPeriod.month-1].capitalized) \(selectedPeriod.currentPeriod.year)"
+                            let number = "\(chartData.sum.formatted())\(chartData.currency.symbol)"
+                            ExpenseView(
+                                title: title,
+                                subtitle: subtitle,
+                                icon: chartData.category.icon,
+                                number: number
+                            ) {
+                                if isClickable { selectedCategory = chartData.category }
+                            }
                         }
                     }
                 }
@@ -46,6 +65,14 @@ struct ExpensesListView: View {
         .background(Color.bg_transactions)
         .foregroundColor(.init(white: 0.87))
         .padding(.top, 20)
+        .popover(item: $selectedCategory) { category in
+            CategoryExpensesView(
+                date: selectedPeriod,
+                category: category,
+                categoryViewModel: rootViewModel.chartsViewModel.categoryViewModel
+            )
+            .presentationDragIndicator(.visible)
+        }
     }
 }
 
@@ -72,6 +99,7 @@ extension ExpensesListView {
         .padding()
         .background(Color.bg_main)
         .cornerRadius(15)
+        .padding(.horizontal)
     }
 }
 

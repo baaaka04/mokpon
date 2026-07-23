@@ -35,6 +35,7 @@ final class CategoryViewModel: ObservableObject {
                 return ChartData(
                     category: category,
                     currency: currency,
+                    subcategory: key,
                     sum: -categorySum,
                     month: date.currentPeriod.month,
                     year: date.currentPeriod.year
