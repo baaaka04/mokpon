@@ -2,13 +2,13 @@ import SwiftUI
 
 struct CategoryExpensesView: View {
     
-    @StateObject private var viewModel : CategoryViewModel
+    @StateObject private var viewModel: CategoryViewModel
     @AppStorage("mainCurrency") private var mainCurrency: Currency = .usd
     
     var date: ChartsDate
     var category: CategoryEnum
     
-    init(date : ChartsDate, category : CategoryEnum, categoryViewModel: CategoryViewModel) {
+    init(date: ChartsDate, category: CategoryEnum, categoryViewModel: CategoryViewModel) {
         self.date = date
         self.category = category
         _viewModel = StateObject(wrappedValue: categoryViewModel)

@@ -2,12 +2,12 @@ import SwiftUI
 
 struct ExpenseView : View {
     
-    @State var showCategoryExpenses : Bool = false
+    @State var showCategoryExpenses: Bool = false
     @EnvironmentObject private var rootViewModel: RootTabViewModel
     
-    var viewData : ExpenseData // data to render
-    var selectedPeriod : ChartsDate
-    var isClickable : Bool
+    var viewData: ExpenseData // data to render
+    var selectedPeriod: ChartsDate
+    var isClickable: Bool
         
     //BarChart initializer
     init(expenseBarData: ChartData) {
