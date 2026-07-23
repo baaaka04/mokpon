@@ -3,14 +3,14 @@ import SwiftUI
 
 struct Transaction: Equatable {
     var id: String
-    let category: Category
+    let category: CategoryEnum
     let subcategory: String
     let date: Date
     let sum: Int
     let currency: Currency
     let type: ExpensesType
 
-    init(id: String, category: Category, subcategory: String, date: Date, sum: Int, currency: Currency, type: ExpensesType) {
+    init(id: String, category: CategoryEnum, subcategory: String, date: Date, sum: Int, currency: Currency, type: ExpensesType) {
         self.id = id
         self.category = category
         self.subcategory = subcategory
@@ -20,7 +20,7 @@ struct Transaction: Equatable {
         self.type = type
     }
 
-    init(DBTransaction: DBTransaction, category: Category, currency: Currency) {
+    init(DBTransaction: DBTransaction, category: CategoryEnum, currency: Currency) {
         self.id = DBTransaction.id
         self.subcategory = DBTransaction.subcategory
         self.date = DBTransaction.date
@@ -41,35 +41,6 @@ enum ExpensesType: String, Codable {
     case expense = "опер"
     case invest = "инвест"
     case exchange
-}
-
-struct Category: Codable, Identifiable, Hashable {
-    let id: String
-    let name: String
-    let icon: String
-    let type: ExpensesType
-
-    var color: Color {
-        let index = (Int(id.suffix(2)) ?? 1) - 1
-        return Color.palette[index]
-    }
-    
-    static let all: [Category] = [
-        .init(id: "cat01", name: "питание", icon: "cart", type: .expense),
-        .init(id: "cat02", name: "транспорт", icon: "bus.fill", type: .expense),
-        .init(id: "cat03", name: "здоровье", icon: "cross", type: .expense),
-        .init(id: "cat04", name: "ЖКХ", icon: "house", type: .expense),
-        .init(id: "cat05", name: "одежда", icon: "tshirt", type: .expense),
-        .init(id: "cat06", name: "развлечения", icon: "party.popper", type: .expense),
-        .init(id: "cat07", name: "подарки", icon: "gift", type: .expense),
-        .init(id: "cat08", name: "бытовуха", icon: "stove", type: .expense),
-        .init(id: "cat09", name: "интернет и связь", icon: "wifi", type: .expense),
-        .init(id: "cat10", name: "прочее", icon: "questionmark", type: .expense),
-        .init(id: "cat11", name: "животные", icon: "pawprint.fill", type: .expense),
-        .init(id: "cat12", name: "доход", icon: "dollarsign", type: .income),
-        .init(id: "cat13", name: "прочее", icon: "i.circle", type: .invest),
-        .init(id: "cat14", name: "обмен", icon: "arrow.triangle.2.circlepath", type: .exchange),
-    ]
 }
 
 enum Currency: String, Codable, Hashable, Identifiable, CaseIterable {
@@ -101,6 +72,64 @@ enum Currency: String, Codable, Hashable, Identifiable, CaseIterable {
         return all[(idx + 1) % all.count]
     }
     
+}
+
+enum CategoryEnum: String, CaseIterable, Identifiable {
+    case cat01, cat02, cat03, cat04, cat05, cat06, cat07, cat08, cat09, cat10, cat11, cat12, cat13, cat14
+    
+    var id: String { rawValue }
+    
+    var name: String {
+        switch self {
+        case .cat01: return "питание"
+        case .cat02: return "транспорт"
+        case .cat03: return "здоровье"
+        case .cat04: return "ЖКХ"
+        case .cat05: return "одежда"
+        case .cat06: return "развлечения"
+        case .cat07: return "подарки"
+        case .cat08: return "бытовуха"
+        case .cat09: return "интернет и связь"
+        case .cat10: return "прочее"
+        case .cat11: return "животные"
+        case .cat12: return "доход"
+        case .cat13: return "прочее"
+        case .cat14: return "обмен"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .cat01: return "cart"
+        case .cat02: return "bus.fill"
+        case .cat03: return "cross"
+        case .cat04: return "house"
+        case .cat05: return "tshirt"
+        case .cat06: return "party.popper"
+        case .cat07: return "gift"
+        case .cat08: return "stove"
+        case .cat09: return "wifi"
+        case .cat10: return "questionmark"
+        case .cat11: return "pawprint.fill"
+        case .cat12: return "dollarsign"
+        case .cat13: return "i.circle"
+        case .cat14: return "arrow.triangle.2.circlepath"
+        }
+    }
+    
+    var type: ExpensesType {
+        switch self {
+        case .cat01, .cat02, .cat03, .cat04, .cat05, .cat06, .cat07, .cat08, .cat09, .cat10, .cat11: return .expense
+        case .cat12: return .income
+        case .cat13: return .invest
+        case .cat14: return .exchange
+        }
+    }
+    
+    var color: Color {
+        let index = (Int(rawValue.suffix(2)) ?? 1) - 1
+        return Color.palette[index]
+    }
 }
 
 struct DBTransaction: Decodable {
@@ -141,7 +170,7 @@ struct DBTransaction: Decodable {
 }
 
 struct Hotkey {
-    let category: Category
+    let category: CategoryEnum
     let subcategory: String
 }
 

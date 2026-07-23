@@ -12,13 +12,11 @@ final class AuthViewModel: ObservableObject {
 
     let authManager: AuthenticationManager
     let userManager: UserManager
-    let directoriesManager: DirectoriesManager
     let transactionManager: TransactionManager
 
     init(appContext: AppContext) {
         self.authManager = appContext.authManager
         self.userManager = appContext.userManager
-        self.directoriesManager = appContext.directoriesManager
         self.transactionManager = appContext.transactionManager
     }
 

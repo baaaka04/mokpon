@@ -2,7 +2,7 @@ import SwiftUI
 
 struct HotkeysView: View {
         
-    let onPressHotkey: @MainActor(_ category: Category, _ subcategory: String) -> Void
+    let onPressHotkey: @MainActor(_ category: CategoryEnum, _ subcategory: String) -> Void
     var hotkeys : [Hotkey]
 
     let HTcolumns: [GridItem] = [

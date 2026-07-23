@@ -17,8 +17,8 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
 
     //Search bar
     @Published var searchtext: String = ""
-    @Published var selectedScope: Category?
-    var searchScopes: [Category] = []
+    @Published var selectedScope: CategoryEnum?
+    var searchScopes: [CategoryEnum] = CategoryEnum.allCases
 
     //Pagination
     private var cancellable = Set<AnyCancellable>()
@@ -30,13 +30,11 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     private(set) var currencyRatesService: CurrencyManager
     private(set) var transactionManager: TransactionManager
     private(set) var authManager: AuthenticationManager
-    private(set) var directoriesManager: DirectoriesManager
             
     init(appContext: AppContext) {
         self.currencyRatesService = appContext.currencyRatesService
         self.transactionManager = appContext.transactionManager
         self.authManager = appContext.authManager
-        self.directoriesManager = appContext.directoriesManager
         addSubscribers()
         print("\(Date()): INIT HomeViewModel")
     }
@@ -71,7 +69,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
                 )
                 self.lastDocument = lastDocument
                 let newTransactions = DBTransactions.compactMap {
-                    if let category = directoriesManager.getCategory(byID: $0.categoryId) {
+                    if let category = CategoryEnum(rawValue: $0.categoryId) {
                        return Transaction(DBTransaction: $0, category: category , currency: $0.currencyId)
                     } else { return nil } // if couldn't find a category/currency, then skip
                 }
@@ -81,7 +79,6 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
                 } else {
                     self.filteredTransactions = newTransactions
                 }
-                self.searchScopes = directoriesManager.categories.sorted(by: { $0.name < $1.name })
 
                 print("\(Date()): HomeViewModel - New transactions have been loaded!")
                 self.isLoading = false
@@ -99,7 +96,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
                     userId: user.uid
                 )
                 let newTransactions = DBTransactions.compactMap {
-                    if let category = directoriesManager.getCategory(byID: $0.categoryId) {//,
+                    if let category = CategoryEnum(rawValue: $0.categoryId) {
                         return Transaction(DBTransaction: $0, category: category , currency: $0.currencyId)
                     } else { return nil } // if couldn't find a category/currency, then skip
                 }
@@ -217,7 +214,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
                 self.hotkeys = DBHotkeys
                     .prefix(16)
                     .compactMap {
-                        if let category = directoriesManager.getCategory(byID: $0.categoryId) {
+                        if let category = CategoryEnum(rawValue: $0.categoryId) {
                             return Hotkey(category: category, subcategory: $0.subcategory)
                         } else { return nil } //if couldn't find a category, then skip
                     }

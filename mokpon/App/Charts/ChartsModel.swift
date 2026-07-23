@@ -10,14 +10,14 @@ enum Comparation: String, CaseIterable {
 }
 struct ChartData: Identifiable {
     let id: String
-    let category: Category
+    let category: CategoryEnum
     let currency: Currency
     let sum: Int
     let month: Int
     let year: Int
     let percentDiff: Int?
     
-    init(category: Category, currency: Currency, sum: Int, month: Int, year: Int, percentDiff: Int? = nil) {
+    init(category: CategoryEnum, currency: Currency, sum: Int, month: Int, year: Int, percentDiff: Int? = nil) {
         self.category = category
         self.currency = currency
         self.sum = sum
@@ -88,7 +88,7 @@ struct ExpenseData {
     let title: String
     let subtitle: String
     let number: String
-    let category: Category
+    let category: CategoryEnum
 }
 
 func getChartMonthName(year: Int, month: Int) -> String {

@@ -14,7 +14,6 @@ final class ChartsViewModel: ObservableObject {
     
     private(set) var currencyRatesService: CurrencyManager
     private(set) var chartsManager: ChartsManager
-    private(set) var directoriesManager: DirectoriesManager
     private(set) var authManager: AuthenticationManager
 
     var chartDate: ChartsDate = ChartsDate(
@@ -25,7 +24,6 @@ final class ChartsViewModel: ObservableObject {
     init(appContext: AppContext) {
         self.currencyRatesService = appContext.currencyRatesService
         self.chartsManager = appContext.chartsManager
-        self.directoriesManager = appContext.directoriesManager
         self.authManager = appContext.authManager
         self.categoryViewModel = CategoryViewModel(appContext: appContext)
         print("\(Date()): INIT ChartsViewModel")
@@ -69,7 +67,7 @@ final class ChartsViewModel: ObservableObject {
             let categoryId = String(components[2])
             guard let yearNum = Int(components[0]),
                   let monthNum = Int(components[1]),
-                  let category = directoriesManager.getCategory(byID: categoryId) else { return nil }
+                  let category = CategoryEnum(rawValue: categoryId) else { return nil }
             return ChartData(category: category, currency: currency, sum: sum, month: monthNum, year: yearNum)
         }
 

@@ -174,12 +174,12 @@ extension NewTransactionForm {
             viewModel.subCategory = ""
         } else {
             viewModel.type = .exchange
-            viewModel.category = Category.all.first { $0.type == .exchange }
+            viewModel.category = .cat14
             viewModel.subCategory = "обмен"
         }
         viewModelExchange.currency = viewModel.currency
         viewModelExchange.type = .exchange
-        viewModelExchange.category = Category.all.first { $0.type == .exchange }
+        viewModelExchange.category = .cat14
         viewModelExchange.subCategory = "обмен"
 
         if selectedNumberPad == .exchange {selectedNumberPad = .original}

@@ -5,10 +5,10 @@ struct CategoryExpensesView: View {
     @StateObject private var viewModel : CategoryViewModel
     @AppStorage("mainCurrency") private var mainCurrency: Currency = .usd
     
-    var date : ChartsDate
-    var category : Category
+    var date: ChartsDate
+    var category: CategoryEnum
     
-    init(date : ChartsDate, category : Category, categoryViewModel: CategoryViewModel) {
+    init(date : ChartsDate, category : CategoryEnum, categoryViewModel: CategoryViewModel) {
         self.date = date
         self.category = category
         _viewModel = StateObject(wrappedValue: categoryViewModel)
@@ -47,7 +47,7 @@ struct CategoryExpensesView: View {
 
 struct SubcategoryView_Previews: PreviewProvider {
     static var previews: some View {
-        CategoryExpensesView(date: ChartsDate(month: 10, year: 2023), category: Category(id: "cat01", name: "питание", icon: "cart", type: .expense), categoryViewModel: CategoryViewModel(appContext: AppContext()))
+        CategoryExpensesView(date: ChartsDate(month: 10, year: 2023), category: .cat01, categoryViewModel: CategoryViewModel(appContext: AppContext()))
         .foregroundColor(.white)
     }
 }

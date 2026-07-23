@@ -18,7 +18,6 @@ struct Home: View {
                     DebitCard(
                         cardholderName: authViewModel.user?.name,
                         amounts: vm.amounts,
-                        directoriesManager: vm.directoriesManager
                     )
 
                     Currencies(
@@ -46,7 +45,6 @@ struct Home: View {
                             transactions: vm.transactions,
                             deleteTransaction: vm.deleteTransaction,
                             convertCurrency: vm.currencyRatesService.convertCurrency,
-                            directoriesManager: vm.directoriesManager
                         )
                     }
                     .padding(.vertical)
@@ -77,7 +75,6 @@ struct Home: View {
                 getTransactions: vm.getTransactions,
                 deleteTransaction: vm.deleteTransaction,
                 convertCurrency: vm.currencyRatesService.convertCurrency,
-                directoriesManager: vm.directoriesManager,
                 searchText: $vm.searchtext,
                 selectedScope: $vm.selectedScope,
                 searchScopes: vm.searchScopes

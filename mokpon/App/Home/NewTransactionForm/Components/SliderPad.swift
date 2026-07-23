@@ -4,7 +4,7 @@ struct SliderPad: View {
     
     @State private var selectedTabIndex = 1
     let onPressOperationButton: @MainActor(_ key: String) -> Void
-    let onPressHotkey: @MainActor(_ category: Category, _ subcategory: String) -> Void
+    let onPressHotkey: @MainActor(_ category: CategoryEnum, _ subcategory: String) -> Void
     var homeVM: TransactionSendable
     
     var body: some View {

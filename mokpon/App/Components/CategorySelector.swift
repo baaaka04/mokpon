@@ -2,8 +2,8 @@ import SwiftUI
 
 
 struct CategorySelector: View {
-    @Binding var selectedScope: Category?
-    var searchScopes: [Category]
+    @Binding var selectedScope: CategoryEnum?
+    var searchScopes: [CategoryEnum]
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {

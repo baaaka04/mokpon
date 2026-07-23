@@ -87,9 +87,9 @@ struct ExpenseView : View {
 struct ExpenseView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            ExpenseView(expensePieData: ChartData(category: Category(id: "cat-01", name: "food", icon: "cart", type: .expense), currency: .rub, sum: -123, month: 8, year: 2023), selectedPeriod: ChartsDate(month: 9, year: 2023), isClickable: false)
+            ExpenseView(expensePieData: ChartData(category: .cat01, currency: .rub, sum: -123, month: 8, year: 2023), selectedPeriod: ChartsDate(month: 9, year: 2023), isClickable: false)
             
-            ExpenseView(transaction: Transaction(id: "1", category: Category(id: "cat-01", name: "food", icon: "cart", type: .expense), subcategory: "Test", date: Date(), sum: 100, currency: .usd, type: .exchange))
+            ExpenseView(transaction: Transaction(id: "1", category: .cat01, subcategory: "Test", date: Date(), sum: 100, currency: .usd, type: .exchange))
         }
         .font(.custom("DMSans-Regular", size: 13))
         .foregroundColor(.white)

@@ -3,8 +3,8 @@ import SwiftUI
 
 struct Type_CategoryView: View {
     
-    private let categories: [Category] = Category.all
-    @Binding var selection: Category?
+    private let categories: [CategoryEnum] = CategoryEnum.allCases
+    @Binding var selection: CategoryEnum?
     @Binding var type: ExpensesType
     
     let columns: [GridItem] = [
@@ -86,7 +86,7 @@ struct Type_CategoryView: View {
 struct Type_CategoryView_Previews: PreviewProvider {
     static var previews: some View {
         Type_CategoryView(
-            selection: .constant(Category(id: "cat-01", name: "питание", icon: "cart", type: .expense)),
+            selection: .constant(.cat01),
             type: .constant(.expense)
         )
     }

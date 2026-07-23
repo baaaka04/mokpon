@@ -6,20 +6,18 @@ final class CategoryViewModel: ObservableObject {
     @Published var pieChartData: [ChartData] = []
     private(set) var currencyRatesService: CurrencyManager
     private(set) var chartsManager: ChartsManager
-    private(set) var directoriesManager: DirectoriesManager
     private(set) var authManager: AuthenticationManager
     private var isLoading: Bool = false
 
     init(appContext: AppContext) {
         self.currencyRatesService = appContext.currencyRatesService
         self.chartsManager = appContext.chartsManager
-        self.directoriesManager = appContext.directoriesManager
         self.authManager = appContext.authManager
         print("\(Date()): INIT CategoryViewModel")
     }
     deinit {print("\(Date()): DEINIT CategoryViewModel")}
     
-    func getCategoryExpenses(currency: Currency, date: ChartsDate, category: Category) {
+    func getCategoryExpenses(currency: Currency, date: ChartsDate, category: CategoryEnum) {
         guard !self.isLoading else { return }
         self.isLoading = true
         Task {
@@ -35,8 +33,7 @@ final class CategoryViewModel: ObservableObject {
                 let categorySum = converted.reduce(0) { $0 + $1.sum }
                 
                 return ChartData(
-                    category:
-                        Category(id: UUID().description, name: key, icon: category.icon, type: category.type),
+                    category: category,
                     currency: currency,
                     sum: -categorySum,
                     month: date.currentPeriod.month,

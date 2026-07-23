@@ -4,7 +4,6 @@ struct DebitCard: View {
 
     let cardholderName: String?
     var amounts: [Amount]? = nil
-    let directoriesManager: DirectoriesManager
     
     var body: some View {
         ZStack {
@@ -21,7 +20,7 @@ struct DebitCard: View {
                             .font(.title)
                             .padding(.leading, 30)
                         }
-                    } else { ProgressView() }
+                    } else { ProgressView().frame(maxWidth: .infinity) }
                 }
                 
                 VStack {
@@ -71,7 +70,7 @@ struct DebitCard_Previews: PreviewProvider {
                 .init(curId: .kgs, sum: 400),
                 .init(curId: .rub, sum: 2400),
                 .init(curId: .usd, sum: 132400)
-            ], directoriesManager: DirectoriesManager())
+            ])
         .foregroundColor(.white)
         .font(.custom("DMSans-Regular", size: 18))
     }

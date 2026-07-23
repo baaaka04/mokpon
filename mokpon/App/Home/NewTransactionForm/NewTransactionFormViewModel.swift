@@ -7,7 +7,7 @@ final class NewTransactionViewModel: ObservableObject {
 
     @Published var sum: Int = 0
     @Published var subCategory = ""
-    @Published var category: Category? = nil
+    @Published var category: CategoryEnum? = nil
     @Published var type: ExpensesType = .expense
     @Published var currency: Currency = .rub
 
@@ -19,7 +19,7 @@ final class NewTransactionViewModel: ObservableObject {
     init() {print("\(Date()): INIT NewTransactionViewModel")}
     deinit {print("\(Date()): DEINIT NewTransactionViewModel")}
 
-    func onPressHotkey(category: Category, subcategory: String) -> Void {
+    func onPressHotkey(category: CategoryEnum, subcategory: String) -> Void {
         self.category = category
         self.subCategory = subcategory
         self.type = category.type

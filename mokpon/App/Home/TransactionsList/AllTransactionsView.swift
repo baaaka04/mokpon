@@ -6,12 +6,11 @@ struct AllTransactionsView: View {
     let getTransactions: @MainActor() -> ()
     let deleteTransaction: (_ transaction: Transaction) async throws -> ()
     let convertCurrency : (_ value: Int, _ from: String?, _ to: String?) -> Int?
-    let directoriesManager: DirectoriesManager
 
     // Searching
     @Binding var searchText: String
-    @Binding var selectedScope: Category?
-    var searchScopes: [Category]
+    @Binding var selectedScope: CategoryEnum?
+    var searchScopes: [CategoryEnum]
 
     var body: some View {
         NavigationView {
@@ -20,7 +19,6 @@ struct AllTransactionsView: View {
                     transactions: transactions,
                     deleteTransaction: deleteTransaction,
                     convertCurrency: convertCurrency,
-                    directoriesManager: directoriesManager,
                     loadMore: getTransactions
                 )
                 .padding(.vertical)
@@ -55,9 +53,8 @@ struct AllTransactionsView_Previews: PreviewProvider {
             getTransactions: {},
             deleteTransaction: {a in },
             convertCurrency: {a, b, c in return 0},
-            directoriesManager: DirectoriesManager(),
             searchText: .constant(""),
-            selectedScope: .constant(Category(id: "", name: "", icon: "", type: .expense)),
+            selectedScope: .constant(.cat01),
             searchScopes: []
         )
     }

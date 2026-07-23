@@ -4,7 +4,7 @@ import SwiftUI
 struct BarChartView: View {
 
     private var chartData: [ChartData]
-    @State private var excludedCategories: Set<Category> = []
+    @State private var excludedCategories: Set<CategoryEnum> = []
 
     private var maxHeight: CGFloat {
         let filteredChartData = chartData.filter { !excludedCategories.contains($0.category) }
@@ -30,7 +30,7 @@ struct BarChartView: View {
         Set(chartData.map {$0.currency.symbol}).first ?? ""
     }
 
-    private var categories: [Category] {
+    private var categories: [CategoryEnum] {
         Array(Set(chartData.map { $0.category })).sorted{ $0.id < $1.id }
     }
 

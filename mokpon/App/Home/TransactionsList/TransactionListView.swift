@@ -7,7 +7,6 @@ struct TransactionListView: View {
     let transactions: [Transaction]
     let deleteTransaction: (_ transaction: Transaction) async throws -> ()
     let convertCurrency: (_ value: Int, _ from: String?, _ to: String?) -> Int?
-    let directoriesManager: DirectoriesManager
     var loadMore: (() -> Void)?
 
     func transformTransactions(trans: [Transaction]) -> [EnumeratedSequence<Array<Dictionary<Date, [Transaction]>.Element>>.Element] {
@@ -85,7 +84,6 @@ struct TransactionListView_Previews: PreviewProvider {
             transactions: [],
             deleteTransaction: {a in },
             convertCurrency: {a,b,c in return 0},
-            directoriesManager: DirectoriesManager()
         )
     }
 }
