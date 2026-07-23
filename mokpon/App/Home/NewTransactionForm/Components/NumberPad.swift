@@ -2,19 +2,19 @@ import SwiftUI
 
 struct NumberPad: View {
     
-    var sum : Int
-    var type : ExpensesType
-    var currency : Currency?
-    var switchCurrency : () -> Void
-    var onSwipeRight : () -> Void
-    var isExchange : Bool
+    var sum: Int
+    var type: ExpensesType
+    var currency: Currency
+    var switchCurrency: () -> Void
+    var onSwipeRight: () -> Void
+    var isExchange: Bool
     
     var body: some View {
         HStack {
             Text(self.type == .income || self.isExchange ? "" : "-")
             Spacer()
             HStack {
-                Text(currency?.symbol ?? "n/a")
+                Text(currency.symbol)
                     .onTapGesture {
                         switchCurrency()
                     }
@@ -39,6 +39,6 @@ struct NumberPad: View {
 
 struct NumberPad_Previews: PreviewProvider {
     static var previews: some View {
-        NumberPad(sum: 0, type: .expense, currency: Currency(id: "cur-01", name: "USD", symbol: "$"), switchCurrency: {}, onSwipeRight: {}, isExchange: true)
+        NumberPad(sum: 0, type: .expense, currency: .usd, switchCurrency: {}, onSwipeRight: {}, isExchange: true)
     }
 }

@@ -35,16 +35,14 @@ final class ChartsViewModel: ObservableObject {
     private func convertTransactionsCurrency(transactions: [DBTransaction], currency: Currency) -> [DBTransaction] {
         let transInMainCurrency = transactions.compactMap { trs -> DBTransaction? in
             var newTrs = trs
-            guard let oldCurrency = directoriesManager.getCurrency(byID: trs.currencyId) else {return nil}
-            newTrs.sum = currencyRatesService.convertCurrency(value: trs.sum, from: oldCurrency.name, to: currency.name) ?? 0
-            newTrs.currencyId = currency.id
+            newTrs.sum = currencyRatesService.convertCurrency(value: trs.sum, from: trs.currencyId.name, to: currency.name) ?? 0
+            newTrs.currencyId = currency
             return newTrs
         }
         return transInMainCurrency
     }
     
-    private func getMonthData(currencyName: String, year: Int, month: Int, forMonths: Int = 1) async throws -> [ChartData] {
-        guard let currency = directoriesManager.getCurrency(byName: currencyName) else { throw AppError.currency }
+    private func getMonthData(currency: Currency, year: Int, month: Int, forMonths: Int = 1) async throws -> [ChartData] {
         let user = try authManager.getAuthenticatedUser()
         let transactions: [DBTransaction] = try await chartsManager.getTransactions(userId: user.uid, year: year, month: month, forMonths: forMonths)
         //convert expenses into main currency
@@ -78,28 +76,28 @@ final class ChartsViewModel: ObservableObject {
         return result
     }
 
-    func getChartsData(currencyName: String) async throws {
+    func getChartsData(currency: Currency) async throws {
         guard !self.isLoading else { return }
         self.isLoading = true
         // PieChart
-        self.pieChartData = try await getMonthData(currencyName: currencyName, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month)
+        self.pieChartData = try await getMonthData(currency: currency, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month)
         guard !self.pieChartData.isEmpty else {
             self.isLoading = false
             throw AppError.noDataToPresent
         }
         // BarChart
         var barChartData: [ChartData] = []
-        let currentMonthData = try await getMonthData(currencyName: currencyName, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month)
+        let currentMonthData = try await getMonthData(currency: currency, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month)
 
         switch compareData {
         case .monthly:
-            let previousMonthData = try await getMonthData(currencyName: currencyName, year: chartDate.previousMonthPeriod.year, month: chartDate.previousMonthPeriod.month)
+            let previousMonthData = try await getMonthData(currency: currency, year: chartDate.previousMonthPeriod.year, month: chartDate.previousMonthPeriod.month)
             barChartData = previousMonthData + currentMonthData
         case .yearly:
-            let previousYearData = try await getMonthData(currencyName: currencyName, year: chartDate.previousYearPeriod.year, month: chartDate.currentPeriod.month)
+            let previousYearData = try await getMonthData(currency: currency, year: chartDate.previousYearPeriod.year, month: chartDate.currentPeriod.month)
             barChartData = previousYearData + currentMonthData
         case .fiveMonth:
-            barChartData = try await getMonthData(currencyName: currencyName, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month, forMonths: 5)
+            barChartData = try await getMonthData(currency: currency, year: chartDate.currentPeriod.year, month: chartDate.currentPeriod.month, forMonths: 5)
         }
         self.barChartData = barChartData
         self.isLoading = false

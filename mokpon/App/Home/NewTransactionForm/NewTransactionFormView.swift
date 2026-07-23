@@ -6,7 +6,7 @@ enum NumberPadType {
 
 @MainActor
 protocol TransactionSendable {
-    var hotkeys: [Hotkey]? { get }
+    var hotkeys: [Hotkey] { get }
 
     func sendNewTransaction(transaction: Transaction) async throws -> Void
 }
@@ -21,7 +21,7 @@ struct NewTransactionForm: View, ToastPresentable {
     @ObservedObject var viewModelExchange = NewTransactionViewModel()
     var homeVM: any TransactionSendable
     @EnvironmentObject var rootViewModel: RootTabViewModel
-    @AppStorage("currencyIndex") private var currencyIndex: Int = 0
+    @AppStorage("newTransCurrency") private var newTransCurrency: Currency = .usd
 
     @Environment(\.presentationMode) var presentationMode
 
@@ -35,7 +35,6 @@ struct NewTransactionForm: View, ToastPresentable {
                 )
 
                 Type_CategoryView(
-                    categories: rootViewModel.categories,
                     selection: $viewModel.category,
                     type: $viewModel.type
                 )
@@ -46,14 +45,13 @@ struct NewTransactionForm: View, ToastPresentable {
                         sum: viewModel.sum,
                         type: viewModel.type,
                         currency: viewModel.currency,
-                        switchCurrency: { switchCurrency(isExchange: false) },
+                        switchCurrency: {
+                            newTransCurrency = viewModel.currency.next
+                            viewModel.currency = viewModel.currency.next
+                        },
                         onSwipeRight: { viewModel.onPressBackspace(btn: "") },
                         isExchange: false
                     )
-                    .onAppear {
-                        viewModel.currency = rootViewModel.currencies?[currencyIndex]
-                        viewModel.currentCurrencyInd = currencyIndex
-                    }
                     .foregroundColor( selectedNumberPad == .original && isExchange ? Color.accentColor : nil )
                     .onTapGesture { selectedNumberPad = .original }
 
@@ -62,7 +60,7 @@ struct NewTransactionForm: View, ToastPresentable {
                             sum: viewModelExchange.sum,
                             type: viewModelExchange.type,
                             currency: viewModelExchange.currency,
-                            switchCurrency: { switchCurrency(isExchange: true) },
+                            switchCurrency: { viewModelExchange.currency = viewModelExchange.currency.next },
                             onSwipeRight: { viewModelExchange.onPressBackspace(btn: "") },
                             isExchange: true
                         )
@@ -121,6 +119,10 @@ struct NewTransactionForm: View, ToastPresentable {
             }
         }
         .animation(.easeInOut, value: toast)
+        .onAppear {
+            viewModel.currency = newTransCurrency
+            viewModelExchange.currency = newTransCurrency
+        }
 
     }
 }
@@ -135,40 +137,32 @@ struct NewTransactionForm_Previews: PreviewProvider {
 extension NewTransactionForm {
 
     private func sendTransaction() async throws -> Void {
-        if let category = viewModel.category, let currency = viewModel.currency {
+        if let category = viewModel.category {
             let transaction = Transaction(
                 id: UUID().uuidString,
                 category: category,
                 subcategory: viewModel.subCategory,
                 date: Date(),
                 sum: viewModel.type == .income ? viewModel.sum : -viewModel.sum,
-                currency: currency,
+                currency: viewModel.currency,
                 type: viewModel.type
             )
             try await homeVM.sendNewTransaction(transaction: transaction)
         }
         // Send the second transaction only if the exchange mode is ON
         if isExchange {
-            if let category = viewModelExchange.category, let currency = viewModelExchange.currency {
+            if let category = viewModelExchange.category {
                 let transaction = Transaction(
                     id: UUID().uuidString,
                     category: category,
                     subcategory: viewModelExchange.subCategory,
                     date: Date(),
                     sum: viewModelExchange.sum,
-                    currency: currency,
+                    currency: viewModelExchange.currency,
                     type: viewModelExchange.type
                 )
                 try await homeVM.sendNewTransaction(transaction: transaction)
             }
-        }
-    }
-
-    private func switchCurrency(isExchange: Bool) {
-        if isExchange {
-            viewModelExchange.switchCurrency(currencies: rootViewModel.currencies)
-        } else {
-            currencyIndex = viewModel.switchCurrency(currencies: rootViewModel.currencies)
         }
     }
 
@@ -180,13 +174,12 @@ extension NewTransactionForm {
             viewModel.subCategory = ""
         } else {
             viewModel.type = .exchange
-            viewModel.category = rootViewModel.categories?.first { $0.type == .exchange }
+            viewModel.category = Category.all.first { $0.type == .exchange }
             viewModel.subCategory = "обмен"
         }
         viewModelExchange.currency = viewModel.currency
-        viewModelExchange.currentCurrencyInd = currencyIndex
         viewModelExchange.type = .exchange
-        viewModelExchange.category = rootViewModel.categories?.first { $0.type == .exchange }
+        viewModelExchange.category = Category.all.first { $0.type == .exchange }
         viewModelExchange.subCategory = "обмен"
 
         if selectedNumberPad == .exchange {selectedNumberPad = .original}

@@ -2,11 +2,8 @@ import SwiftUI
 
 
 struct CategorySelector: View {
-    @Binding var searchText: String
     @Binding var selectedScope: Category?
     var searchScopes: [Category]
-
-    let updateTransactions: @MainActor() -> ()
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -26,7 +23,6 @@ struct CategorySelector: View {
                     .padding(.trailing, scope == searchScopes.last ? 16 : 0)
                     .onTapGesture {
                         selectedScope = selectedScope == scope ? nil : scope
-                        updateTransactions()
                     }
                 }
             }

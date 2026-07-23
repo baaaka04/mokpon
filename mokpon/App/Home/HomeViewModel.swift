@@ -9,7 +9,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     @Published var filteredTransactions: [Transaction] = []
     @Published var currencyRates: Rates? = nil
     @Published var amounts: [Amount]? = nil
-    @Published var hotkeys: [Hotkey]? = nil
+    @Published var hotkeys: [Hotkey] = []
     // Since the transaction's ID is generated on FireBase,
     // And we want to avoid unnecessary UI re-render,
     // We need a place to store IDs and be able to use it whenever needed.
@@ -23,6 +23,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     //Pagination
     private var cancellable = Set<AnyCancellable>()
     var isLoading: Bool = false
+    private var isHotkeyLoading: Bool = false
     private var lastDocument: DocumentSnapshot? = nil
 
     //Managers
@@ -48,6 +49,11 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
                 self?.updateTransactions()
             }
             .store(in: &cancellable)
+        $selectedScope
+            .sink { [weak self] _ in
+                self?.updateTransactions()
+            }
+            .store(in: &cancellable)
     }
 
     // GET Request from Firebase DB
@@ -65,9 +71,8 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
                 )
                 self.lastDocument = lastDocument
                 let newTransactions = DBTransactions.compactMap {
-                    if let category = directoriesManager.getCategory(byID: $0.categoryId),
-                       let currency = directoriesManager.getCurrency(byID: $0.currencyId) {
-                        return Transaction(DBTransaction: $0, category: category , currency: currency)
+                    if let category = directoriesManager.getCategory(byID: $0.categoryId) {
+                       return Transaction(DBTransaction: $0, category: category , currency: $0.currencyId)
                     } else { return nil } // if couldn't find a category/currency, then skip
                 }
                 if !self.filteredTransactions.isEmpty {
@@ -76,9 +81,8 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
                 } else {
                     self.filteredTransactions = newTransactions
                 }
-                if let categories = directoriesManager.categories {
-                    self.searchScopes = categories.sorted(by: { $0.name < $1.name })
-                }
+                self.searchScopes = directoriesManager.categories.sorted(by: { $0.name < $1.name })
+
                 print("\(Date()): HomeViewModel - New transactions have been loaded!")
                 self.isLoading = false
             }
@@ -95,9 +99,8 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
                     userId: user.uid
                 )
                 let newTransactions = DBTransactions.compactMap {
-                    if let category = directoriesManager.getCategory(byID: $0.categoryId),
-                       let currency = directoriesManager.getCurrency(byID: $0.currencyId) {
-                        return Transaction(DBTransaction: $0, category: category , currency: currency)
+                    if let category = directoriesManager.getCategory(byID: $0.categoryId) {//,
+                        return Transaction(DBTransaction: $0, category: category , currency: $0.currencyId)
                     } else { return nil } // if couldn't find a category/currency, then skip
                 }
                 self.transactions = newTransactions
@@ -114,7 +117,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
         } else {
             self.transactions = [transaction]
         }
-        try localAmountUpdate(curId: transaction.currency.id, sumDiff: transaction.sum)
+        try localAmountUpdate(curId: transaction.currency, sumDiff: transaction.sum)
 
         let user = try authManager.getAuthenticatedUser()
         let deviceTransactionId = transaction.id
@@ -130,7 +133,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
             if let index = self.transactions.firstIndex(where: { $0.id == deviceTransactionId }) {
                 self.transactions.remove(at: index)
             }
-            try? localAmountUpdate(curId: transaction.currency.id, sumDiff: -transaction.sum)
+            try? localAmountUpdate(curId: transaction.currency, sumDiff: -transaction.sum)
             print(error)
             throw error
         }
@@ -139,15 +142,13 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     func updateTransactions() {
         self.filteredTransactions = []
         self.lastDocument = nil
-        self.hotkeys = nil
         getTransactions()
-        getHotkeys()
     }
 
     func deleteTransaction(transaction: Transaction) async throws {
         // Update locally
         self.transactions.remove(object: transaction)
-        try localAmountUpdate(curId: transaction.currency.id, sumDiff: -transaction.sum)
+        try localAmountUpdate(curId: transaction.currency, sumDiff: -transaction.sum)
         do {
             // Update backend
             let userId = try authManager.getAuthenticatedUser().uid
@@ -160,7 +161,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
         } catch {
             // Restore transactions and amounts
             self.transactions.insert(transaction, at: 0)
-            try? localAmountUpdate(curId: transaction.currency.id, sumDiff: transaction.sum)
+            try? localAmountUpdate(curId: transaction.currency, sumDiff: transaction.sum)
             print(error)
             throw error
         }
@@ -178,7 +179,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
         }
     }
 
-    private func localAmountUpdate(curId: String, sumDiff: Int) throws {
+    private func localAmountUpdate(curId: Currency, sumDiff: Int) throws {
         guard let current = self.amounts else { throw AppError.noDataToPresent }
         self.amounts = current.map { amount in
             if amount.curId == curId {
@@ -196,9 +197,16 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     }
 
     func getHotkeys() -> Void {
+        guard !isHotkeyLoading else {
+            print("\(Date()): HomeViewModel - getHotkeys is already running")
+            return
+        }
+        isHotkeyLoading = true
+        defer { isHotkeyLoading = false }
+        print("\(Date()): HomeViewModel - getHotkeys")
         Task {
             do {
-                if self.hotkeys != nil { throw AppError.noNeedToExecute }
+                guard hotkeys.isEmpty else { throw AppError.noNeedToExecute }
 
                 let user = try authManager.getAuthenticatedUser()
                 let (FBTransactions, _) = await transactionManager.getLastNTransactions(limit: 300, userId: user.uid)

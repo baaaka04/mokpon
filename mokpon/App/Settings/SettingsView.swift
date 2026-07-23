@@ -3,7 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     
     @EnvironmentObject private var authViewModel: AuthViewModel
-    @AppStorage("mainCurrency") private var mainCurrency: String = "USD"
+    @AppStorage("mainCurrency") private var mainCurrency: Currency = .usd
     @State private var showAlert: Bool = false
 
     var body: some View {
@@ -18,7 +18,7 @@ struct SettingsView: View {
                     Task {
                         do {
                             try authViewModel.signOut()
-                            mainCurrency = "USD"
+                            mainCurrency = .usd
                         } catch {
                             print(error)
                         }
@@ -49,20 +49,18 @@ struct SettingsView: View {
                     )
                 }
                 
-                if let currencies = authViewModel.directoriesManager.currencies {
-                    Section {
-                        Picker(selection: $mainCurrency) {
-                            ForEach(currencies, id: \.self) { cur in
-                                Text(cur.name)
-                                    .tag(cur.name)
-                            }
-                        } label: {
-                            Text("Selected currency: ")
+                Section {
+                    Picker(selection: $mainCurrency) {
+                        ForEach(Currency.allCases, id: \.self) { cur in
+                            Text(cur.name)
+                                .tag(cur)
                         }
-                        
-                    } header: {
-                        Text("Main currency")
+                    } label: {
+                        Text("Selected currency: ")
                     }
+                    
+                } header: {
+                    Text("Main currency")
                 }
                 
                 if authViewModel.authProviders.contains(.email) {

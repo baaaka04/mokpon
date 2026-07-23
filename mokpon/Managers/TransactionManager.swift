@@ -2,7 +2,7 @@ import Foundation
 import FirebaseFirestore
 
 struct Amount: Codable {
-    let curId: String
+    let curId: Currency
     let sum: Int
 }
 
@@ -33,6 +33,7 @@ final class TransactionManager {
     }()
 
     func getLastNTransactions(limit: Int, userId: String, lastDocument: DocumentSnapshot? = nil, searchText: String = "", selectedCategoryId: String? = nil) async -> (documents: [DBTransaction], lastDocument: DocumentSnapshot?) {
+        print("REQUEST: getLastNTransactions: limit: \(limit), userId: \(userId), lastDocument: \(lastDocument?.documentID ?? "nil"), searchText: \(searchText), selectedCategoryId: \(String(describing: selectedCategoryId))")
         do {
             var query = transactionCollection
                 .whereField(DBTransaction.CodingKeys.userId.rawValue, isEqualTo: userId)
@@ -81,7 +82,7 @@ final class TransactionManager {
 
                 // 2. Update amounts for the certain currency
                 let updatedAmounts = userAmounts.amounts.map { amount in
-                    if amount.curId == transaction.currency.id {
+                    if amount.curId == transaction.currency {
                         return Amount(curId: amount.curId, sum: amount.sum + sumDelta)
                     }
                     return amount
@@ -163,8 +164,8 @@ final class TransactionManager {
         try await amountsCollection.document(userId).getDocument().data(as:UserAmounts.self, decoder: decoder).amounts
     }
 
-    func createAmounts(userId: String, currencies: [Currency]) async throws {
-        let newAmounts = currencies.map { currency in
+    func createAmounts(userId: String) async throws {
+        let newAmounts = Currency.allCases.map { currency in
             ["cur_id" : currency.id, "sum" : 0]
         }
         try await amountsCollection.document(userId).setData([

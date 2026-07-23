@@ -8,27 +8,22 @@ struct DebitCard: View {
     
     var body: some View {
         ZStack {
-            ZStack{
+            ZStack {
                 HStack {
-                    HStack {
-                        Image("Chip")
-                        Image("Wireless")
-                    }
-                    Spacer()
-                    VStack {
-                        if let amounts {
+                    Image("Chip")
+                    Image("Wireless")
+                    if let amounts {
+                        VStack(alignment: .trailing) {
                             ForEach(amounts, id: \.curId) { amount in
-                                HStack {
-                                    let currency = directoriesManager.getCurrency(byID: amount.curId)
-                                    Spacer(minLength: 0)
-                                    Text("\(currency?.symbol ?? "?") \(amount.sum)")
-                                }
-                                .font(.title)
-                                .padding(.leading, 30)
+                                Text("\(amount.curId.symbol) \(amount.sum)")
+                                    .frame(maxWidth: .infinity, alignment: .trailing)
                             }
-                        } else { ProgressView() }
-                    }
+                            .font(.title)
+                            .padding(.leading, 30)
+                        }
+                    } else { ProgressView() }
                 }
+                
                 VStack {
                     Spacer()
                     HStack (alignment: .bottom){
@@ -73,9 +68,9 @@ struct DebitCard_Previews: PreviewProvider {
         DebitCard(
             cardholderName: "John Smith",
             amounts: [
-                .init(curId: "cur-01", sum: 400),
-                .init(curId: "cur-02", sum: 2400),
-                .init(curId: "cur-03", sum: 132400)
+                .init(curId: .kgs, sum: 400),
+                .init(curId: .rub, sum: 2400),
+                .init(curId: .usd, sum: 132400)
             ], directoriesManager: DirectoriesManager())
         .foregroundColor(.white)
         .font(.custom("DMSans-Regular", size: 18))

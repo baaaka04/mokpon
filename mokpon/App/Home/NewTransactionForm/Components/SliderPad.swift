@@ -9,7 +9,8 @@ struct SliderPad: View {
     
     var body: some View {
         VStack {
-            if let chunks = homeVM.hotkeys?.chunked(into: 8) {
+            let chunks = homeVM.hotkeys.chunked(into: 8)
+            if !chunks.isEmpty {
                 TabView(selection: $selectedTabIndex) {
                     CalculatorView(onPressOperationButton: onPressOperationButton)
                         .tag(0)

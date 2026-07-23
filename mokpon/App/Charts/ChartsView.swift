@@ -6,7 +6,7 @@ struct ChartsView: View {
     @StateObject private var viewModel: ChartsViewModel
     @State private var error: Error?
 
-    @AppStorage("mainCurrency") private var mainCurrency: String = "USD"
+    @AppStorage("mainCurrency") private var mainCurrency: Currency = .usd
 
     init(viewModel: ChartsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -82,7 +82,7 @@ struct ChartsView: View {
     private func loadChartsData() async {
         do {
             self.error = nil
-            try await viewModel.getChartsData(currencyName: mainCurrency)
+            try await viewModel.getChartsData(currency: mainCurrency)
         } catch let error {
             self.error = error
         }

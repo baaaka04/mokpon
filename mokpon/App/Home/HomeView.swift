@@ -63,10 +63,6 @@ struct Home: View {
 
             NavigationLink(value: "") { // I need it only because of 'Lazyness', to prevent initializing NewTransactionViewModel every HomeView's render
                 AddButton()
-                    .padding(30)
-                    .onAppear {
-                        vm.getHotkeys()
-                    }
             }
             .padding(.bottom, 40)
         }
@@ -79,7 +75,6 @@ struct Home: View {
             AllTransactionsView(
                 transactions: vm.filteredTransactions,
                 getTransactions: vm.getTransactions,
-                updateTransactions: vm.updateTransactions,
                 deleteTransaction: vm.deleteTransaction,
                 convertCurrency: vm.currencyRatesService.convertCurrency,
                 directoriesManager: vm.directoriesManager,
@@ -90,7 +85,10 @@ struct Home: View {
             .presentationDragIndicator(.visible)
         }
         .task {
-            vm.getHomeTransactions()
+            if vm.transactions.isEmpty {
+                vm.getHomeTransactions()
+            }
+            vm.getHotkeys()
             guard vm.amounts == nil else { return }
             vm.getUserAmounts()
             guard authViewModel.user == nil else { return }

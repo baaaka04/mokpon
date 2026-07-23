@@ -26,6 +26,7 @@ struct AddButton: View {
                 .font(.custom("DMSans-Regular", size: 24))
                 .foregroundColor(.white.opacity(0.87))
             )
+            .padding(30)
     }
     
 }

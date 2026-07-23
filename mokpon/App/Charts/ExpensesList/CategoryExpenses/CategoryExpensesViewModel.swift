@@ -19,22 +19,17 @@ final class CategoryViewModel: ObservableObject {
     }
     deinit {print("\(Date()): DEINIT CategoryViewModel")}
     
-    func getCategoryExpenses(currencyName: String, date: ChartsDate, category: Category) {
+    func getCategoryExpenses(currency: Currency, date: ChartsDate, category: Category) {
         guard !self.isLoading else { return }
         self.isLoading = true
         Task {
-            guard let currency = directoriesManager.getCurrency(byName: currencyName) else {
-                self.isLoading = false
-                return
-            }
             let user = try authManager.getAuthenticatedUser()
             let fetchedData = try await chartsManager.getTransactions(userId: user.uid, year: date.currentPeriod.year, month: date.currentPeriod.month, categoryId: category.id)
             let groupedByCategory = Dictionary(grouping: fetchedData) { $0.subcategory }
             let categoryData = groupedByCategory.map { (key: String, value: [DBTransaction]) in
-                let converted = value.compactMap { (trans : DBTransaction) -> DBTransaction? in
-                    var newDBTrans : DBTransaction = trans
-                    guard let oldCurrency = directoriesManager.getCurrency(byID: trans.currencyId) else {return nil}
-                    newDBTrans.sum = currencyRatesService.convertCurrency(value: trans.sum, from: oldCurrency.name, to: currencyName) ?? 0
+                let converted = value.compactMap { (trans: DBTransaction) -> DBTransaction? in
+                    var newDBTrans: DBTransaction = trans
+                    newDBTrans.sum = currencyRatesService.convertCurrency(value: trans.sum, from: trans.currencyId.name, to: currency.name) ?? 0
                     return newDBTrans
                 }
                 let categorySum = converted.reduce(0) { $0 + $1.sum }

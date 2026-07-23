@@ -60,16 +60,16 @@ final class CurrencyManager {
     func convertCurrency(value: Int, from: String?, to: String?) -> Int? {
         
         guard let rates, let from, let to else {return nil}
-        let rateInd : [String : Double] = [
-            "USDRUB" : rates.USDKGS / rates.RUBKGS,
-            "USDKGS" : rates.USDKGS,
-            "RUBUSD" : rates.RUBKGS / rates.USDKGS,
-            "RUBKGS" : rates.RUBKGS,
-            "KGSUSD" : 1 / rates.USDKGS,
-            "KGSRUB" : 1 / rates.RUBKGS,
-            "RUBRUB" : 1,
-            "USDUSD" : 1,
-            "KGSKGS" : 1
+        let rateInd: [String: Double] = [
+            "USDRUB": rates.USDKGS / rates.RUBKGS,
+            "USDKGS": rates.USDKGS,
+            "RUBUSD": rates.RUBKGS / rates.USDKGS,
+            "RUBKGS": rates.RUBKGS,
+            "KGSUSD": 1 / rates.USDKGS,
+            "KGSRUB": 1 / rates.RUBKGS,
+            "RUBRUB": 1,
+            "USDUSD": 1,
+            "KGSKGS": 1
         ]
         
         return Int(Double(value) * (rateInd[from+to] ?? 0))

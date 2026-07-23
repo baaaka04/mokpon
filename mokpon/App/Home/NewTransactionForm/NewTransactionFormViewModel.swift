@@ -9,8 +9,7 @@ final class NewTransactionViewModel: ObservableObject {
     @Published var subCategory = ""
     @Published var category: Category? = nil
     @Published var type: ExpensesType = .expense
-    @Published var currency: Currency? = nil
-    @Published var currentCurrencyInd: Int = 0
+    @Published var currency: Currency = .rub
 
     //CALCULATOR
     @Published var memo: Int = 0
@@ -24,19 +23,6 @@ final class NewTransactionViewModel: ObservableObject {
         self.category = category
         self.subCategory = subcategory
         self.type = category.type
-    }
-    
-    @discardableResult
-    func switchCurrency(currencies: [Currency]?) -> Int {
-        guard let currencies,
-              currencies.count != 0 else {return 0}
-        
-        let newValue = self.currentCurrencyInd + Int(1)
-        let newIndex = newValue % currencies.count
-        
-        self.currency = currencies[newIndex]
-        self.currentCurrencyInd = newIndex
-        return newIndex
     }
 
     func validate() throws {

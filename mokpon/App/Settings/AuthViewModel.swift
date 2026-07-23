@@ -91,10 +91,7 @@ final class AuthViewModel: ObservableObject {
     }
 
     private func createAmounts(userId: String) async throws {
-        guard let currencies: [Currency] = directoriesManager.currencies else {
-            throw AppError.currency
-        }
-        try await transactionManager.createAmounts(userId: userId, currencies: currencies)
+        try await transactionManager.createAmounts(userId: userId)
     }
 
 }

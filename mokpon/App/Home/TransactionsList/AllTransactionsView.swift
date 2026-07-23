@@ -4,7 +4,6 @@ struct AllTransactionsView: View {
 
     let transactions: [Transaction]
     let getTransactions: @MainActor() -> ()
-    let updateTransactions: @MainActor() -> ()
     let deleteTransaction: (_ transaction: Transaction) async throws -> ()
     let convertCurrency : (_ value: Int, _ from: String?, _ to: String?) -> Int?
     let directoriesManager: DirectoriesManager
@@ -34,10 +33,8 @@ struct AllTransactionsView: View {
             .searchable(text: $searchText, placement: .automatic)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 CategorySelector(
-                    searchText: $searchText,
                     selectedScope: $selectedScope,
                     searchScopes: searchScopes,
-                    updateTransactions: updateTransactions
                 )
             }
         }
@@ -56,7 +53,6 @@ struct AllTransactionsView_Previews: PreviewProvider {
         AllTransactionsView(
             transactions: [],
             getTransactions: {},
-            updateTransactions: {},
             deleteTransaction: {a in },
             convertCurrency: {a, b, c in return 0},
             directoriesManager: DirectoriesManager(),

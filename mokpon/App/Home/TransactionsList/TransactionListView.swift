@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TransactionListView: View {
     
-    @AppStorage("mainCurrency") private var mainCurrency: String = "USD"
+    @AppStorage("mainCurrency") private var mainCurrency: Currency = .usd
 
     let transactions: [Transaction]
     let deleteTransaction: (_ transaction: Transaction) async throws -> ()
@@ -23,18 +23,14 @@ struct TransactionListView: View {
     
     @MainActor
     func convertCurrency(trans: [Transaction]) -> Int {
-        trans.reduce(0, {acc, trans in acc + (convertCurrency(trans.sum, trans.currency.name, mainCurrency) ?? 0)})
+        trans.reduce(0, {acc, trans in acc + (convertCurrency(trans.sum, trans.currency.name, mainCurrency.name) ?? 0)})
     }
-    
-    func getCurrencyByName(name: String) -> Currency? {
-        directoriesManager.getCurrency(byName: name)
-    }
-    
+
     var body: some View {
         
         VStack {
             if !transactions.isEmpty {
-                List (transformTransactions(trans: transactions), id: \.element.key) { (index, transGrouped) in
+                List(transformTransactions(trans: transactions), id: \.element.key) { (index, transGrouped) in
                     Section {
                         ForEach (transGrouped.value, id: \.self.id) { item in
                             ExpenseView(transaction: item)
@@ -61,11 +57,8 @@ struct TransactionListView: View {
                             let dateCheck = Calendar.current
                             Text(dateCheck.isDateInToday(date) ? "Today" : dateCheck.isDateInYesterday(date) ? "Yesterday" : date.formatted(date: .abbreviated, time: .omitted))
                             Spacer()
-                            if let currencySymbol = getCurrencyByName(name:mainCurrency)?.symbol {
-                                Text("\(convertCurrency(trans:transGrouped.value))\(currencySymbol)")
-                            } else {
-                                Text("---")
-                            }
+                            
+                            Text("\(convertCurrency(trans:transGrouped.value))\(mainCurrency.symbol)")
                         }
                         .font(.headline)
                         .padding(.horizontal)
@@ -81,7 +74,7 @@ struct TransactionListView: View {
                 }
                 .frame(maxHeight: .infinity)
             }
-
+            
         }
     }
 }

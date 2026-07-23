@@ -3,7 +3,7 @@ import SwiftUI
 
 struct Type_CategoryView: View {
     
-    var categories: [Category]?
+    private let categories: [Category] = Category.all
     @Binding var selection: Category?
     @Binding var type: ExpensesType
     
@@ -17,7 +17,7 @@ struct Type_CategoryView: View {
 //Categories
             if type != .exchange {
                 Menu {
-                    ForEach(categories ?? []) { cat in
+                    ForEach(categories) { cat in
                         Button {
                             selection = cat
                             type = cat.type
@@ -86,8 +86,6 @@ struct Type_CategoryView: View {
 struct Type_CategoryView_Previews: PreviewProvider {
     static var previews: some View {
         Type_CategoryView(
-            categories: [Category(id: "cat-01", name: "питание", icon: "cart", type: .expense),
-                        Category(id: "cat-02", name: "транспорт", icon: "bus", type: .expense)],
             selection: .constant(Category(id: "cat-01", name: "питание", icon: "cart", type: .expense)),
             type: .constant(.expense)
         )

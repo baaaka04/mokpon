@@ -11,20 +11,6 @@ struct RootView: View {
     }
 
     var body: some View {
-        Group {
-            if rootViewModel.isLoading {
-                loadingView
-            } else {
-                mainView
-            }
-        }
-        .environmentObject(authViewModel)
-        .onAppear {
-            rootViewModel.loadRequirements()
-        }
-    }
-
-    private var mainView: some View {
         ZStack {
             if authViewModel.isSignedIn {
                 RootTabView()
@@ -42,16 +28,7 @@ struct RootView: View {
         )) {
             AuthenticationView()
         }
-    }
-
-    private var loadingView: some View {
-        VStack {
-            ProgressView("Loading...")
-                .progressViewStyle(CircularProgressViewStyle())
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.mainBackground)
-        .foregroundStyle(.accent)
+        .environmentObject(authViewModel)
     }
 }
 

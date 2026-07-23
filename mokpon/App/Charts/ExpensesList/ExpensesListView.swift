@@ -6,7 +6,7 @@ struct ExpensesListView: View {
     var selectedPeriod: ChartsDate
     var isClickable: Bool
     
-    @AppStorage("mainCurrency") private var mainCurrency: String = "USD"
+    @AppStorage("mainCurrency") private var mainCurrency: Currency = .usd
             
     var body: some View {
         
@@ -16,7 +16,7 @@ struct ExpensesListView: View {
                 Spacer()
             }
             .font(.custom("DMSans-Regular", size: 20))
-            .padding(20)
+            .padding()
 
             if expenses.isEmpty {
                 VStack {
@@ -41,7 +41,6 @@ struct ExpensesListView: View {
                 }
             }
         }
-        .padding(.horizontal)
         .frame(maxWidth: .infinity)
         .padding(.bottom, 140)
         .background(Color.bg_transactions)

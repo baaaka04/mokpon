@@ -3,7 +3,7 @@ import SwiftUI
 struct CategoryExpensesView: View {
     
     @StateObject private var viewModel : CategoryViewModel
-    @AppStorage("mainCurrency") private var mainCurrency : String = "USD"
+    @AppStorage("mainCurrency") private var mainCurrency: Currency = .usd
     
     var date : ChartsDate
     var category : Category
@@ -40,7 +40,7 @@ struct CategoryExpensesView: View {
         .scrollIndicators(.hidden)
         .background(Color.bg_main)
         .task {
-            viewModel.getCategoryExpenses(currencyName: mainCurrency, date: date, category: category)
+            viewModel.getCategoryExpenses(currency: mainCurrency, date: date, category: category)
         }
     }
 }
