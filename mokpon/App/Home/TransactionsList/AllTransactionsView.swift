@@ -37,11 +37,12 @@ struct AllTransactionsView: View {
             }
         }
         .onAppear {
-            getTransactions()
-        }
-        .onDisappear {
-            selectedScope = nil
-            searchText = ""
+            if selectedScope != nil {
+                selectedScope = nil
+            }
+            if !searchText.isEmpty {
+                searchText = ""
+            }
         }
     }
 }

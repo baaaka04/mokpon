@@ -56,54 +56,53 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
 
     // GET Request from Firebase DB
     func getTransactions() {
-        if !self.isLoading {
-            self.isLoading = true
-            Task {
-                let user = try authManager.getAuthenticatedUser()
-                let (DBTransactions, lastDocument) = await transactionManager.getLastNTransactions(
-                    limit: 20,
-                    userId: user.uid,
-                    lastDocument: self.lastDocument,
-                    searchText: searchtext.lowercased(),
-                    selectedCategoryId: selectedScope?.id
-                )
-                self.lastDocument = lastDocument
-                let newTransactions = DBTransactions.compactMap {
-                    if let category = CategoryEnum(rawValue: $0.categoryId) {
-                       return Transaction(DBTransaction: $0, category: category , currency: $0.currencyId)
-                    } else { return nil } // if couldn't find a category/currency, then skip
-                }
-                if !self.filteredTransactions.isEmpty {
-                    // append for pagination
-                    self.filteredTransactions.append(contentsOf: newTransactions)
-                } else {
-                    self.filteredTransactions = newTransactions
-                }
-
-                print("\(Date()): HomeViewModel - New transactions have been loaded!")
-                self.isLoading = false
+        print("getTransactions()")
+        guard !isLoading else {
+            print("Already loading...")
+            return
+        }
+        self.isLoading = true
+        Task {
+            let user = try authManager.getAuthenticatedUser()
+            let (DBTransactions, lastDocument) = await transactionManager.getLastNTransactions(
+                limit: 20,
+                userId: user.uid,
+                lastDocument: self.lastDocument,
+                searchText: searchtext.lowercased(),
+                selectedCategoryId: selectedScope?.id
+            )
+            self.lastDocument = lastDocument
+            let newTransactions = DBTransactions.compactMap {
+                if let category = CategoryEnum(rawValue: $0.categoryId) {
+                    return Transaction(DBTransaction: $0, category: category , currency: $0.currencyId)
+                } else { return nil } // if couldn't find a category/currency, then skip
             }
+            if !self.filteredTransactions.isEmpty {
+                // append for pagination
+                self.filteredTransactions.append(contentsOf: newTransactions)
+            } else {
+                self.filteredTransactions = newTransactions
+            }
+            
+            print("\(Date()): HomeViewModel - New transactions have been loaded!")
+            self.isLoading = false
         }
     }
     
     func getHomeTransactions() {
-        if !self.isLoading {
-            self.isLoading = true
-            Task {
-                let user = try authManager.getAuthenticatedUser()
-                let (DBTransactions, _) = await transactionManager.getLastNTransactions(
-                    limit: 5,
-                    userId: user.uid
-                )
-                let newTransactions = DBTransactions.compactMap {
-                    if let category = CategoryEnum(rawValue: $0.categoryId) {
-                        return Transaction(DBTransaction: $0, category: category , currency: $0.currencyId)
-                    } else { return nil } // if couldn't find a category/currency, then skip
-                }
-                self.transactions = newTransactions
-                print("\(Date()): HomeViewModel - New transactions have been loaded!")
-                self.isLoading = false
+        print("getHomeTransactions()")
+        Task {
+            let user = try authManager.getAuthenticatedUser()
+            let (DBTransactions, _) = await transactionManager.getLastNTransactions(
+                limit: 5,
+                userId: user.uid
+            )
+            let newTransactions = DBTransactions.compactMap {
+                if let category = CategoryEnum(rawValue: $0.categoryId) {
+                    return Transaction(DBTransaction: $0, category: category , currency: $0.currencyId)
+                } else { return nil } // if couldn't find a category/currency, then skip
             }
+            self.transactions = newTransactions
         }
     }
 

@@ -8,7 +8,8 @@ final class AuthViewModel: ObservableObject {
     
     @Published var email = ""
     @Published var password = ""
-    @Published var isSignedIn: Bool = false
+    @Published var isSignedIn: Bool = true
+    @Published var isLoading: Bool = false
 
     let authManager: AuthenticationManager
     let userManager: UserManager

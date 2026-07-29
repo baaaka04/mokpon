@@ -182,6 +182,7 @@ struct CustomRefreshView_Previews: PreviewProvider {
 }
 
 // MARK: For Simultanous Pan Gesture
+@MainActor
 class ScrollViewModel: NSObject,ObservableObject,UIGestureRecognizerDelegate{
     // MARK: Properties
     @Published var isEligible: Bool = false

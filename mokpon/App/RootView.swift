@@ -12,14 +12,20 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
-            if authViewModel.isSignedIn {
+            if authViewModel.isLoading {
+                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if authViewModel.isSignedIn {
                 RootTabView()
-                    .environmentObject(rootViewModel)
+            } else {
+                Text("Authorization error").frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .onAppear {
+            guard !authViewModel.isLoading else { return }
+            authViewModel.isLoading = true
             let authUser = try? authViewModel.getAuthenticatedUser()
             self.authViewModel.isSignedIn = authUser != nil
+            authViewModel.isLoading = false
         }
         /// Can't use $authViewModel.isSignedIn because of the naming
         .fullScreenCover(isPresented: Binding(
@@ -28,6 +34,7 @@ struct RootView: View {
         )) {
             AuthenticationView()
         }
+        .environmentObject(rootViewModel)
         .environmentObject(authViewModel)
     }
 }
