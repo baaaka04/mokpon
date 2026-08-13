@@ -35,7 +35,7 @@ struct TransactionListView: View {
                             let subtitle = item.date.formatted(.dateTime.day().month().year().hour().minute())
                             let number = "\(item.sum)\(item.currency.symbol)"
                             ExpenseView(
-                                title: item.category.name,
+                                title: item.subcategory,
                                 subtitle: subtitle,
                                 icon: item.category.icon,
                                 number: number

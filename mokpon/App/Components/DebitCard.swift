@@ -11,16 +11,7 @@ struct DebitCard: View {
                 HStack {
                     Image("Chip")
                     Image("Wireless")
-                    if let amounts {
-                        VStack(alignment: .trailing) {
-                            ForEach(amounts, id: \.curId) { amount in
-                                Text("\(amount.curId.symbol) \(amount.sum)")
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                            }
-                            .font(.title)
-                            .padding(.leading, 30)
-                        }
-                    } else { ProgressView().frame(maxWidth: .infinity) }
+                    AmountsView(amounts: amounts)
                 }
                 
                 VStack {
@@ -59,6 +50,23 @@ struct DebitCard: View {
         )
         .cornerRadius(15)
         .padding(.horizontal)
+    }
+}
+
+struct AmountsView: View {
+    let amounts: [Amount]?
+    
+    var body: some View {
+        if let amounts {
+            VStack(alignment: .trailing) {
+                ForEach(amounts, id: \.curId) { amount in
+                    Text("\(amount.curId.symbol) \(amount.sum)")
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                .font(.title)
+                .padding(.leading, 30)
+            }
+        } else { ProgressView().frame(maxWidth: .infinity) }
     }
 }
 

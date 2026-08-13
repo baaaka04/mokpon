@@ -5,6 +5,7 @@ struct Home: View {
     @StateObject private var vm: HomeViewModel
     @EnvironmentObject private var authViewModel: AuthViewModel
     @State private var showTransactions: Bool = false
+    @State private var showTotals: Bool = false
 
     init(viewModel: HomeViewModel) {
         _vm = StateObject(wrappedValue: viewModel)
@@ -17,8 +18,11 @@ struct Home: View {
                 VStack(spacing: 10) {
                     DebitCard(
                         cardholderName: authViewModel.user?.name,
-                        amounts: vm.amounts,
+                        amounts: showTotals ? vm.amountsTotals : vm.amounts,
                     )
+                    .onTapGesture {
+                        showTotals.toggle()
+                    }
 
                     Currencies(
                         fetchCurrencyRates: vm.fetchCurrencyRates,

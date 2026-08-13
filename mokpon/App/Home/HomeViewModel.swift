@@ -9,6 +9,7 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
     @Published var filteredTransactions: [Transaction] = []
     @Published var currencyRates: Rates? = nil
     @Published var amounts: [Amount]? = nil
+    @Published var amountsTotals: [Amount] = [Amount(curId: .usd, sum: 0), Amount(curId: .rub, sum: 0), Amount(curId: .kgs, sum: 0)]
     @Published var hotkeys: [Hotkey] = []
     // Since the transaction's ID is generated on FireBase,
     // And we want to avoid unnecessary UI re-render,
@@ -167,7 +168,17 @@ final class HomeViewModel: ObservableObject, TransactionSendable {
         Task {
             let user = try authManager.getAuthenticatedUser()
             do {
-                self.amounts = try await transactionManager.getUserAmounts(userId: user.uid)
+                let fetchedAmounts = try await transactionManager.getUserAmounts(userId: user.uid)
+                self.amounts = fetchedAmounts
+                
+                let newTotals = amountsTotals.map { currency in
+                    let totalSumForCurrency = fetchedAmounts.reduce(0) { prev, current in
+                        return prev + currencyRatesService.convertCurrency(value: current.sum, from: current.curId.name, to: currency.curId.name)
+                    }
+                    return Amount(curId: currency.curId, sum: totalSumForCurrency)
+                }
+                
+                self.amountsTotals = newTotals
             } catch {
                 print("\(Date()): HomeViewModel - Error while getting user amounts: \(error)")
             }
