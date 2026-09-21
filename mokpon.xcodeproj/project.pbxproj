@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D33BE4BF300765650069DF13 /* GlassModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33BE4BE300765650069DF13 /* GlassModifier.swift */; };
+		D3A93954306108DB003B3F4F /* FlashingButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A93953306108DB003B3F4F /* FlashingButtonStyle.swift */; };
 		F708F68F295DD09500E6E9FA /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F708F68E295DD09500E6E9FA /* HomeViewModel.swift */; };
 		F708F691295DDB5900E6E9FA /* AddButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F708F690295DDB5900E6E9FA /* AddButton.swift */; };
 		F708F69329607D0200E6E9FA /* NewTransactionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F708F69229607D0200E6E9FA /* NewTransactionFormView.swift */; };
@@ -98,6 +99,7 @@
 
 /* Begin PBXFileReference section */
 		D33BE4BE300765650069DF13 /* GlassModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassModifier.swift; sourceTree = "<group>"; };
+		D3A93953306108DB003B3F4F /* FlashingButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashingButtonStyle.swift; sourceTree = "<group>"; };
 		F708F68E295DD09500E6E9FA /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		F708F690295DDB5900E6E9FA /* AddButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButton.swift; sourceTree = "<group>"; };
 		F708F69229607D0200E6E9FA /* NewTransactionFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTransactionFormView.swift; sourceTree = "<group>"; };
@@ -119,7 +121,7 @@
 		F729732B29EC40C50007D493 /* ChartsNavBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsNavBarView.swift; sourceTree = "<group>"; };
 		F729732D29EC44090007D493 /* ChartsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsHeaderView.swift; sourceTree = "<group>"; };
 		F735AB2C29549274007DFBDA /* DMSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMSans-Regular.ttf"; sourceTree = "<group>"; };
-		F735AB30295494B9007DFBDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F735AB30295494B9007DFBDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F73DD5E42A0A78B8001BCDAC /* AllTransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTransactionsView.swift; sourceTree = "<group>"; };
 		F74128C4298FEA98006D2A8B /* Currencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currencies.swift; sourceTree = "<group>"; };
 		F7470F6D2AB98B0F00DB4847 /* SliderPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderPad.swift; sourceTree = "<group>"; };
@@ -197,6 +199,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D3A93955306108F6003B3F4F /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				D3A93953306108DB003B3F4F /* FlashingButtonStyle.swift */,
+			);
+			path = Styles;
+			sourceTree = "<group>";
+		};
 		F7130F9C2A02B1E900972B10 /* ChartsBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -325,6 +335,7 @@
 				F76D0BC12D52693B001C6A6B /* Mock */,
 				F735AB2F2954928C007DFBDA /* Fonts */,
 				F715D616295B3A1C00B1177F /* Extensions */,
+				D3A93955306108F6003B3F4F /* Styles */,
 				F735AB30295494B9007DFBDA /* Info.plist */,
 				F719DC07294F0EA700DE1B8E /* Assets.xcassets */,
 				F7E42C892A7A8E2E004E0BDE /* GoogleService-Info.plist */,
@@ -675,6 +686,7 @@
 				F7FE87A62A14987B005EF3D5 /* CalculatorButton.swift in Sources */,
 				F7696C7F2A8A790D003239E0 /* SignInGoogleHelper.swift in Sources */,
 				F708F6A12964520100E6E9FA /* Keyboard.swift in Sources */,
+				D3A93954306108DB003B3F4F /* FlashingButtonStyle.swift in Sources */,
 				F762CB4E2DE446C600DB28B3 /* ChartSkeletonView.swift in Sources */,
 				F729732E29EC44090007D493 /* ChartsHeaderView.swift in Sources */,
 				F708F69329607D0200E6E9FA /* NewTransactionFormView.swift in Sources */,
