@@ -63,7 +63,8 @@ struct Type_CategoryView: View {
                         .frame(maxWidth: .infinity)
                         .background(type == .expense
                                     ? Color.expense_type.opacity(0.5)
-                                    : Color.white.opacity(0)
+                                    : Color.white.opacity(0),
+                                    ignoresSafeAreaEdges: []
                         )
                     }
                 }
@@ -77,7 +78,8 @@ struct Type_CategoryView: View {
                         ]),
                     startPoint: .leading,
                     endPoint: .trailing
-                )
+                ),
+                ignoresSafeAreaEdges: []
             )
         }
     }

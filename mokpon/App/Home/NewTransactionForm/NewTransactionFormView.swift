@@ -29,11 +29,6 @@ struct NewTransactionForm: View, ToastPresentable {
         ZStack(alignment: .top) {
 
             VStack {
-                TransactionFormHeaderView(
-                    onDismiss: { presentationMode.wrappedValue.dismiss() },
-                    onExchange: { onPressExchange() }
-                )
-
                 Type_CategoryView(
                     selection: $viewModel.category,
                     type: $viewModel.type
@@ -108,10 +103,6 @@ struct NewTransactionForm: View, ToastPresentable {
                     )
                 }
             }
-            .foregroundColor(.white)
-            .background(BackgroundCloud(height: 1500).offset(y:700))
-            .background(BackgroundCloud(posX: -30, posY: -140, width: 700, height: 450))
-            .background(Color.bg_main.ignoresSafeArea())
 
             if let toast = toast {
                 ToastBanner(type: toast)
@@ -119,6 +110,24 @@ struct NewTransactionForm: View, ToastPresentable {
             }
         }
         .animation(.easeInOut, value: toast)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    onPressExchange()
+                } label: {
+                    Label("Exchange", systemImage: "arrow.trianglehead.2.clockwise")
+                        .labelStyle(.titleAndIcon)
+                        .font(.custom("DMSans-Regular", size: 12))
+                        .padding([.horizontal], 10)
+                }
+                .buttonStyle(.plain)
+                
+            }
+        }
+        .foregroundColor(.white)
+        .background(BackgroundCloud(height: 1500).offset(y:700))
+        .background(BackgroundCloud(posX: -30, posY: -140, width: 700, height: 450))
+        .background(Color.bg_main.ignoresSafeArea())
         .onAppear {
             viewModel.currency = newTransCurrency
             viewModelExchange.currency = newTransCurrency

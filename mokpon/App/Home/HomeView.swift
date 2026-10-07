@@ -71,7 +71,6 @@ struct Home: View {
         .font(.custom("DMSans-Regular", size: 16))
         .navigationDestination(for: String.self) { _ in
             NewTransactionForm(homeVM: vm)
-                .navigationBarHidden(true)
         }
         .popover(isPresented: $showTransactions) {
             AllTransactionsView(
